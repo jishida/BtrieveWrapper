@@ -18,11 +18,56 @@ namespace BtrieveWrapper.Orm
         internal static Dictionary<MemberInfo, FieldInfo> _fieldMemberInfoDictionary = new Dictionary<MemberInfo, FieldInfo>();
         internal static Dictionary<string, FieldInfo> _fieldNameDictionary = new Dictionary<string, FieldInfo>();
         static Dictionary<Type, Func<byte[], object>> _recordConstructorDictionary = new Dictionary<Type, Func<byte[], object>>();
+        static Dictionary<ExpressionType, MethodInfo> _stringExtensionMethodDictionary = new Dictionary<ExpressionType, MethodInfo>();
+        static Dictionary<MethodInfo, ExpressionType> _stringExtensionMethodTypeDictionary = new Dictionary<MethodInfo, ExpressionType>();
+        static Dictionary<MethodInfo, MethodInfo> _reversedStringExtensionMethodDictionary = new Dictionary<MethodInfo, MethodInfo>();
+        static Dictionary<MethodInfo, MethodInfo> _flippedStringExtensionMethodDictionary = new Dictionary<MethodInfo, MethodInfo>();
 
         static HashSet<ushort> _threadIds = new HashSet<ushort>();
 
         static Resource() {
             Resource.Is64bit = IntPtr.Size == 8;
+            Resource.SetStringExtensionMethods();
+        }
+
+        public static MethodInfo GetStringExtensionMethod(ExpressionType type) {
+            return _stringExtensionMethodDictionary[type];
+        }
+
+        public static ExpressionType ToStringExtensionMethodType(this MethodInfo method) {
+            return _stringExtensionMethodTypeDictionary[method];
+        }
+
+        public static MethodInfo ToReversedStringExtensionMethod(this MethodInfo method) {
+            return _reversedStringExtensionMethodDictionary[method];
+        }
+
+        public static MethodInfo ToFlippedStringExtensionMethod(this MethodInfo method) {
+            return _flippedStringExtensionMethodDictionary[method];
+        }
+
+        public static bool IsComparable(this MethodInfo method) {
+            return _reversedStringExtensionMethodDictionary.ContainsKey(method);
+        }
+
+        static void SetStringExtensionMethods() {
+            var methods = typeof(StringExtensions).GetMethods(BindingFlags.Static | BindingFlags.Public);
+            var lessThan = _stringExtensionMethodDictionary[ExpressionType.LessThan] = methods.Single(m => m.Name == "LessThan" && m.GetParameters().Length == 2 && m.GetParameters().All(p => p.ParameterType == typeof(string)));
+            var lessThanOrEqual = _stringExtensionMethodDictionary[ExpressionType.LessThanOrEqual] = methods.Single(m => m.Name == "LessThanOrEqual" && m.GetParameters().Length == 2 && m.GetParameters().All(p => p.ParameterType == typeof(string)));
+            var greaterThan = _stringExtensionMethodDictionary[ExpressionType.GreaterThan] = methods.Single(m => m.Name == "GreaterThan" && m.GetParameters().Length == 2 && m.GetParameters().All(p => p.ParameterType == typeof(string)));
+            var greaterThanOrEqual = _stringExtensionMethodDictionary[ExpressionType.GreaterThanOrEqual] = methods.Single(m => m.Name == "GreaterThanOrEqual" && m.GetParameters().Length == 2 && m.GetParameters().All(p => p.ParameterType == typeof(string)));
+            _stringExtensionMethodTypeDictionary[lessThan] = ExpressionType.LessThan;
+            _stringExtensionMethodTypeDictionary[lessThanOrEqual] = ExpressionType.LessThanOrEqual;
+            _stringExtensionMethodTypeDictionary[greaterThan] = ExpressionType.GreaterThan;
+            _stringExtensionMethodTypeDictionary[greaterThanOrEqual] = ExpressionType.GreaterThanOrEqual;
+            _reversedStringExtensionMethodDictionary[lessThan] = greaterThanOrEqual;
+            _reversedStringExtensionMethodDictionary[lessThanOrEqual] = greaterThan;
+            _reversedStringExtensionMethodDictionary[greaterThan] = lessThanOrEqual;
+            _reversedStringExtensionMethodDictionary[greaterThanOrEqual] = lessThan;
+            _flippedStringExtensionMethodDictionary[lessThan] = greaterThan;
+            _flippedStringExtensionMethodDictionary[lessThanOrEqual] = greaterThanOrEqual;
+            _flippedStringExtensionMethodDictionary[greaterThan] = lessThan;
+            _flippedStringExtensionMethodDictionary[greaterThanOrEqual] = lessThanOrEqual;
         }
 
         public static bool Is64bit { get; private set; }
