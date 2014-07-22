@@ -1,0 +1,292 @@
+﻿<Window
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:my="clr-namespace:BtrieveWrapper.Orm.Models.Generator.Gui"
+        xmlns:Controls="clr-namespace:BtrieveWrapper.Orm.Models.Generator.Gui.Controls"
+        xmlns:bw="clr-namespace:BtrieveWrapper;assembly=BtrieveWrapper"
+        xmlns:bwo="clr-namespace:BtrieveWrapper.Orm;assembly=BtrieveWrapper.Orm"
+        xmlns:sys="clr-namespace:System;assembly=mscorlib"
+        xmlns:scm="clr-namespace:System.ComponentModel;assembly=WindowsBase"
+        x:Class="BtrieveWrapper.Orm.Models.Generator.Gui.MainWindow"
+        Title="BtrieveWrapper Model Generator" Height="600" Width="900">
+    <Window.Resources>
+        <ObjectDataProvider x:Key="VariableOptions" MethodName="GetValues" ObjectType="{x:Type sys:Enum}">
+            <ObjectDataProvider.MethodParameters>
+                <x:Type TypeName="bw:RecordVariableOption"/>
+            </ObjectDataProvider.MethodParameters>
+        </ObjectDataProvider>
+        <ObjectDataProvider x:Key="FreeSpaceThresholds" MethodName="GetValues" ObjectType="{x:Type sys:Enum}">
+            <ObjectDataProvider.MethodParameters>
+                <x:Type TypeName="bw:FreeSpaceThreshold"/>
+            </ObjectDataProvider.MethodParameters>
+        </ObjectDataProvider>
+        <ObjectDataProvider x:Key="SystemDataOptions" MethodName="GetValues" ObjectType="{x:Type sys:Enum}">
+            <ObjectDataProvider.MethodParameters>
+                <x:Type TypeName="bw:SystemDataOption"/>
+            </ObjectDataProvider.MethodParameters>
+        </ObjectDataProvider>
+        <ObjectDataProvider x:Key="OpenModes" MethodName="GetValues" ObjectType="{x:Type sys:Enum}">
+            <ObjectDataProvider.MethodParameters>
+                <x:Type TypeName="bw:OpenMode"/>
+            </ObjectDataProvider.MethodParameters>
+        </ObjectDataProvider>
+        <ObjectDataProvider x:Key="NullTypes" MethodName="GetValues" ObjectType="{x:Type sys:Enum}">
+            <ObjectDataProvider.MethodParameters>
+                <x:Type TypeName="bwo:NullType"/>
+            </ObjectDataProvider.MethodParameters>
+        </ObjectDataProvider>
+        <ObjectDataProvider x:Key="KeyTypes" MethodName="GetValues" ObjectType="{x:Type sys:Enum}">
+            <ObjectDataProvider.MethodParameters>
+                <x:Type TypeName="bw:KeyType"/>
+            </ObjectDataProvider.MethodParameters>
+        </ObjectDataProvider>
+        <ObjectDataProvider x:Key="DuplicateKeyOptions" MethodName="GetValues" ObjectType="{x:Type sys:Enum}">
+            <ObjectDataProvider.MethodParameters>
+                <x:Type TypeName="bw:DuplicateKeyOption"/>
+            </ObjectDataProvider.MethodParameters>
+        </ObjectDataProvider>
+        <ObjectDataProvider x:Key="NullKeyOptions" MethodName="GetValues" ObjectType="{x:Type sys:Enum}">
+            <ObjectDataProvider.MethodParameters>
+                <x:Type TypeName="bw:NullKeyOption"/>
+            </ObjectDataProvider.MethodParameters>
+        </ObjectDataProvider>
+        <my:TypeList x:Key="ConverterTypes"/>
+        <Style TargetType="TextBox">
+            <Style.Triggers>
+                <Trigger Property="Validation.HasError" Value="True">
+                    <Setter Property="Background" Value="LightPink"/>
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+    </Window.Resources>
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition/>
+        </Grid.RowDefinitions>
+        <Menu >
+            <MenuItem Header="File(_F)">
+                <MenuItem Name="MenuItemNew" Header="New" HorizontalAlignment="Left" Width="150" Click="MenuItemNew_Click"/>
+                <MenuItem Name="MenuItemOpen" Header="Open" HorizontalAlignment="Left" Width="150" Click="MenuItemOpen_Click"/>
+                <MenuItem Name="MenuItemSave" Header="Save" HorizontalAlignment="Left" Width="150" Click="MenuItemSave_Click"/>
+                <MenuItem Name="MenuItemSaveAs" Header="Save as" HorizontalAlignment="Left" Width="150" Click="MenuItemSaveAs_Click"/>
+            </MenuItem>
+            <MenuItem Header="Tool(_T)">
+                <MenuItem Name="MenuItemGenerator" Header="Generator" HorizontalAlignment="Left" Width="150" Click="MenuItemGenerator_Click"/>
+                <Separator/>
+                <MenuItem Name="MenuItemSetings" Header="Settings" HorizontalAlignment="Left" Width="150"/>
+            </MenuItem>
+            <MenuItem Header="Help(_H)">
+                <MenuItem Name="MenuItemAbout" Header="About" HorizontalAlignment="Left" Width="150"/>
+            </MenuItem>
+        </Menu>
+        <Grid Grid.Row="1">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="250"/>
+                <ColumnDefinition Width="5"/>
+                <ColumnDefinition Width="340*"/>
+            </Grid.ColumnDefinitions>
+            <GridSplitter Grid.Column="1" HorizontalAlignment="Stretch" />
+            <GroupBox Header="Model" x:Name="ModelGroup">
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition/>
+                        <RowDefinition Height="Auto"/>
+                    </Grid.RowDefinitions>
+                    <Label Content="Name"/>
+                    <Label Content="Record List" Grid.Row="3"/>
+                    <TextBox Grid.Row="1" Text="{Binding Name}" Margin="4"/>
+                    <Button x:Name="AdvancedButton" Content="Advanced" Grid.Row="2" Padding="20,0"  Margin="4" HorizontalAlignment="Left" Click="AdvancedButton_Click"/>
+                    <StackPanel Grid.Row="5" Orientation="Horizontal">
+                        <Button x:Name="RecordUpButton" Content="Up" Margin="4" Width="70" Click="RecordUpButton_Click" />
+                        <Button x:Name="RecordDownButton" Content="Down" Margin="4" Width="70" Click="RecordDownButton_Click" />
+                    </StackPanel>
+                    <DataGrid x:Name="RecordListDataGrid" Grid.Row="4" AutoGenerateColumns="False" ItemsSource="{Binding RecordCollection}">
+                        <DataGrid.Columns>
+                            <DataGridTextColumn Header="Name" Binding="{Binding Name}"/>
+                        </DataGrid.Columns>
+                    </DataGrid>
+                </Grid>
+            </GroupBox>
+            <GroupBox Grid.Column="2" Header="Record" x:Name="RecordGroup" HorizontalContentAlignment="Stretch" VerticalContentAlignment="Stretch" DataContext="{Binding SelectedItem, ElementName=RecordListDataGrid}">
+                <TabControl>
+                    <TabItem Header="Definitions">
+                        <ScrollViewer >
+                            <Grid >
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="Auto"/>
+                                    <RowDefinition Height="Auto"/>
+                                    <RowDefinition Height="Auto"/>
+                                    <RowDefinition Height="Auto"/>
+                                    <RowDefinition Height="Auto"/>
+                                    <RowDefinition Height="Auto"/>
+                                    <RowDefinition Height="Auto"/>
+                                    <RowDefinition Height="Auto"/>
+                                    <RowDefinition Height="Auto"/>
+                                    <RowDefinition Height="Auto"/>
+                                    <RowDefinition Height="Auto"/>
+                                    <RowDefinition Height="Auto"/>
+                                    <RowDefinition Height="Auto"/>
+                                    <RowDefinition Height="Auto"/>
+                                    <RowDefinition Height="Auto"/>
+                                    <RowDefinition Height="Auto"/>
+                                    <RowDefinition Height="Auto"/>
+                                    <RowDefinition Height="Auto"/>
+                                    <RowDefinition Height="Auto"/>
+                                    <RowDefinition Height="Auto"/>
+                                    <RowDefinition Height="Auto"/>
+                                    <RowDefinition Height="Auto"/>
+                                    <RowDefinition Height="Auto"/>
+                                    <RowDefinition Height="Auto"/>
+                                </Grid.RowDefinitions>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="Auto"/>
+                                    <ColumnDefinition/>
+                                </Grid.ColumnDefinitions>
+                                <Label Content="Name" Grid.Row="0"/>
+                                <Label Content="Fixed Length" Grid.Row="1"/>
+                                <Label Content="Page Size" Grid.Row="2"/>
+                                <Label Content="Duplicated Pointer Count" Grid.Row="3"/>
+                                <Label Content="Allocation" Grid.Row="4"/>
+                                <Label Content="Variable Option" Grid.Row="5"/>
+                                <Label Content="Index Balance" Grid.Row="6"/>
+                                <Label Content="Compression" Grid.Row="7"/>
+                                <Label Content="Free Space Threshold" Grid.Row="8"/>
+                                <Label Content="Munual Key" Grid.Row="9"/>
+                                <Label Content="System Data Option" Grid.Row="10"/>
+                                <Label Content="Primary Key Number" Grid.Row="11"/>
+                                <Label Content="Default Byte" Grid.Row="12"/>
+                                <Label Content="Table (URI)" Grid.Row="13"/>
+                                <Label Content="DbFile (URI)" Grid.Row="14"/>
+                                <Label Content="File (URI)" Grid.Row="15"/>
+                                <Label Content="Path (Absolute)" Grid.Row="16"/>
+                                <Label Content="Path (Relative)" Grid.Row="17"/>
+                                <Label Content="Owner Name" Grid.Row="18"/>
+                                <Label Content="Open Mode" Grid.Row="19"/>
+                                <Label Content="Data Buffer Capacity" Grid.Row="20"/>
+                                <Label Content="Variable Field Capacity" Grid.Row="21"/>
+                                <Label Content="Reject Count" Grid.Row="22"/>
+                                <TextBox Text="{Binding Name}" Grid.Column="1" Grid.Row="0"/>
+                                <TextBox Name="_fixedLength" Text="{Binding FixedLength}" Grid.Column="1" Grid.Row="1"/>
+                                <TextBox x:Name="_pageSize" Text="{Controls:UInt16Binding PageSize}" Grid.Column="1" Grid.Row="2"/>
+                                <TextBox Text="{Controls:UInt16Binding DuplicatedPointerCount}" Grid.Column="1" Grid.Row="3"/>
+                                <TextBox Text="{Controls:UInt16Binding Allocation}" Grid.Column="1" Grid.Row="4"/>
+                                <ComboBox SelectedItem="{Binding VariableOption}" ItemsSource="{Binding Source={StaticResource VariableOptions}}" Grid.Column="1" Grid.Row="5"/>
+                                <CheckBox IsChecked="{Binding UsesIndexBalancing}" Grid.Column="1" Grid.Row="6" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+                                <CheckBox IsChecked="{Binding IsCompressed}" Grid.Column="1" Grid.Row="7" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+                                <ComboBox SelectedItem="{Binding FreeSpaceThreshold}" ItemsSource="{Binding Source={StaticResource FreeSpaceThresholds}}" Grid.Column="1" Grid.Row="8"/>
+                                <CheckBox IsChecked="{Binding IsManualKeyNumber}" Grid.Column="1" Grid.Row="9" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+                                <ComboBox SelectedItem="{Binding SystemDataOption}" ItemsSource="{Binding Source={StaticResource SystemDataOptions}}" Grid.Column="1" Grid.Row="10"/>
+                                <TextBox Text="{Controls:SByteBinding PrimaryKeyNumber}" Grid.Column="1" Grid.Row="11"/>
+                                <TextBox Text="{Controls:ByteBinding DefaultByte}" Grid.Column="1" Grid.Row="12"/>
+                                <TextBox Text="{Binding UriTable, TargetNullValue=''}" Grid.Column="1" Grid.Row="13"/>
+                                <TextBox Text="{Binding UriDbFile, TargetNullValue=''}" Grid.Column="1" Grid.Row="14"/>
+                                <TextBox Text="{Binding UriFile, TargetNullValue=''}" Grid.Column="1" Grid.Row="15"/>
+                                <TextBox Text="{Binding AbsolutePath, TargetNullValue=''}" Grid.Column="1" Grid.Row="16"/>
+                                <TextBox Text="{Binding RelativePath, TargetNullValue=''}" Grid.Column="1" Grid.Row="17"/>
+                                <TextBox Text="{Binding OwnerName, TargetNullValue=''}" Grid.Column="1" Grid.Row="18"/>
+                                <ComboBox SelectedItem="{Binding OpenMode}" ItemsSource="{Binding Source={StaticResource OpenModes}}" Grid.Column="1" Grid.Row="19"/>
+                                <TextBox Text="{Controls:UInt16Binding DataBufferCapacity}" Grid.Column="1" Grid.Row="20"/>
+                                <TextBox Text="{Controls:UInt16Binding VariableFieldCapacity}" Grid.Column="1" Grid.Row="21"/>
+                                <TextBox Text="{Controls:UInt16Binding RejectCount}" Grid.Column="1" Grid.Row="22"/>
+                            </Grid>
+                        </ScrollViewer>
+                    </TabItem>
+                    <TabItem Header="Fields">
+                        <Grid>
+                            <Grid.RowDefinitions>
+                                <RowDefinition/>
+                                <RowDefinition Height="Auto"/>
+                            </Grid.RowDefinitions>
+                            <DataGrid Name="FieldListDataGrid" AutoGenerateColumns="False" ItemsSource="{Binding FieldCollection}">
+                                <DataGrid.Columns>
+                                    <DataGridTextColumn Header="Name" Binding="{Binding Name, TargetNullValue=''}"/>
+                                    <DataGridTextColumn Header="Position" Binding="{Controls:UInt16Binding Position}"/>
+                                    <DataGridTextColumn Header="Length" Binding="{Controls:UInt16Binding Length}"/>
+                                    <DataGridComboBoxColumn Header="ConverterType" ItemsSource="{Binding Source={StaticResource ConverterTypes}}" SelectedItemBinding="{Binding ConverterType}"/>
+                                    <DataGridComboBoxColumn Header="KeyType" ItemsSource="{Binding Source={StaticResource KeyTypes}}" SelectedItemBinding="{Binding KeyType}"/>
+                                    <DataGridComboBoxColumn Header="NullType" ItemsSource="{Binding Source={StaticResource NullTypes}}" SelectedItemBinding="{Binding NullType}"/>
+                                    <DataGridTextColumn Header="Parameter" Binding="{Binding Parameter, TargetNullValue=''}"/>
+                                </DataGrid.Columns>
+                            </DataGrid>
+                            <StackPanel Orientation="Horizontal" Grid.Row="1">
+                                <Button x:Name="FieldUpButtion" Content="Up" Margin="4" Width="70" Click="FieldUpButtion_Click" />
+                                <Button x:Name="FieldDownButtion" Content="Down" Margin="4" Width="70" Click="FieldDownButtion_Click" />
+                            </StackPanel>
+                        </Grid>
+                    </TabItem>
+                    <TabItem Header="Keys">
+                        <Grid>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="188*"/>
+                                <RowDefinition Height="5"/>
+                                <RowDefinition Height="259*"/>
+                            </Grid.RowDefinitions>
+                            <GroupBox Header="Key List" Grid.Row="0" DataContext="{Binding SelectedItem, ElementName=RecordListDataGrid}">
+                                <Grid >
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition/>
+                                        <RowDefinition Height="Auto"/>
+                                    </Grid.RowDefinitions>
+                                    <DataGrid AutoGenerateColumns="False" Name="KeyListDataGrid" ItemsSource="{Binding KeyCollection}">
+                                        <DataGrid.Columns>
+                                            <DataGridTextColumn Header="Name" Binding="{Binding Name, TargetNullValue=''}"/>
+                                            <DataGridTextColumn Header="KeyNumber" Binding="{Controls:SByteBinding KeyNumber}"/>
+                                            <DataGridComboBoxColumn Header="DuplicateKeyOption" ItemsSource="{Binding Source={StaticResource DuplicateKeyOptions}}" SelectedItemBinding="{Binding DuplicateKeyOption}"/>
+                                            <DataGridCheckBoxColumn Header="IsModifiable" Binding="{Binding IsModifiable}" />
+                                            <DataGridComboBoxColumn Header="NullKeyOption" ItemsSource="{Binding Source={StaticResource NullKeyOptions}}" SelectedItemBinding="{Binding NullKeyOption}"/>
+                                        </DataGrid.Columns>
+                                    </DataGrid>
+                                    <StackPanel Orientation="Horizontal" Grid.Row="1">
+                                        <Button x:Name="KeyUpButtion" Content="Up" Margin="4" Width="70" Click="KeyUpButtion_Click" />
+                                        <Button x:Name="KeyDownButtion" Content="Down" Margin="4" Width="70" Height="19" VerticalAlignment="Bottom" Click="KeyDownButtion_Click" />
+                                    </StackPanel>
+                                </Grid>
+                            </GroupBox>
+                            <GridSplitter Grid.Row="1" HorizontalAlignment="Stretch" Background="White"/>
+                            <GroupBox Header="Key Segment List" Grid.Row="2" DataContext="{Binding SelectedItem, ElementName=KeyListDataGrid}">
+                                <Grid >
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition Height="150*"/>
+                                        <RowDefinition Height="Auto"/>
+                                    </Grid.RowDefinitions>
+                                    <DataGrid Name="KeySegmentListDataGrid" AutoGenerateColumns="False" ItemsSource="{Binding KeySegmentCollection}">
+                                        <DataGrid.Columns>
+                                            <DataGridTextColumn Header="Index" Binding="{Controls:UInt16Binding Index, Mode=OneWay}"/>
+                                            <DataGridComboBoxColumn Header="Field" SelectedItemBinding="{Binding Field}" DisplayMemberPath="DisplayName">
+                                                <DataGridComboBoxColumn.EditingElementStyle>
+                                                    <Style TargetType="ComboBox">
+                                                        <Setter Property="ItemsSource" Value="{Binding Key.Record.Fields}"/>
+                                                    </Style>
+                                                </DataGridComboBoxColumn.EditingElementStyle>
+                                                <DataGridComboBoxColumn.ElementStyle>
+                                                    <Style TargetType="ComboBox">
+                                                        <Setter Property="ItemsSource" Value="{Binding Key.Record.Fields}"/>
+                                                    </Style>
+                                                </DataGridComboBoxColumn.ElementStyle>
+                                            </DataGridComboBoxColumn>
+                                            <DataGridTextColumn Header="NullValue" Binding="{Controls:ByteBinding NullValue}"/>
+                                            <DataGridCheckBoxColumn Header="Descending" Binding="{Binding IsDescending}"/>
+                                            <DataGridCheckBoxColumn Header="IgnoreCase" Binding="{Binding IsIgnoreCase}"/>
+                                        </DataGrid.Columns>
+                                    </DataGrid>
+                                    <StackPanel Orientation="Horizontal" Grid.Row="1">
+                                        <Button x:Name="KeySegmentUpButton" Content="Up" Margin="4" Width="70" Click="KeySegmentUpButton_Click" />
+                                        <Button x:Name="KeySegmentDownButton" Content="Down" Margin="4" Width="70" Click="KeySegmentDownButton_Click" />
+                                    </StackPanel>
+                                </Grid>
+
+                            </GroupBox>
+                        </Grid>
+                    </TabItem>
+                </TabControl>
+
+            </GroupBox>
+        </Grid>
+
+    </Grid>
+</Window>

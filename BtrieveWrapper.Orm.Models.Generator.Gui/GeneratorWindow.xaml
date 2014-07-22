@@ -1,0 +1,114 @@
+﻿<Window x:Class="BtrieveWrapper.Orm.Models.Generator.Gui.GeneratorWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="Generator" Height="337" Width="577">
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition/>
+            <ColumnDefinition Width="Auto"/>
+            <ColumnDefinition Width="Auto"/>
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+        <TabControl Grid.ColumnSpan="3" Name="SelectionTab">
+            <TabItem Header="Generate xml from DDF">
+                <Grid >
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                    </Grid.RowDefinitions>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition/>
+                        <ColumnDefinition Width="Auto"/>
+                    </Grid.ColumnDefinitions>
+                    <Label Content="Output File" Grid.Row="0"/>
+                    <Label Content="Host" Grid.Row="1"/>
+                    <Label Content="DbName" Grid.Row="2"/>
+                    <Label Content="User (Optional)" Grid.Row="3"/>
+                    <Label Content="Password (Optional)" Grid.Row="4"/>
+                    <Label Content="Ownew Name (Optional)" Grid.Row="5"/>
+                    <Label Content="Namespace (Optional)" Grid.Row="6"/>
+                    <TextBox Name="DdfOutputTextBox" Grid.Column="1" Grid.Row="0"/>
+                    <Button Name="DdfOutputBrowseButton" Content="Browse" Margin="4,0,4,3" VerticalAlignment="Bottom" Width="75"  Grid.Column="2" Click="DdfOutputBrowseButton_Click"/>
+                    <TextBox Name="DdfHostTextBox" Grid.Column="1" Grid.Row="1" Grid.ColumnSpan="2"/>
+                    <TextBox Name="DdfDbNameTextBox" Grid.Column="1" Grid.Row="2" Grid.ColumnSpan="2"/>
+                    <TextBox Name="DdfUserTextBox" Grid.Column="1" Grid.Row="3" Grid.ColumnSpan="2"/>
+                    <TextBox Name="DdfPasswordTextBox" Grid.Column="1" Grid.Row="4" Grid.ColumnSpan="2"/>
+                    <TextBox Name="DdfOwnerNameTextBox" Grid.Column="1" Grid.Row="5" Grid.ColumnSpan="2"/>
+                    <TextBox Name="DdfNamespaceTextBox" Grid.Column="1" Grid.Row="6" Grid.ColumnSpan="2"/>
+                </Grid>
+            </TabItem>
+            <TabItem Header="Generate xml from directory">
+                <Grid >
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                    </Grid.RowDefinitions>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition/>
+                        <ColumnDefinition Width="Auto"/>
+                    </Grid.ColumnDefinitions>
+                    <Label Content="Output File" Grid.Row="0"/>
+                    <Label Content="Source Directory" Grid.Row="1"/>
+                    <Label Content="Model Name (Optional)" Grid.Row="2"/>
+                    <Label Content="Namespace (Optional)" Grid.Row="3"/>
+                    <Label Content="Wildcard (Optional)" Grid.Row="4"/>
+                    <TextBox Name="DirOutputTextBox" Grid.Column="1" Grid.Row="0"/>
+                    <Button Name="DirOutputBrowseButton" Content="Browse" Margin="4,0" VerticalAlignment="Center" Width="75"  Grid.Column="2" Click="DirOutputBrowseButton_Click"/>
+                    <TextBox Name="DirInputTextBox" Grid.Column="1" Grid.Row="1"/>
+                    <Button Name="DirInputBrowseButton" Content="Browse" Margin="4,0" VerticalAlignment="Center" Width="75" Grid.Row="1" Grid.Column="2" Click="DirInputBrowseButton_Click"/>
+                    <TextBox Name="DirModelNameTextBox" Grid.Column="1" Grid.Row="2" Grid.ColumnSpan="2"/>
+                    <TextBox Name="DirNamespaceTextBox" Grid.Column="1" Grid.Row="3" Grid.ColumnSpan="2"/>
+                    <TextBox Name="DirWildcardTextBox" Grid.Column="1" Grid.Row="4" Grid.ColumnSpan="2"/>
+                </Grid>
+            </TabItem>
+            <TabItem Header="Generate code from xml">
+                <Grid >
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                    </Grid.RowDefinitions>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition/>
+                        <ColumnDefinition Width="Auto"/>
+                    </Grid.ColumnDefinitions>
+                    <Label Content="Output Directory" Grid.Row="0"/>
+                    <Label Content="Input File" Grid.Row="1"/>
+                    <Label Content="File Extension (Optional)" Grid.Row="2"/>
+                    <Label Content="DbClient Template (Optional)" Grid.Row="3"/>
+                    <Label Content="RecordTemplate (Optional)" Grid.Row="4"/>
+                    <TextBox Name="CodeOutputTextBox" Grid.Column="1" Grid.Row="0"/>
+                    <Button Name="CodeOutputBrowseButton" Content="Browse" Margin="4,0" VerticalAlignment="Center" Width="75"  Grid.Column="2" Click="CodeOutputBrowseButton_Click"/>
+                    <TextBox Name="CodeInputTextBox" Grid.Column="1" Grid.Row="1"/>
+                    <Button Name="CodeInputBrowseButton" Content="Browse" Margin="4,0" VerticalAlignment="Center" Width="75" Grid.Row="1" Grid.Column="2" Click="CodeInputBrowseButton_Click"/>
+                    <TextBox Name="CodeExtTextBox" Grid.Column="1" Grid.Row="2" Grid.ColumnSpan="2"/>
+                    <TextBox Name="CodeDbClientTemplateTextBox" Grid.Column="1" Grid.Row="3"/>
+                    <Button Name="CodeDbClientTemplateBrowseButton" Content="Browse" Margin="4,0" VerticalAlignment="Center" Width="75" Grid.Row="3" Grid.Column="2" Click="CodeDbClientTemplateBrowseButton_Click"/>
+                    <TextBox Name="CodeRecordTemplateTextBox" Grid.Column="1" Grid.Row="4"/>
+                    <Button Name="CodeRecordTemplateBrowseButton" Content="Browse" Margin="4,0" VerticalAlignment="Center" Width="75" Grid.Row="4" Grid.Column="2" Click="CodeRecordTemplateBrowseButton_Click"/>
+                </Grid>
+            </TabItem>
+        </TabControl>
+        <Button Name="GenerateButton" Content="Generate" Margin="8,4" Grid.Row="1" Width="75" Grid.Column="1" Click="GenerateButton_Click"/>
+        <Button Name="CloseButton" Content="Close" Margin="8,0,8,4" Grid.Row="1" Width="75" Grid.Column="2" Height="19" VerticalAlignment="Bottom" Click="CloseButton_Click"/>
+    </Grid>
+</Window>

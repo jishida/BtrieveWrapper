@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<status-collection xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns="urn:btrieve-status-collection-schema">
+  <status code="1">invalid parameter</status>
+  <status code="2">I/O error</status>
+  <status code="3">file is not opened</status>
+  <status code="4">key value is not found</status>
+  <status code="5">key is dupricated</status>
+  <status code="6">invalid key number</status>
+</status-collection>

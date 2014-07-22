@@ -1,0 +1,66 @@
+﻿using System;
+using BtrieveWrapper.Orm;
+using BtrieveWrapper.Orm.Models.CustomModels;
+
+namespace BtrieveWrapper.Demo
+{
+    class Program
+    {
+        static void Main(string[] args) {
+            DemodataDbClient client = new DemodataDbClient();
+
+            Console.WriteLine("[Query 5 people demo]");
+            using (StudentManager students = client.Student(temporaryBufferId: 1))
+            using (PersonManager people = client.Person()) {
+                foreach (Student student in students.Query(limit: 5)) {
+                    Person person = people.Get(p => p.ID == student.ID);
+                    Console.WriteLine("Name: {0} {1}, Major: {2}, Minor: {3}",
+                        person.First_Name,
+                        person.Last_Name,
+                        student.Major,
+                        student.Minor);
+                }
+            }
+
+            Console.WriteLine();
+
+            Console.WriteLine("[Person CRUD demo]");
+            using (PersonManager people = client.Person()) {
+                Person person;
+                using (Transaction transaction = client.BeginTransaction()) {
+                    Console.Write("Create person: ");
+                    person = new Person();
+                    person.ID = 0;
+                    person.First_Name = "Ieyasu";
+                    person.Last_Name = "Tokugawa";
+                    people.Add(person);
+                    people.SaveChanges();
+                    Console.WriteLine("done");
+
+                    person = people.GetAndManage(p => p.ID == 0);
+                    Console.WriteLine("Read person: {0} {1}", person.First_Name, person.Last_Name);
+
+                    Console.Write("Update person: ");
+                    person.First_Name = "Iemitsu";
+                    people.SaveChanges();
+                    Console.WriteLine("done");
+                    people.Detach(person);
+
+                    person = people.GetAndManage(p => p.ID == 0);
+                    Console.WriteLine("Read person: {0} {1}", person.First_Name, person.Last_Name);
+
+                    Console.Write("Delete person: ");
+                    people.Remove(person);
+                    people.SaveChanges();
+                    Console.WriteLine("done");
+                    people.Detach(person);
+
+                    person = people.Get(p => p.ID == 0);
+                    Console.WriteLine(person == null ? "Person is not found" : "Person is found");
+
+                    transaction.Commit();
+                }
+            }
+        }
+    }
+}
