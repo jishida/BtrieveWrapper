@@ -118,7 +118,7 @@ namespace BtrieveWrapper.Orm
                                     result[0][i] = left[0][i];
                                 }
                                 for (var i = 0; i < right[0].Length; i++) {
-                                    result[0][left.Length + i] = right[0][i];
+                                    result[0][left[0].Length + i] = right[0][i];
                                 }
                                 return result;
                             } else {
