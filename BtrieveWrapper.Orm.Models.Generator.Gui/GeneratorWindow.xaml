@@ -24,6 +24,7 @@
                         <RowDefinition Height="Auto"/>
                         <RowDefinition Height="Auto"/>
                         <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
                     </Grid.RowDefinitions>
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="Auto"/>
@@ -37,6 +38,7 @@
                     <Label Content="Password (Optional)" Grid.Row="4"/>
                     <Label Content="Ownew Name (Optional)" Grid.Row="5"/>
                     <Label Content="Namespace (Optional)" Grid.Row="6"/>
+                    <Label Content="Btrieve Library (Optional)" Grid.Row="7"/>
                     <TextBox Name="DdfOutputTextBox" Grid.Column="1" Grid.Row="0"/>
                     <Button Name="DdfOutputBrowseButton" Content="Browse" Margin="4,0,4,3" VerticalAlignment="Bottom" Width="75"  Grid.Column="2" Click="DdfOutputBrowseButton_Click"/>
                     <TextBox Name="DdfHostTextBox" Grid.Column="1" Grid.Row="1" Grid.ColumnSpan="2"/>
@@ -45,11 +47,13 @@
                     <TextBox Name="DdfPasswordTextBox" Grid.Column="1" Grid.Row="4" Grid.ColumnSpan="2"/>
                     <TextBox Name="DdfOwnerNameTextBox" Grid.Column="1" Grid.Row="5" Grid.ColumnSpan="2"/>
                     <TextBox Name="DdfNamespaceTextBox" Grid.Column="1" Grid.Row="6" Grid.ColumnSpan="2"/>
+                    <TextBox Name="DdfDllTextBox" Grid.Column="1" Grid.Row="7" Grid.ColumnSpan="2"/>
                 </Grid>
             </TabItem>
             <TabItem Header="Generate xml from directory">
                 <Grid >
                     <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
                         <RowDefinition Height="Auto"/>
                         <RowDefinition Height="Auto"/>
                         <RowDefinition Height="Auto"/>
@@ -67,6 +71,7 @@
                     <Label Content="Model Name (Optional)" Grid.Row="2"/>
                     <Label Content="Namespace (Optional)" Grid.Row="3"/>
                     <Label Content="Wildcard (Optional)" Grid.Row="4"/>
+                    <Label Content="Btrieve Library (Optional)" Grid.Row="5"/>
                     <TextBox Name="DirOutputTextBox" Grid.Column="1" Grid.Row="0"/>
                     <Button Name="DirOutputBrowseButton" Content="Browse" Margin="4,0" VerticalAlignment="Center" Width="75"  Grid.Column="2" Click="DirOutputBrowseButton_Click"/>
                     <TextBox Name="DirInputTextBox" Grid.Column="1" Grid.Row="1"/>
@@ -74,6 +79,7 @@
                     <TextBox Name="DirModelNameTextBox" Grid.Column="1" Grid.Row="2" Grid.ColumnSpan="2"/>
                     <TextBox Name="DirNamespaceTextBox" Grid.Column="1" Grid.Row="3" Grid.ColumnSpan="2"/>
                     <TextBox Name="DirWildcardTextBox" Grid.Column="1" Grid.Row="4" Grid.ColumnSpan="2"/>
+                    <TextBox Name="DirDllTextBox" Grid.Column="1" Grid.Row="5" Grid.ColumnSpan="2"/>
                 </Grid>
             </TabItem>
             <TabItem Header="Generate code from xml">
