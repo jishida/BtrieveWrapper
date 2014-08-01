@@ -255,24 +255,26 @@ namespace BtrieveWrapper.Orm
             var unlock = _connection != null && this.AutoUnlockUnhandledRecord;
             KeyValue keyValue = parameter.UniqueKeyValue;
             if (keyValue != null) {
-                TRecord record;
-                try {
-                    record = this.Operator.GetEqual(keyValue, lockBias, true);
-                } catch (OperationException e) {
-                    if (e.StatusCode == 4) {
-                        yield break;
+                using (var connection = new Connection(this)) {
+                    TRecord record;
+                    try {
+                        record = this.Operator.GetEqual(keyValue, lockBias, true);
+                    } catch (OperationException e) {
+                        if (e.StatusCode == 4) {
+                            yield break;
+                        }
+                        throw;
                     }
-                    throw;
-                }
-                if (parameter.Filter == null || parameter.Filter(record)) {
-                    yield return record;
-                } else {
-                    this.Operator.Recycle(record);
-                    if (unlock) {
-                        this.UnlockLastRecord(lockMode);
+                    if (parameter.Filter == null || parameter.Filter(record)) {
+                        yield return record;
+                    } else {
+                        this.Operator.Recycle(record);
+                        if (unlock) {
+                            this.UnlockLastRecord(lockMode);
+                        }
                     }
+                    yield break;
                 }
-                yield break;
             }
 
             var limit = parameter.Limit;
