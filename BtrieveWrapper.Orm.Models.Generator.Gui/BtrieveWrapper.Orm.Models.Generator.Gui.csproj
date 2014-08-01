@@ -140,15 +140,15 @@
   <ItemGroup>
     <ProjectReference Include="..\BtrieveWrapper.Orm\BtrieveWrapper.Orm.csproj">
       <Project>{a475ed2c-491e-49bc-a71b-278f5b5cc271}</Project>
-      <Name>BtrieveWrapper.Framework</Name>
+      <Name>BtrieveWrapper.Orm</Name>
     </ProjectReference>
     <ProjectReference Include="..\BtrieveWrapper.Orm.Models.Generator\BtrieveWrapper.Orm.Models.Generator.csproj">
       <Project>{529f39b4-a1d6-4ce4-9bb7-332d95153962}</Project>
-      <Name>BtrieveWrapper.Models.Generator</Name>
+      <Name>BtrieveWrapper.Orm.Models.Generator</Name>
     </ProjectReference>
     <ProjectReference Include="..\BtrieveWrapper.Orm.Models\BtrieveWrapper.Orm.Models.csproj">
       <Project>{7d1194cd-4722-4479-9b06-b706c4e2469c}</Project>
-      <Name>BtrieveWrapper.Models</Name>
+      <Name>BtrieveWrapper.Orm.Models</Name>
     </ProjectReference>
     <ProjectReference Include="..\BtrieveWrapper\BtrieveWrapper.csproj">
       <Project>{a69ae6c8-f511-4a95-825d-f854aebcf4c8}</Project>

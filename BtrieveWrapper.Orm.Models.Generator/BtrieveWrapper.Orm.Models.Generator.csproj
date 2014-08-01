@@ -79,11 +79,11 @@
   <ItemGroup>
     <ProjectReference Include="..\BtrieveWrapper.Orm\BtrieveWrapper.Orm.csproj">
       <Project>{a475ed2c-491e-49bc-a71b-278f5b5cc271}</Project>
-      <Name>BtrieveWrapper.Framework</Name>
+      <Name>BtrieveWrapper.Orm</Name>
     </ProjectReference>
     <ProjectReference Include="..\BtrieveWrapper.Orm.Models\BtrieveWrapper.Orm.Models.csproj">
       <Project>{7d1194cd-4722-4479-9b06-b706c4e2469c}</Project>
-      <Name>BtrieveWrapper.Models</Name>
+      <Name>BtrieveWrapper.Orm.Models</Name>
     </ProjectReference>
     <ProjectReference Include="..\BtrieveWrapper\BtrieveWrapper.csproj">
       <Project>{a69ae6c8-f511-4a95-825d-f854aebcf4c8}</Project>
