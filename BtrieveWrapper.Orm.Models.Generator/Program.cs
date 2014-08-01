@@ -34,6 +34,9 @@ namespace BtrieveWrapper.Orm.Models.Generator
                                 throw new ArgumentException();
                             }
                             var model = Model.FromDdf(uri.UriHost, uri.UriDbName, uri.UriUser, uri.UriPassword, uri.UriPrompt, null, arguments.BtrieveLibrary);
+                            if (arguments.Namespace != null) {
+                                model.Namespace = arguments.Namespace;
+                            }
                             if (System.IO.File.Exists(arguments.Output) && !arguments.Silent) {
                                 for (; ; ) {
                                     Console.WriteLine(@"""{0}"" already exists. Overwrite it? (y/n)", arguments.Output);
@@ -56,6 +59,9 @@ namespace BtrieveWrapper.Orm.Models.Generator
                             Console.WriteLine("Mode {0}", arguments.Mode);
                             var inputDirectory = new System.IO.DirectoryInfo(arguments.Input);
                             var model = Model.FromDirectory(arguments.Name, inputDirectory.FullName, arguments.SearchPattern, System.IO.SearchOption.AllDirectories, null, arguments.BtrieveLibrary);
+                            if (arguments.Namespace != null) {
+                                model.Namespace = arguments.Namespace;
+                            }
                             if (System.IO.File.Exists(arguments.Output) && !arguments.Silent) {
                                 for (; ; ) {
                                     Console.WriteLine(@"""{0}"" already exists. Overwrite it? (y/n)", arguments.Output);
