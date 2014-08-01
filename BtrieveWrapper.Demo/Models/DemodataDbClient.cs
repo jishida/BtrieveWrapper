@@ -5,7 +5,7 @@
         public DemodataDbClient(string dllPath = null, string applicationId = "BW")
             : base(dllPath, applicationId) { }
 
-        public DemodataDbClient(INativeLibrary nativeLibrary, string applicationId = "BW")
+        public DemodataDbClient(BtrieveWrapper.INativeLibrary nativeLibrary, string applicationId = "BW")
             : base(nativeLibrary, applicationId) { }
 
         public BillingManager Billing(BtrieveWrapper.Orm.Path path = null, string ownerName = null, BtrieveWrapper.OpenMode? openMode = null, int recycleCount = 1000, int temporaryBufferId = 0) {
