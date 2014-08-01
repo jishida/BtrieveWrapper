@@ -102,7 +102,17 @@ namespace BtrieveWrapper.Orm
 
         internal ushort SetDataBuffer(byte[] dataBuffer, ushort position, byte logicalFlag) {
             var result = (ushort)(position + this.Length);
-            dataBuffer[position] = (byte)this.Field.KeyType;
+            switch (this.Field.KeyType) {
+                case KeyType.LegacyBinary:
+                    dataBuffer[position] = 14;
+                    break;
+                case KeyType.LegacyString:
+                    dataBuffer[position] = 0;
+                    break;
+                default:
+                    dataBuffer[position] = (byte)this.Field.KeyType;
+                    break;
+            }
             position++;
             Array.Copy(BitConverter.GetBytes(this.Field.Length), 0, dataBuffer, position, 2);
             position += 2;

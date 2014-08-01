@@ -10,10 +10,12 @@ namespace BtrieveWrapper.Orm
 {
     public abstract class Record<TRecord> where TRecord : Record<TRecord>
     {
-        RecordInfo _info;
+        static RecordInfo _info = null;
         
         protected Record() {
-            _info = Resource.GetRecordInfo(typeof(TRecord));
+            if (_info == null) {
+                _info = Resource.GetRecordInfo(typeof(TRecord));
+            }
             this.DataBuffer = new byte[_info.DataBufferCapacity];
             if (_info.DefaultByte != default(byte)) {
                 for (var i = 0; i < this.DataBuffer.Length; i++) {
@@ -37,7 +39,9 @@ namespace BtrieveWrapper.Orm
             if (dataBuffer == null) {
                 throw new ArgumentNullException();
             }
-            _info = Resource.GetRecordInfo(typeof(TRecord));
+            if (_info == null) {
+                _info = Resource.GetRecordInfo(typeof(TRecord));
+            }
             if (dataBuffer.Length != _info.DataBufferCapacity) {
                 throw new ArgumentException();
             }
@@ -238,6 +242,15 @@ namespace BtrieveWrapper.Orm
                     break;
             }
             throw new NotSupportedException();
+        }
+
+        public static KeyCollection Keys{
+            get {
+                if (_info == null) {
+                    _info = Resource.GetRecordInfo(typeof(TRecord));
+                }
+                return _info.Keys;
+            }
         }
     }
 }

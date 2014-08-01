@@ -118,7 +118,7 @@ namespace BtrieveWrapper.Orm
                                     result[0][i] = left[0][i];
                                 }
                                 for (var i = 0; i < right[0].Length; i++) {
-                                    result[0][left.Length + i] = right[0][i];
+                                    result[0][left[0].Length + i] = right[0][i];
                                 }
                                 return result;
                             } else {
@@ -174,6 +174,13 @@ namespace BtrieveWrapper.Orm
                 binaryExpression.Right);
         }
 
+        public static MethodCallExpression ToReversedExpression(this MethodCallExpression callExpression) {
+            return Expression.Call(
+                callExpression.Method.ToReversedStringExtensionMethod(),
+                callExpression.Arguments[0],
+                callExpression.Arguments[1]);
+        }
+
         static ExpressionType GetReversedType(ExpressionType nodeType) {
             switch (nodeType) {
                 case ExpressionType.Equal:
@@ -196,6 +203,11 @@ namespace BtrieveWrapper.Orm
 
         public static BinaryExpression FlipBinary(this BinaryExpression binaryExpression) {
             return Expression.MakeBinary(GetFlippedType(binaryExpression.NodeType), binaryExpression.Right, binaryExpression.Left);
+        }
+
+        public static MethodCallExpression FlipStringBinary(this MethodCallExpression callExpression) {
+            return Expression.Call(callExpression.Method.ToFlippedStringExtensionMethod(),
+                callExpression.Arguments[1], callExpression.Arguments[0]);
         }
 
         static ExpressionType GetFlippedType(ExpressionType nodeType) {

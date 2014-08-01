@@ -59,11 +59,11 @@ namespace BtrieveWrapper.Orm
                                         case FilterType.LessThan:
                                         case FilterType.LessThanOrEqual:
                                             if (map[i].Length == 1) {
-                                                filterAnd.Add(new FilterOr().Add(filter.Left.NullFlagField, FilterType.Equal, true));
+                                                filterAnd.Add(new FilterOr().Add(filter.Left.NullFlagField, FilterType.Equal, false));
                                                 filterOr.Add(filter.Left, filter.FilterType, filter.Value, isIgnoreCase: isIgnoreCase);
                                             } else if (filterOr.FilterAnd == null) {
                                                 filterOr.FilterAnd = new FilterAnd()
-                                                    .Add(new FilterOr().Add(filter.Left.NullFlagField, FilterType.Equal, true))
+                                                    .Add(new FilterOr().Add(filter.Left.NullFlagField, FilterType.Equal, false))
                                                     .Add(new FilterOr().Add(filter.Left, filter.FilterType, filter.Value, isIgnoreCase: isIgnoreCase));
                                             } else {
                                                 isNotComparable = true;

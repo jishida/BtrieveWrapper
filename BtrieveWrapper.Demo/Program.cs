@@ -9,22 +9,21 @@ namespace BtrieveWrapper.Demo
         static void Main(string[] args) {
             DemodataDbClient client = new DemodataDbClient();
 
-            Console.WriteLine("[Query 5 people demo]");
-            using (StudentManager students = client.Student(temporaryBufferId: 1))
+            Console.WriteLine("[Read people whose last initial is 'D']");
             using (PersonManager people = client.Person()) {
-                foreach (Student student in students.Query(limit: 5)) {
-                    Person person = people.Get(p => p.ID == student.ID);
-                    Console.WriteLine("Name: {0} {1}, Major: {2}, Minor: {3}",
+                var query = people.Query(p =>
+                    p.Last_Name.GreaterThanOrEqual("D") &&
+                    p.Last_Name.LessThan("E"));
+                foreach (Person person in query) {
+                    Console.WriteLine("Name: {0} {1}",
                         person.First_Name,
-                        person.Last_Name,
-                        student.Major,
-                        student.Minor);
+                        person.Last_Name);
                 }
             }
 
             Console.WriteLine();
 
-            Console.WriteLine("[Person CRUD demo]");
+            Console.WriteLine("[Person CRUD]");
             using (PersonManager people = client.Person()) {
                 Person person;
                 using (Transaction transaction = client.BeginTransaction()) {
