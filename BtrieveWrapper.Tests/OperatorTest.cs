@@ -37,7 +37,7 @@ namespace BtrieveWrapper.Tests
             var positionBlock = _operator.Open(path);
             var statData = _operator.Stat(positionBlock);
             _operator.Close(positionBlock);
-            Assert.Equal(createData.FileSpec.Flag & (FileFlag)0xeeff, statData.FileSpec.Flag & (FileFlag)0xeeff);
+            Assert.Equal(createData.FileSpec.Flag & (FileFlag)0xedff, statData.FileSpec.Flag & (FileFlag)0xedff);
             Assert.Equal(createData.FileSpec.RecordLength, statData.FileSpec.RecordLength);
             Assert.Equal(createData.FileSpec.PageSize, statData.FileSpec.PageSize);
             var createKeySpecs = createData.KeySpecs.GetEnumerator();
