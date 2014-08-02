@@ -203,7 +203,7 @@ namespace BtrieveWrapper.Orm
             System.Linq.Expressions.Expression<Func<TRecord, bool>> whereExpression = null,
             TRecord startingRecord = null,
             LockMode lockMode = LockMode.None,
-            bool skipStartingRecord = true,
+            bool skipStartingRecord = false,
             int limit = 0,
             bool reverse = false,
             ushort rejectCount = 0,
@@ -225,7 +225,7 @@ namespace BtrieveWrapper.Orm
             System.Linq.Expressions.Expression<Func<TRecord, bool>> whereExpression = null,
             TRecord startingRecord = null,
             LockMode lockMode = LockMode.None,
-            bool skipStartingRecord = true,
+            bool skipStartingRecord = false,
             int limit = 0,
             bool reverse = false,
             ushort rejectCount = 0,
@@ -301,23 +301,6 @@ namespace BtrieveWrapper.Orm
                         }
                         throw;
                     }
-                    if (parameter.Filter == null || parameter.Filter(record)) {
-                        record.PhysicalPosition = this.Operator.GetPosition();
-                        record.HasPhysicalPosition = true;
-                        yield return record;
-                        if (useLimit) {
-                            if (limit == 1) {
-                                yield break;
-                            } else {
-                                limit--;
-                            }
-                        }
-                    } else {
-                        this.Operator.Recycle(record);
-                        if (unlock) {
-                            this.UnlockLastRecord(lockMode);
-                        }
-                    }
                 } else {
                     TRecord record = null;
                     var tryGreater = false;
@@ -343,31 +326,22 @@ namespace BtrieveWrapper.Orm
                             throw;
                         }
                     }
-                    if (!parameter.SkipStartingRecord && (parameter.Filter == null || parameter.Filter(record))) {
-                        yield return record;
-                        if (useLimit) {
-                            if (limit == 1) {
-                                yield break;
-                            } else {
-                                limit--;
-                            }
-                        }
-                    } else {
-                        if (unlock) {
-                            this.UnlockLastRecord(lockMode);
-                        }
-                    }
                 }
                 var records = parameter.UseKey
                     ? parameter.Reverse
-                        ? this.Operator.GetPreviousExtended(keyValue, parameter.ApiFilter, true, limit, lockBias, parameter.RejectCount, true)
-                        : this.Operator.GetNextExtended(keyValue, parameter.ApiFilter, true, limit, lockBias, parameter.RejectCount, true)
+                        ? this.Operator.GetPreviousExtended(keyValue, parameter.ApiFilter, false, limit, lockBias, parameter.RejectCount, true)
+                        : this.Operator.GetNextExtended(keyValue, parameter.ApiFilter, false, limit, lockBias, parameter.RejectCount, true)
                     : parameter.Reverse
-                        ? this.Operator.StepPreviousExtended(parameter.ApiFilter, true, limit, lockBias, parameter.RejectCount)
-                        : this.Operator.StepNextExtended(parameter.ApiFilter, true, limit, lockBias, parameter.RejectCount);
+                        ? this.Operator.StepPreviousExtended(parameter.ApiFilter, false, limit, lockBias, parameter.RejectCount)
+                        : this.Operator.StepNextExtended(parameter.ApiFilter, false, limit, lockBias, parameter.RejectCount);
+                var skip = parameter.SkipStartingRecord;
                 foreach (var record in records) {
                     if (parameter.AdditionalFilter == null || parameter.AdditionalFilter(record)) {
-                        yield return record;
+                        if (skip) {
+                            skip = false;
+                        } else {
+                            yield return record;
+                        }
                     } else {
                         this.Operator.Recycle(record);
                         if (unlock) {

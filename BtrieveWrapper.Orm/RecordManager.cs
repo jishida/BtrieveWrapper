@@ -179,7 +179,7 @@ namespace BtrieveWrapper.Orm
             TRecord startingRecord = null,
             int limit = 0,
             LockMode lockMode = LockMode.None,
-            bool skipStartingRecord = true,
+            bool skipStartingRecord = false,
             bool reverse = false,
             ushort rejectCount = 0,
             bool isIgnoreCase = false) {
@@ -193,7 +193,7 @@ namespace BtrieveWrapper.Orm
             TRecord startingRecord = null,
             int limit = 0,
             LockMode lockMode = LockMode.None,
-            bool skipStartingRecord = true,
+            bool skipStartingRecord = false,
             bool reverse = false,
             ushort rejectCount = 0,
             bool isIgnoreCase = false) {
