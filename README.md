@@ -2,13 +2,13 @@
 
 ## Summary
 
-BtrieveWrapper is a wrapper library of Btrieve API, who operates MicroKarnel
+BtrieveWrapper is a wrapper library of Btrieve API, which operates MicroKarnel
 Database Engine (MKDE) of Actian PSQL. It works on .NET Framework 4.0.
 
 This library provides classes to operate MKDE without SQL.
 Generally, In operating RDBMS with SQL, the parsing process can be overhead and
 cause a bottleneck.
-Btrieve API provides low-level functions who operate database, so using it is
+Btrieve API provides low-level functions which operate database, so using it is
 one of effective choices.
 However, source codes written considering performance with Btrieve API tend to
 be obfuscated and spoil maintainability and versatility.
