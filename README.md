@@ -33,7 +33,7 @@ BtrieveWrapper.Orm は Btrieve API の汎用的な操作をラッピングし、
 
 ## Demo
 
-Execute these commands, if MKDE is installed in local machine.
+Execute these commands, if MKDE and demo tables are installed in local machine.
 ```
 BtrieveWrapper.Orm.Models.Generator.exe --mode=0 --input=btrv://127.0.0.1/Demodata --output=Demodata.xml
 BtrieveWrapper.Orm.Models.Generator.exe --mode=2 --input=Demodata.xml
