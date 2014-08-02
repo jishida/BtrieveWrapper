@@ -700,7 +700,7 @@ namespace BtrieveWrapper.Orm
                     filter.SetDataBuffer(this.TemporaryBuffer);
                 }
                 var position = (ushort)(filter == null ? 8 : filter.Length + 8);
-                var count = (ushort)((this.TemporaryBuffer.Length - 400) / (this.RecordInfo.DataBufferCapacity + 6));
+                var count = (ushort)((Config.MaxBufferLength) / (this.RecordInfo.DataBufferCapacity + 6));
                 if (useLimit && count > limit) {
                     count = (ushort)limit;
                 }

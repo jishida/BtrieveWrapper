@@ -122,6 +122,7 @@ namespace BtrieveWrapper.Orm.Models.Generator.Gui
                         var ddfPassword = this.DdfPasswordTextBox.Text;
                         var ddfOwnerName = this.DdfOwnerNameTextBox.Text;
                         var ddfNamespace = this.DdfNamespaceTextBox.Text;
+                        var ddfDllPath = this.DdfDllTextBox.Text;
                         ddfArgs.Add("--mode=0");
                         if (String.IsNullOrWhiteSpace(ddfOutput)) {
                             throw new Exception("Input \"Output File\"");
@@ -148,6 +149,9 @@ namespace BtrieveWrapper.Orm.Models.Generator.Gui
                         if (!String.IsNullOrWhiteSpace(ddfNamespace)) {
                             ddfArgs.Add("--namespace=" + ddfNamespace);
                         }
+                        if (!String.IsNullOrWhiteSpace(ddfDllPath)) {
+                            ddfArgs.Add("--btrvlib=" + ddfDllPath);
+                        }
                         ddfArgs.Add("--silent");
                         var ddfStartInfo = new System.Diagnostics.ProcessStartInfo("BtrieveWrapper.Orm.Models.Generator.exe", GetArguments(ddfArgs.ToArray()));
                         var ddfProcess = System.Diagnostics.Process.Start(ddfStartInfo);
@@ -165,6 +169,7 @@ namespace BtrieveWrapper.Orm.Models.Generator.Gui
                         var dirModelName = this.DirModelNameTextBox.Text;
                         var dirNamespace = this.DirNamespaceTextBox.Text;
                         var dirWildcard = this.DirWildcardTextBox.Text;
+                        var dirDllPath = this.DirDllTextBox.Text;
                         dirArgs.Add("--mode=1");
                         if (String.IsNullOrWhiteSpace(dirOutput)) {
                             throw new Exception("Input \"Output File\"");
@@ -184,6 +189,9 @@ namespace BtrieveWrapper.Orm.Models.Generator.Gui
                         }
                         if (!String.IsNullOrWhiteSpace(dirWildcard)) {
                             dirArgs.Add("--search-pattern=" + dirWildcard);
+                        }
+                        if (!String.IsNullOrWhiteSpace(dirDllPath)) {
+                            dirArgs.Add("--btrvlib=" + dirDllPath);
                         }
                         dirArgs.Add("--silent");
                         var dirStartInfo = new System.Diagnostics.ProcessStartInfo("BtrieveWrapper.Orm.Models.Generator.exe", GetArguments(dirArgs.ToArray()));
