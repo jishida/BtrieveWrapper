@@ -10,12 +10,10 @@ namespace BtrieveWrapper.Orm
 {
     public abstract class Record<TRecord> where TRecord : Record<TRecord>
     {
-        static RecordInfo _info = null;
-        
+        RecordInfo _info;
+
         protected Record() {
-            if (_info == null) {
-                _info = Resource.GetRecordInfo(typeof(TRecord));
-            }
+            _info = Resource.GetRecordInfo(typeof(TRecord));
             this.DataBuffer = new byte[_info.DataBufferCapacity];
             if (_info.DefaultByte != default(byte)) {
                 for (var i = 0; i < this.DataBuffer.Length; i++) {
@@ -39,9 +37,7 @@ namespace BtrieveWrapper.Orm
             if (dataBuffer == null) {
                 throw new ArgumentNullException();
             }
-            if (_info == null) {
-                _info = Resource.GetRecordInfo(typeof(TRecord));
-            }
+            _info = Resource.GetRecordInfo(typeof(TRecord));
             if (dataBuffer.Length != _info.DataBufferCapacity) {
                 throw new ArgumentException();
             }
@@ -246,10 +242,7 @@ namespace BtrieveWrapper.Orm
 
         public static KeyCollection Keys{
             get {
-                if (_info == null) {
-                    _info = Resource.GetRecordInfo(typeof(TRecord));
-                }
-                return _info.Keys;
+                return Resource.GetRecordInfo(typeof(TRecord)).Keys;
             }
         }
     }
