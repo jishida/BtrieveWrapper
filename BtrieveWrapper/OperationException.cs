@@ -42,16 +42,24 @@ namespace BtrieveWrapper
             } catch { }
         }
 
-        internal OperationException(Operation operationType, short statusCode, Exception innerException = null)
-            : base(GetMessage(operationType, statusCode), innerException) {
+        internal OperationException(Operation operation, short statusCode, Exception innerException = null)
+            : base(null, innerException) {
+            this.Operation = operation;
             this.StatusCode = statusCode;
         }
 
+        public Operation Operation { get; private set; }
         public short StatusCode { get; private set; }
 
         [SecurityPermission(SecurityAction.Demand, SerializationFormatter = true)]
         public override void GetObjectData(SerializationInfo info, StreamingContext context) {
             base.GetObjectData(info, context);
+        }
+
+        public override string Message {
+            get {
+                return GetMessage(
+            }
         }
     }
 }
