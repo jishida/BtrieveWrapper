@@ -35,6 +35,7 @@ namespace BtrieveWrapper.Demo
                     people.Add(person);
                     people.SaveChanges();
                     Console.WriteLine("done");
+                    people.Detach(person);
 
                     person = people.GetAndManage(p => p.ID == 0);
                     Console.WriteLine("Read person: {0} {1}", person.First_Name, person.Last_Name);
