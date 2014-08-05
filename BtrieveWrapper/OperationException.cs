@@ -42,6 +42,8 @@ namespace BtrieveWrapper
             } catch { }
         }
 
+        string _message = null;
+
         internal OperationException(Operation operation, short statusCode, Exception innerException = null)
             : base(null, innerException) {
             this.Operation = operation;
@@ -58,7 +60,7 @@ namespace BtrieveWrapper
 
         public override string Message {
             get {
-                return GetMessage(
+                return _message ?? (_message = GetMessage(this.Operation, this.StatusCode));
             }
         }
     }
