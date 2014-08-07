@@ -31,6 +31,8 @@ Btrieve API は ISAM ベースの低レベルなデータベース操作を提�
 BtrieveWrapper.Orm は Btrieve API の汎用的な操作をラッピングし、高いユー
 ザビリティを提供します。
 
+PSQL を用いたアプリケーションの開発には AG-TECH社が無償で提供している開発版及び
+評価版を、運用時には製品版をお求め下さい。
 
 ## Demo
 
