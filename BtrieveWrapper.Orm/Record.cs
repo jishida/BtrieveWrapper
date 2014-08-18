@@ -76,7 +76,7 @@ namespace BtrieveWrapper.Orm
             var keyBuffer = new byte[key.Length];
             var position=0;
             foreach (var segment in key.Segments) {
-                Array.Copy(this.DataBuffer, segment.Position, keyBuffer, position, segment.Length);
+                Array.Copy(this.DataBuffer, segment.Field.Position, keyBuffer, position, segment.Length);
                 position += segment.Length;
             }
             return new KeyValue(key, keyBuffer);
