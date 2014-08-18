@@ -170,8 +170,10 @@ namespace BtrieveWrapper.Orm
 
         public void Close() {
             if (IsClosable) {
-                _nativeOperator.Close(_positionBlock);
-                _positionBlock = null;
+                if (_positionBlock != null) {
+                    _nativeOperator.Close(_positionBlock);
+                    _positionBlock = null;
+                }
             } else {
                 throw new InvalidOperationException();
             }
