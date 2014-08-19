@@ -198,7 +198,7 @@ namespace BtrieveWrapper.Orm
             }
             ushort position = 2;
             var recordList=new List<TRecord>();
-            ushort capacity = ushort.MaxValue - 412;
+            ushort capacity = (ushort)(Config.MaxBufferLength - 412);
             foreach (var record in records) {
                 if (position + this.RecordInfo.DataBufferCapacity + 2 > capacity) {
                     Array.Copy(BitConverter.GetBytes(recordList.Count), this.TemporaryBuffer, 2);
