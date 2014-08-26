@@ -100,7 +100,11 @@ namespace BtrieveWrapper.Orm
                 if (recordConstructor == null) {
                     throw new InvalidDefinitionException();
                 }
+#if NET_4_0
                 var parameter = Expression.Parameter(typeof(byte[]));
+#else
+                var parameter = Expression.Parameter(typeof(byte[]), "dataBuffer");
+#endif
                 var newExpression = Expression.New(recordConstructor, parameter);
                 var lambda = Expression.Lambda<Func<byte[], object>>(newExpression, parameter);
                 _recordConstructorDictionary[recordType] = lambda.Compile();

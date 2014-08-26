@@ -8,7 +8,7 @@ namespace BtrieveWrapper
 {
     public class NativeLibrary : INativeLibrary
     {
-        const string DefaultLibraryPath = "w3btrv7.dll";
+        static readonly string DefaultLibraryPath = IntPtr.Size == 8 ? "w64btrv7.dll" : "w3btrv7.dll";
 
         static Dictionary<string, NativeLibrary> _dictionary = new Dictionary<string, NativeLibrary>();
 

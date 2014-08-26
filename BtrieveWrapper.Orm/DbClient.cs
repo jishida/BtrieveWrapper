@@ -52,6 +52,7 @@ namespace BtrieveWrapper.Orm
                 if (constructorInfo == null) {
                     throw new InvalidDefinitionException();
                 }
+#if NET_4_0
                 var parameters = new[] { 
                     Expression.Parameter(typeof(Operator)), 
                     Expression.Parameter(typeof(Path)), 
@@ -59,6 +60,15 @@ namespace BtrieveWrapper.Orm
                     Expression.Parameter(typeof(OpenMode?)), 
                     Expression.Parameter(typeof(int)), 
                     Expression.Parameter(typeof(byte[])) };
+#else
+                var parameters = new[] { 
+                    Expression.Parameter(typeof(Operator), "nativeOperator"), 
+                    Expression.Parameter(typeof(Path), "path"), 
+                    Expression.Parameter(typeof(string), "ownerName"), 
+                    Expression.Parameter(typeof(OpenMode?), "openMode"), 
+                    Expression.Parameter(typeof(int), "reusableCapacity"), 
+                    Expression.Parameter(typeof(byte[]), "temporaryBuffer") };
+#endif
                 var newExpression = Expression.New(constructorInfo, parameters);
                 var lambda = Expression.Lambda<Func<Operator, Path, string, OpenMode?, int, byte[], ITransactionalObject>>(newExpression, parameters);
                 _managerConstructorDictionary[managerType] = lambda.Compile();

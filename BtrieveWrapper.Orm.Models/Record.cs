@@ -4,16 +4,21 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
 using System.Xml.Serialization;
+#if NET_3_5
 using System.Windows;
-
+#endif
 using BtrieveWrapper.Orm;
 
 namespace BtrieveWrapper.Orm.Models
 {
     [Serializable]
     [XmlType(Namespace = "urn:BtrieveWrapperModelSchema")]
-    public class Record : DependencyObject
+    public class Record 
+#if NET_3_5
+        : DependencyObject
+#endif
     {
+#if NET_3_5
         public static readonly DependencyProperty NameProperty = DependencyProperty.Register(
             "Name", typeof(string), typeof(Record));
         public static readonly DependencyProperty FixedLengthProperty = DependencyProperty.Register(
@@ -62,10 +67,8 @@ namespace BtrieveWrapper.Orm.Models
             "VariableFieldCapacity", typeof(ushort), typeof(Record));
         public static readonly DependencyProperty RejectCountProperty = DependencyProperty.Register(
             "RejectCount", typeof(ushort), typeof(Record));
-
+#endif
         public Record() {
-            this.FieldCollection = new ObservableCollection<Field>();
-            this.KeyCollection = new ObservableCollection<Key>();
             this.FixedLength = 100;
             this.PageSize = 4096;
             this.DuplicatedPointerCount = 0;
@@ -89,10 +92,19 @@ namespace BtrieveWrapper.Orm.Models
             this.VariableFieldCapacity = 0;
             this.RejectCount = 0;
 
+#if NET_3_5
+            this.FieldCollection = new ObservableCollection<Field>();
+            this.KeyCollection = new ObservableCollection<Key>();
             this.FieldCollection.CollectionChanged += FieldCollection_CollectionChanged;
             this.KeyCollection.CollectionChanged += KeyCollection_CollectionChanged;
+#else
+            this.FieldCollection = new List<Field>();
+            this.KeyCollection = new List<Key>();
+#endif
         }
 
+
+#if NET_3_5
         void FieldCollection_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e) {
             if (e.Action == System.Collections.Specialized.NotifyCollectionChangedAction.Add) {
                 foreach (Field field in e.NewItems) {
@@ -162,6 +174,67 @@ namespace BtrieveWrapper.Orm.Models
         [XmlAttribute]
         public ushort RejectCount { get { return (ushort)this.GetValue(RejectCountProperty); } set { this.SetValue(RejectCountProperty, value); } }
 
+        [XmlIgnore]
+        public ObservableCollection<Field> FieldCollection { get; private set; }
+        [XmlIgnore]
+        public ObservableCollection<Key> KeyCollection { get; private set; }
+#else
+        [XmlAttribute]
+        public string Name { get; set; }
+        [XmlAttribute]
+        public ushort FixedLength { get; set; }
+        [XmlAttribute]
+        public ushort PageSize { get; set; }
+        [XmlAttribute]
+        public byte DuplicatedPointerCount { get; set; }
+        [XmlAttribute]
+        public ushort Allocation { get; set; }
+        [XmlAttribute]
+        public RecordVariableOption VariableOption { get; set; }
+        [XmlAttribute]
+        public bool UsesIndexBalancing { get; set; }
+        [XmlAttribute]
+        public bool IsCompressed { get; set; }
+        [XmlAttribute]
+        public FreeSpaceThreshold FreeSpaceThreshold { get; set; }
+        [XmlAttribute]
+        public bool IsManualKeyNumber { get; set; }
+        [XmlAttribute]
+        public SystemDataOption SystemDataOption { get; set; }
+
+        [XmlAttribute]
+        public sbyte PrimaryKeyNumber { get; set; }
+        [XmlAttribute]
+        public byte DefaultByte { get; set; }
+
+        [XmlAttribute]
+        public string UriTable { get; set; }
+        [XmlAttribute]
+        public string UriDbFile { get; set; }
+        [XmlAttribute]
+        public string UriFile { get; set; }
+        [XmlAttribute]
+        public string AbsolutePath { get; set; }
+        [XmlAttribute]
+        public string RelativePath { get; set; }
+
+        [XmlAttribute]
+        public string OwnerName { get; set; }
+        [XmlAttribute]
+        public OwnerNameOption OwnerNameOption { get; set; }
+        [XmlAttribute]
+        public OpenMode OpenMode { get; set; }
+        [XmlAttribute]
+        public ushort VariableFieldCapacity { get; set; }
+        [XmlAttribute]
+        public ushort RejectCount { get; set; }
+
+        [XmlIgnore]
+        public List<Field> FieldCollection { get; private set; }
+        [XmlIgnore]
+        public List<Key> KeyCollection { get; private set; }
+#endif
+
         [XmlArrayItem]
         public Field[] Fields {
             get { return this.FieldCollection.ToArray(); }
@@ -187,12 +260,7 @@ namespace BtrieveWrapper.Orm.Models
         public int Number { get; internal set; }
 
         [XmlIgnore]
-        public ObservableCollection<Field> FieldCollection { get; private set; }
-        [XmlIgnore]
-        public ObservableCollection<Key> KeyCollection { get; private set; }
-
-        [XmlIgnore]
-        public string DisplayName { get { return String.IsNullOrWhiteSpace(this.Name) ? String.Format(Config.RecordName, this.Number) : this.Name; } }
+        public string DisplayName { get { return String.IsNullOrEmpty(this.Name) ? String.Format(Config.RecordName, this.Number) : this.Name; } }
 
         [XmlIgnore]
         public IEnumerable<KeyValuePair<string, object>> AttributeParameters {

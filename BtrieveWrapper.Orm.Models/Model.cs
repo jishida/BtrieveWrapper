@@ -5,14 +5,19 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Xml.Serialization;
+#if NET_3_5
 using System.Windows;
-
+#endif
 namespace BtrieveWrapper.Orm.Models
 {
     [Serializable]
     [XmlRoot(Namespace = "urn:BtrieveWrapperModelSchema", IsNullable = false)]
-    public class Model : DependencyObject
+    public class Model 
+#if NET_3_5
+        : DependencyObject
+#endif
     {
+#if NET_3_5
         public static readonly DependencyProperty NameProperty = DependencyProperty.Register(
             "Name", typeof(string), typeof(Model));
         public static readonly DependencyProperty DllPathProperty = DependencyProperty.Register(
@@ -33,10 +38,9 @@ namespace BtrieveWrapper.Orm.Models
             "UriPrompt", typeof(string), typeof(Model));
         public static readonly DependencyProperty RelativeDirectoryProperty = DependencyProperty.Register(
             "RelativeDirectory", typeof(string), typeof(Model));
-
+#endif
 
         public Model() {
-            this.RecordCollection = new ObservableCollection<Record>();
             this.Name = "NewModel";
             this.DllPath = null;
             this.Namespace = "BtrieveWrapper.Orm.CustomModels";
@@ -47,10 +51,15 @@ namespace BtrieveWrapper.Orm.Models
             this.UriPassword = null;
             this.UriPrompt = null;
             this.RelativeDirectory = null;
-
+#if NET_3_5
+            this.RecordCollection = new ObservableCollection<Record>();
             this.RecordCollection.CollectionChanged += RecordCollection_CollectionChanged;
+#else
+            this.RecordCollection = new List<Record>();
+#endif
         }
 
+#if NET_3_5
         void RecordCollection_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e) {
             if (e.Action == System.Collections.Specialized.NotifyCollectionChangedAction.Add) {
                 foreach (Record record in e.NewItems) {
@@ -81,6 +90,34 @@ namespace BtrieveWrapper.Orm.Models
         [XmlAttribute]
         public string RelativeDirectory { get { return (string)this.GetValue(RelativeDirectoryProperty); } set { this.SetValue(RelativeDirectoryProperty, value); } }
 
+        [XmlIgnore]
+        public ObservableCollection<Record> RecordCollection { get; private set; }
+#else
+        [XmlAttribute]
+        public string Name { get; set; }
+        [XmlAttribute]
+        public string DllPath { get; set; }
+        [XmlAttribute]
+        public string Namespace { get; set; }
+
+        [XmlAttribute]
+        public BtrieveWrapper.Orm.PathType PathType { get; set; }
+        [XmlAttribute]
+        public string UriHost { get; set; }
+        [XmlAttribute]
+        public string UriUser { get; set; }
+        [XmlAttribute]
+        public string UriDbName { get; set; }
+        [XmlAttribute]
+        public string UriPassword { get; set; }
+        [XmlAttribute]
+        public string UriPrompt { get; set; }
+        [XmlAttribute]
+        public string RelativeDirectory { get; set; }
+
+        [XmlIgnore]
+        public List<Record> RecordCollection { get; private set; }
+#endif
         [XmlArrayItem]
         public Record[] Records {
             get { return this.RecordCollection.ToArray(); }
@@ -93,10 +130,7 @@ namespace BtrieveWrapper.Orm.Models
         }
 
         [XmlIgnore]
-        public string DisplayName { get { return String.IsNullOrWhiteSpace(this.Name) ? Config.DefaultModelName : this.Name; } }
-
-        [XmlIgnore]
-        public ObservableCollection<Record> RecordCollection { get; private set; }
+        public string DisplayName { get { return String.IsNullOrEmpty(this.Name) ? Config.DefaultModelName : this.Name; } }
 
         public static Model FromDirectory(string name, string directory, string searchPattern = null, SearchOption searchOption = SearchOption.AllDirectories, string ownerName = null, string dllPath = null, string nameSpace = null) {
             if (searchPattern == null) {
@@ -105,7 +139,7 @@ namespace BtrieveWrapper.Orm.Models
             var directoryInfo = new DirectoryInfo(directory);
 
             var records = new List<Record>();
-            foreach (var file in directoryInfo.EnumerateFiles(searchPattern, searchOption)) {
+            foreach (var file in directoryInfo.GetFiles(searchPattern, searchOption)) {
                 var filePath = file.FullName.Substring(directoryInfo.FullName.Length).TrimStart('\\');
                 try {
                     var record = Record.FromBtrieveFile(Path.Relative(filePath, directoryInfo.FullName), dllPath, ownerName: ownerName);

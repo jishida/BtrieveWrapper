@@ -3,16 +3,21 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Xml.Serialization;
+#if NET_3_5
 using System.Windows;
-
+#endif
 using BtrieveWrapper.Orm;
 
 namespace BtrieveWrapper.Orm.Models
 {
     [Serializable]
     [XmlType(Namespace = "urn:BtrieveWrapperModelSchema")]
-    public class KeySegment : DependencyObject
+    public class KeySegment 
+#if NET_3_5
+        : DependencyObject
+#endif
     {
+#if NET_3_5
         public static readonly DependencyProperty IndexProperty = DependencyProperty.Register(
             "Index", typeof(ushort), typeof(KeySegment));
         public static readonly DependencyProperty NullValueProperty = DependencyProperty.Register(
@@ -23,6 +28,7 @@ namespace BtrieveWrapper.Orm.Models
             "IsIgnoreCase", typeof(bool), typeof(KeySegment));
         public static readonly DependencyProperty FieldProperty = DependencyProperty.Register(
             "Field", typeof(Field), typeof(KeySegment));
+#endif
 
         public KeySegment() {
             this.Index = 0;
@@ -32,6 +38,7 @@ namespace BtrieveWrapper.Orm.Models
             this.Field = null;
         }
 
+#if NET_3_5
         [XmlAttribute]
         public ushort Index { get { return (ushort)this.GetValue(IndexProperty); } set { this.SetValue(IndexProperty, value); } }
         [XmlAttribute]
@@ -40,11 +47,24 @@ namespace BtrieveWrapper.Orm.Models
         public bool IsDescending { get { return (bool)this.GetValue(IsDescendingProperty); } set { this.SetValue(IsDescendingProperty, value); } }
         [XmlAttribute]
         public bool IsIgnoreCase { get { return (bool)this.GetValue(IsIgnoreCaseProperty); } set { this.SetValue(IsIgnoreCaseProperty, value); } }
-        [XmlAttribute]
-        public int FieldId { get; set; }
 
         [XmlIgnore]
         public Field Field { get { return (Field)this.GetValue(FieldProperty); } set { this.SetValue(FieldProperty, value); } }
+#else
+        [XmlAttribute]
+        public ushort Index { get; set; }
+        [XmlAttribute]
+        public byte NullValue { get; set; }
+        [XmlAttribute]
+        public bool IsDescending { get; set; }
+        [XmlAttribute]
+        public bool IsIgnoreCase { get; set; }
+
+        [XmlIgnore]
+        public Field Field { get; set; }
+#endif
+        [XmlAttribute]
+        public int FieldId { get; set; }
 
         [XmlIgnore]
         public ushort KeyPosition { get; internal set; }

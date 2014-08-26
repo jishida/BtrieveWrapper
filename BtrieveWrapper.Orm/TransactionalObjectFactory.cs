@@ -17,7 +17,7 @@ namespace BtrieveWrapper.Orm
 
         protected Operator Operator { get; private set; }
         protected Transaction Transaction { get; private set; }
-        protected IEnumerable<object> ManagedObjects { get { return _managedObjects.Select(o => o); } }
+        protected IEnumerable<object> ManagedObjects { get { return _managedObjects.Select(o => (object)o); } }
 
         protected void AddTransactionalObject(object obj) {
             var transactionalObject = (ITransactionalObject)obj;
