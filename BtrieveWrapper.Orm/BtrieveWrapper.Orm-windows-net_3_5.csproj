@@ -12,11 +12,12 @@
     <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <TargetFrameworkProfile>Client</TargetFrameworkProfile>
+    <BaseIntermediateOutputPath>obj\windows\net_3_5\</BaseIntermediateOutputPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x86'">
     <DebugSymbols>true</DebugSymbols>
-    <OutputPath>bin\net_3_5_debug\win32\</OutputPath>
-    <DefineConstants>TRACE;DEBUG;NET_3_5;NET_2_0;WINDOWS</DefineConstants>
+    <OutputPath>..\bin\debug\windows\net_3_5\x86\</OutputPath>
+    <DefineConstants>TRACE;DEBUG;NET_3_5;NET_3_0;NET_2_0;WINDOWS</DefineConstants>
     <DebugType>full</DebugType>
     <PlatformTarget>x86</PlatformTarget>
     <ErrorReport>prompt</ErrorReport>
@@ -25,10 +26,11 @@
     <Optimize>false</Optimize>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x86'">
-    <OutputPath>bin\net_3_5\win32\</OutputPath>
-    <DefineConstants>TRACE;NET_3_5;NET_2_0;WINDOWS</DefineConstants>
+    <OutputPath>..\bin\release\windows\net_3_5\x86\</OutputPath>
+    <DefineConstants>TRACE;NET_3_5;NET_3_0;NET_2_0;WINDOWS</DefineConstants>
     <Optimize>true</Optimize>
-    <DebugType>pdbonly</DebugType>
+    <DebugType>none</DebugType>
+    <UseVSHostingProcess>false</UseVSHostingProcess>
     <PlatformTarget>x86</PlatformTarget>
     <ErrorReport>prompt</ErrorReport>
     <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
@@ -36,8 +38,8 @@
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x64'">
     <DebugSymbols>true</DebugSymbols>
-    <OutputPath>bin\net_3_5_debug\win64\</OutputPath>
-    <DefineConstants>TRACE;DEBUG;NET_3_5;NET_2_0;WINDOWS</DefineConstants>
+    <OutputPath>..\bin\debug\windows\net_3_5\x64\</OutputPath>
+    <DefineConstants>TRACE;DEBUG;NET_3_5;NET_3_0;NET_2_0;WINDOWS</DefineConstants>
     <DebugType>full</DebugType>
     <PlatformTarget>x64</PlatformTarget>
     <ErrorReport>prompt</ErrorReport>
@@ -46,14 +48,34 @@
     <Optimize>false</Optimize>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x64'">
-    <OutputPath>bin\net_3_5\win64\</OutputPath>
-    <DefineConstants>TRACE;NET_3_5;NET_2_0;WINDOWS</DefineConstants>
+    <OutputPath>..\bin\release\windows\net_3_5\x64\</OutputPath>
+    <DefineConstants>TRACE;NET_3_5;NET_3_0;NET_2_0;WINDOWS</DefineConstants>
     <Optimize>true</Optimize>
-    <DebugType>pdbonly</DebugType>
+    <DebugType>none</DebugType>
+    <UseVSHostingProcess>false</UseVSHostingProcess>
     <PlatformTarget>x64</PlatformTarget>
     <ErrorReport>prompt</ErrorReport>
     <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
     <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|AnyCPU'">
+    <DebugSymbols>true</DebugSymbols>
+    <OutputPath>..\bin\debug\windows\net_3_5\AnyCPU\</OutputPath>
+    <DefineConstants>TRACE;DEBUG;NET_3_5;NET_3_0;NET_2_0;WINDOWS</DefineConstants>
+    <DebugType>full</DebugType>
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|AnyCPU'">
+    <OutputPath>..\bin\release\windows\net_3_5\AnyCPU\</OutputPath>
+    <DefineConstants>TRACE;NET_3_5;NET_3_0;NET_2_0;WINDOWS</DefineConstants>
+    <Optimize>true</Optimize>
+    <DebugType>none</DebugType>
+    <UseVSHostingProcess>false</UseVSHostingProcess>
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
@@ -144,9 +166,9 @@
       <Project>{A69AE6C8-F511-4A95-825D-F854AEBCF4C8}</Project>
       <Name>BtrieveWrapper-windows-net_3_5</Name>
     </ProjectReference>
-    <ProjectReference Include="..\Forward.System\Forward.System-windows-net_3_5.csproj">
+    <ProjectReference Include="..\Compatibility.System\Compatibility.System-windows-net_3_5.csproj">
       <Project>{0b44d896-62bc-4bb5-98f4-3bc9dfd8d606}</Project>
-      <Name>Forward.System-windows-net_3_5</Name>
+      <Name>Compatibility.System-windows-net_3_5</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

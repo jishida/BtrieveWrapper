@@ -11,40 +11,62 @@
     <AssemblyName>BtrieveWrapper.Demo</AssemblyName>
     <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
+    <BaseIntermediateOutputPath>obj\windows\net_4_0\</BaseIntermediateOutputPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x86'">
     <DebugSymbols>true</DebugSymbols>
-    <OutputPath>bin\net_4_0_debug\x86\</OutputPath>
-    <DefineConstants>TRACE;DEBUG;NET_4_0;NET_3_5;NET_2_0;WINDOWS</DefineConstants>
+    <OutputPath>..\bin\debug\windows\net_4_0\x86\</OutputPath>
+    <DefineConstants>TRACE;DEBUG;NET_4_0;NET_3_5;NET_3_0;NET_2_0;WINDOWS</DefineConstants>
     <DebugType>full</DebugType>
     <PlatformTarget>x86</PlatformTarget>
     <ErrorReport>prompt</ErrorReport>
     <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x86'">
-    <OutputPath>bin\net_4_0\x86\</OutputPath>
-    <DefineConstants>TRACE;NET_4_0;NET_3_5;NET_2_0;WINDOWS</DefineConstants>
+    <OutputPath>..\bin\release\windows\net_4_0\x86\</OutputPath>
+    <DefineConstants>TRACE;NET_4_0;NET_3_5;NET_3_0;NET_2_0;WINDOWS</DefineConstants>
     <Optimize>true</Optimize>
-    <DebugType>pdbonly</DebugType>
+    <DebugType>none</DebugType>
+    <UseVSHostingProcess>false</UseVSHostingProcess>
     <PlatformTarget>x86</PlatformTarget>
     <ErrorReport>prompt</ErrorReport>
     <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x64'">
     <DebugSymbols>true</DebugSymbols>
-    <OutputPath>bin\net_4_0_debug\x64\</OutputPath>
-    <DefineConstants>TRACE;DEBUG;NET_4_0;NET_3_5;NET_2_0;WINDOWS</DefineConstants>
+    <OutputPath>..\bin\debug\windows\net_4_0\x64\</OutputPath>
+    <DefineConstants>TRACE;DEBUG;NET_4_0;NET_3_5;NET_3_0;NET_2_0;WINDOWS</DefineConstants>
     <DebugType>full</DebugType>
     <PlatformTarget>x64</PlatformTarget>
     <ErrorReport>prompt</ErrorReport>
     <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x64'">
-    <OutputPath>bin\net_4_0\x64\</OutputPath>
-    <DefineConstants>TRACE;NET_4_0;NET_3_5;NET_2_0;WINDOWS</DefineConstants>
+    <OutputPath>..\bin\release\windows\net_4_0\x64\</OutputPath>
+    <DefineConstants>TRACE;NET_4_0;NET_3_5;NET_3_0;NET_2_0;WINDOWS</DefineConstants>
     <Optimize>true</Optimize>
-    <DebugType>pdbonly</DebugType>
+    <DebugType>none</DebugType>
+    <UseVSHostingProcess>false</UseVSHostingProcess>
     <PlatformTarget>x64</PlatformTarget>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|AnyCPU'">
+    <DebugSymbols>true</DebugSymbols>
+    <OutputPath>..\bin\debug\windows\net_4_0\AnyCPU\</OutputPath>
+    <DefineConstants>TRACE;DEBUG;NET_4_0;NET_3_5;NET_3_0;NET_2_0;WINDOWS</DefineConstants>
+    <DebugType>full</DebugType>
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|AnyCPU'">
+    <OutputPath>..\bin\release\windows\net_4_0\AnyCPU\</OutputPath>
+    <DefineConstants>TRACE;NET_4_0;NET_3_5;NET_3_0;NET_2_0;WINDOWS</DefineConstants>
+    <Optimize>true</Optimize>
+    <DebugType>none</DebugType>
+    <UseVSHostingProcess>false</UseVSHostingProcess>
+    <PlatformTarget>AnyCPU</PlatformTarget>
     <ErrorReport>prompt</ErrorReport>
     <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
