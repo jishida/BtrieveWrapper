@@ -19,6 +19,9 @@ namespace BtrieveWrapper.Orm
         protected Transaction Transaction { get; private set; }
         protected IEnumerable<object> ManagedObjects { get { return _managedObjects.Select(o => (object)o); } }
 
+		public Encoding PathEncoding{ get { return this.Operator.PathEncoding; } set { this.Operator.PathEncoding = value; } }
+		public Encoding OwnerNameEncoding{ get { return this.Operator.OwnerNameEncoding; } set { this.Operator.OwnerNameEncoding = value; } }
+
         protected void AddTransactionalObject(object obj) {
             var transactionalObject = (ITransactionalObject)obj;
             _managedObjects.Add(transactionalObject);
