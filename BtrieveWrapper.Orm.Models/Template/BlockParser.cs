@@ -243,7 +243,6 @@ namespace BtrieveWrapper.Orm.Models.Template
 
                             var item = match.Match.Groups["item"];
                             var list = match.Match.Groups["list"];
-                            var parameter = new IfParameter();
                             forItem = item.Value;
                             forMembers =this.GetMemberValue( list.Value) as System.Collections.IEnumerable;
                         } else {

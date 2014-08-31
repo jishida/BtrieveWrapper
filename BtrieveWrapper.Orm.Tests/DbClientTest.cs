@@ -35,9 +35,6 @@ namespace BtrieveWrapper.Orm.Tests
                     transaction.Commit();
                 }
 
-                var actual = employeeManager.Query().ToArray();
-                var expected = EntityFactory.EnumerateEmployees().ToArray();
-
                 Assert.Equal(EntityFactory.EnumerateEmployees(), employeeManager.Query());
                 Assert.Equal(EntityFactory.EnumerateEmployees().Where(e => e.LastName.LessThan("B")), employeeManager.Query(null, e => e.LastName.LessThan("B")));
                 Assert.Equal(

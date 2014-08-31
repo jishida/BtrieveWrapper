@@ -66,9 +66,6 @@ namespace BtrieveWrapper.Orm
             }
         }
 
-        static object[] _emptyValues = new object[0];
-        static object[] _singleValues = new object[1];
-
         Connection _connection = null;
         StatData _stat;
         bool _isOpendByTransaction = false;
@@ -278,7 +275,6 @@ namespace BtrieveWrapper.Orm
             }
 
             var limit = parameter.Limit;
-            var useLimit = limit > 0;
             keyValue = parameter.StartingRecord == null
                 ? null : parameter.StartingRecord.GetKeyValue(this.PrimaryKey);
             using (var connection = new Connection(this)) {
@@ -302,10 +298,9 @@ namespace BtrieveWrapper.Orm
                         throw;
                     }
                 } else {
-                    TRecord record = null;
                     var tryGreater = false;
                     try {
-                        record = this.Operator.GetEqual(keyValue, lockBias, true);
+                        this.Operator.GetEqual(keyValue, lockBias, true);
                     } catch (OperationException e) {
                         if (e.StatusCode == 4 && parameter.UseKey) {
                             tryGreater = true;
@@ -313,19 +308,21 @@ namespace BtrieveWrapper.Orm
                             throw;
                         }
                     }
-                    if (tryGreater) {
-                        keyValue = parameter.StartingRecord.GetKeyValue(parameter.Key);
-                        try {
-                            record = parameter.Reverse
-                                ? this.Operator.GetLessThan(keyValue, lockBias, true)
-                                : this.Operator.GetGreater(keyValue, lockBias, true);
-                        } catch (OperationException e) {
-                            if (e.StatusCode == 9) {
-                                yield break;
-                            }
-                            throw;
-                        }
-                    }
+					if (tryGreater) {
+						keyValue = parameter.StartingRecord.GetKeyValue (parameter.Key);
+						try {
+							if (parameter.Reverse) {
+								this.Operator.GetLessThan (keyValue, lockBias, true);
+							} else {
+								this.Operator.GetGreater (keyValue, lockBias, true);
+							}
+						} catch (OperationException e) {
+							if (e.StatusCode == 9) {
+								yield break;
+							}
+							throw;
+						}
+					}
                 }
                 var records = parameter.UseKey
                     ? parameter.Reverse

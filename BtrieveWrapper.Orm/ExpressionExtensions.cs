@@ -275,7 +275,6 @@ namespace BtrieveWrapper.Orm
         static BinaryExpression GetFixedRelationalExpression(Expression expression1, Expression expression2, ParameterExpression argument, ExpressionType nodeType) {
             try {
                 if (expression1.GetField(argument) != null) {
-                    var value = expression2.ToValue();
                     switch (nodeType) {
                         case ExpressionType.GreaterThan:
                             return Expression.GreaterThan(expression1, expression2);
