@@ -33,7 +33,7 @@ namespace BtrieveWrapper.Orm.Models.Generator
                             if (uri == null) {
                                 throw new ArgumentException();
                             }
-                            var model = Model.FromDdf(uri.UriHost, uri.UriDbName, uri.UriUser, uri.UriPassword, uri.UriPrompt, null, arguments.BtrieveLibrary);
+                            var model = Model.FromDdf(uri.UriHost, uri.UriDbName, uri.UriUser, uri.UriPassword, uri.UriPrompt, null, arguments.BtrieveLibrary, arguments.DependencyLibraries);
                             if (arguments.Namespace != null) {
                                 model.Namespace = arguments.Namespace;
                             }
@@ -58,7 +58,7 @@ namespace BtrieveWrapper.Orm.Models.Generator
                     case OperationMode.GenerateModelFromDirectory: {
                             Console.WriteLine("Mode {0}", arguments.Mode);
                             var inputDirectory = new System.IO.DirectoryInfo(arguments.Input);
-                            var model = Model.FromDirectory(arguments.Name, inputDirectory.FullName, arguments.SearchPattern, System.IO.SearchOption.AllDirectories, null, arguments.BtrieveLibrary);
+                            var model = Model.FromDirectory(arguments.Name, inputDirectory.FullName, arguments.SearchPattern, System.IO.SearchOption.AllDirectories, null, arguments.BtrieveLibrary, arguments.DependencyLibraries);
                             if (arguments.Namespace != null) {
                                 model.Namespace = arguments.Namespace;
                             }

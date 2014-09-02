@@ -37,4 +37,9 @@ namespace BtrieveWrapper.Orm
             return ((IEnumerable<KeyInfo>)_keys).GetEnumerator();
         }
     }
+
+    public class KeyCollection<TRecord> : KeyCollection where TRecord : Record<TRecord>
+    {
+        public KeyCollection() : base(typeof(TRecord)) { }
+    }
 }

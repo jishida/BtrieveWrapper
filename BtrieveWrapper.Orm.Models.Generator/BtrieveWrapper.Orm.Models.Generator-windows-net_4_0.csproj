@@ -72,11 +72,6 @@
     <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="System" />
-    <Reference Include="System.Core" />
-    <Reference Include="WindowsBase" />
-  </ItemGroup>
-  <ItemGroup>
     <Compile Include="Arguments.cs" />
     <Compile Include="IModelInitializable.cs" />
     <Compile Include="OperationMode.cs" />
@@ -93,18 +88,25 @@
     </None>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\BtrieveWrapper.Orm\BtrieveWrapper.Orm-windows-net_4_0.csproj">
-      <Project>{a475ed2c-491e-49bc-a71b-278f5b5cc271}</Project>
-      <Name>BtrieveWrapper.Orm-windows-net_4_0</Name>
-    </ProjectReference>
     <ProjectReference Include="..\BtrieveWrapper.Orm.Models\BtrieveWrapper.Orm.Models-windows-net_4_0.csproj">
       <Project>{7d1194cd-4722-4479-9b06-b706c4e2469c}</Project>
       <Name>BtrieveWrapper.Orm.Models-windows-net_4_0</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\BtrieveWrapper.Orm\BtrieveWrapper.Orm-windows-net_4_0.csproj">
+      <Project>{a475ed2c-491e-49bc-a71b-278f5b5cc271}</Project>
+      <Name>BtrieveWrapper.Orm-windows-net_4_0</Name>
     </ProjectReference>
     <ProjectReference Include="..\BtrieveWrapper\BtrieveWrapper-windows-net_4_0.csproj">
       <Project>{a69ae6c8-f511-4a95-825d-f854aebcf4c8}</Project>
       <Name>BtrieveWrapper-windows-net_4_0</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Reference Include="System" />
+    <Reference Include="System.Core">
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="WindowsBase" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

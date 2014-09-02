@@ -7,34 +7,34 @@ using BtrieveWrapper;
 
 namespace BtrieveWrapper
 {
-    public class Operator
+    public class NativeOperator
     {
         static readonly byte[] _zero = new byte[0];
 
         INativeLibrary _library;
 
-        public Operator(string dllPath = null, bool useClientId = false) {
-            _library = NativeLibrary.GetNativeLibrary(dllPath);
+        public NativeOperator(bool useClientId = false, string dllPath = null, IEnumerable<string> dependencyPaths = null) {
+            _library = NativeLibrary.GetNativeLibrary(dllPath, dependencyPaths);
             this.OwnerNameEncoding = Encoding.Default;
             this.PathEncoding = Encoding.Default;
             this.ClientId = useClientId ? new ClientId() : null;
         }
 
-        public Operator(INativeLibrary nativeLibrary, bool useClientId = false) {
+        public NativeOperator(INativeLibrary nativeLibrary, bool useClientId = false) {
             _library = nativeLibrary;
             this.OwnerNameEncoding = Encoding.Default;
             this.PathEncoding = Encoding.Default;
             this.ClientId = useClientId ? new ClientId() : null;
         }
 
-        public Operator(string applicationId, ushort threadId, string dllPath = null) {
-            _library = NativeLibrary.GetNativeLibrary(dllPath);
+        public NativeOperator(string applicationId, ushort threadId, string dllPath = null, IEnumerable<string> dependencyPaths = null) {
+            _library = NativeLibrary.GetNativeLibrary(dllPath, dependencyPaths);
             this.OwnerNameEncoding = Encoding.Default;
             this.PathEncoding = Encoding.Default;
             this.ClientId = new ClientId(applicationId, threadId);
         }
 
-        public Operator(string applicationId, ushort threadId, INativeLibrary nativeLibrary) {
+        public NativeOperator(string applicationId, ushort threadId, INativeLibrary nativeLibrary) {
             _library = nativeLibrary;
             this.OwnerNameEncoding = Encoding.Default;
             this.PathEncoding = Encoding.Default;

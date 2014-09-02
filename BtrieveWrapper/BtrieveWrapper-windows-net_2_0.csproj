@@ -98,6 +98,7 @@
     <Compile Include="KeySpec.cs" />
     <Compile Include="KeyType.cs" />
     <Compile Include="KeyTypeAttribute.cs" />
+    <Compile Include="NativeOperator.cs" />
     <Compile Include="NullKeyOption.cs" />
     <Compile Include="OwnerNameOption.cs" />
     <Compile Include="RecordVariableOption.cs" />
@@ -109,7 +110,6 @@
     <Compile Include="OpenMode.cs" />
     <Compile Include="Operation.cs" />
     <Compile Include="LockBias.cs" />
-    <Compile Include="Operator.cs" />
     <Compile Include="PositionBlock.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="OperationResult.cs" />

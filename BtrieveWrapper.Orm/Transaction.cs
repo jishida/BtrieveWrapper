@@ -9,9 +9,9 @@ namespace BtrieveWrapper.Orm
     {
 
         bool _disposed = false, _committed = false;
-        Operator _operator;
+        NativeOperator _operator;
 
-        internal Transaction(Operator nativeOperator , TransactionMode transactionMode, LockMode lockMode) {
+        internal Transaction(NativeOperator nativeOperator , TransactionMode transactionMode, LockMode lockMode) {
             _operator = nativeOperator;
             this.TransactionMode = transactionMode;
             this.LockMode = lockMode;

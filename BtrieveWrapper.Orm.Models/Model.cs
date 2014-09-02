@@ -22,6 +22,8 @@ namespace BtrieveWrapper.Orm.Models
             "Name", typeof(string), typeof(Model));
         public static readonly DependencyProperty DllPathProperty = DependencyProperty.Register(
             "DllPath", typeof(string), typeof(Model));
+        public static readonly DependencyProperty DependencyPathsProperty = DependencyProperty.Register(
+            "DependencyPaths", typeof(string[]), typeof(Model));
         public static readonly DependencyProperty NamespaceProperty = DependencyProperty.Register(
             "Namespace", typeof(string), typeof(Model));
         public static readonly DependencyProperty PathTypeProperty = DependencyProperty.Register(
@@ -54,8 +56,10 @@ namespace BtrieveWrapper.Orm.Models
 #if NET_3_5
             this.RecordCollection = new ObservableCollection<Record>();
             this.RecordCollection.CollectionChanged += RecordCollection_CollectionChanged;
+            this.DependencyPathCollection = new ObservableCollection<string>();
 #else
             this.RecordCollection = new List<Record>();
+            this.DependencyPathCollection = new List<string>();
 #endif
         }
 
@@ -91,6 +95,9 @@ namespace BtrieveWrapper.Orm.Models
         public string RelativeDirectory { get { return (string)this.GetValue(RelativeDirectoryProperty); } set { this.SetValue(RelativeDirectoryProperty, value); } }
 
         [XmlIgnore]
+        public ObservableCollection<string> DependencyPathCollection { get; private set; }
+
+        [XmlIgnore]
         public ObservableCollection<Record> RecordCollection { get; private set; }
 #else
         [XmlAttribute]
@@ -116,8 +123,21 @@ namespace BtrieveWrapper.Orm.Models
         public string RelativeDirectory { get; set; }
 
         [XmlIgnore]
+        public List<string> DependencyPathCollection { get; private set; }
+
+        [XmlIgnore]
         public List<Record> RecordCollection { get; private set; }
 #endif
+        [XmlArrayItem]
+        public string[] DependencyPaths {
+            get { return this.DependencyPathCollection.ToArray(); }
+            set {
+                this.DependencyPathCollection.Clear();
+                foreach (var path in value) {
+                    this.DependencyPathCollection.Add(path);
+                }
+            }
+        }
         [XmlArrayItem]
         public Record[] Records {
             get { return this.RecordCollection.ToArray(); }
@@ -132,7 +152,30 @@ namespace BtrieveWrapper.Orm.Models
         [XmlIgnore]
         public string DisplayName { get { return String.IsNullOrEmpty(this.Name) ? Config.DefaultModelName : this.Name; } }
 
-        public static Model FromDirectory(string name, string directory, string searchPattern = null, SearchOption searchOption = SearchOption.AllDirectories, string ownerName = null, string dllPath = null, string nameSpace = null) {
+        [XmlIgnore]
+        public string DisplayDependencyPaths {
+            get {
+                if (this.DependencyPaths != null && this.DependencyPaths.Any(p => p != null)) {
+                    var paths = this.DependencyPaths.Where(p => p != null).ToArray();
+                    var builder = new StringBuilder();
+                    builder.Append("new string[] { ");
+                    for (var i = 0; i < paths.Length; i++) {
+                        builder.Append("@\"");
+                        builder.Append(paths[i].Replace("\"", "\"\""));
+                        builder.Append("\"");
+                        if (i != paths.Length - 1) {
+                            builder.Append(", ");
+                        }
+                    }
+                    builder.Append(" }");
+                    return builder.ToString();
+                } else {
+                    return "null";
+                }
+            }
+        }
+
+        public static Model FromDirectory(string name, string directory, string searchPattern = null, SearchOption searchOption = SearchOption.AllDirectories, string ownerName = null, string dllPath = null, IEnumerable<string> dependencyPaths = null, string nameSpace = null) {
             if (searchPattern == null) {
                 searchPattern = "*";
             }
@@ -142,7 +185,7 @@ namespace BtrieveWrapper.Orm.Models
             foreach (var file in directoryInfo.GetFiles(searchPattern, searchOption)) {
                 var filePath = file.FullName.Substring(directoryInfo.FullName.Length).TrimStart('\\');
                 try {
-                    var record = Record.FromBtrieveFile(Path.Relative(filePath, directoryInfo.FullName), dllPath, ownerName: ownerName);
+                    var record = Record.FromBtrieveFile(Path.Relative(filePath, directoryInfo.FullName), dllPath, dependencyPaths, ownerName: ownerName);
                     record.RelativePath = filePath;
                     records.Add(record);
                 } catch (OperationException e) {
@@ -156,6 +199,7 @@ namespace BtrieveWrapper.Orm.Models
             result.PathType = PathType.Relative;
             result.RelativeDirectory = directoryInfo.FullName;
             result.DllPath = dllPath;
+            result.DependencyPaths = dependencyPaths == null ? null : dependencyPaths.ToArray();
             result.Records = records.ToArray();
             result.Namespace = nameSpace ?? "BtrieveWrapper.Orm.Models.CustomModels";
             var i = 0;
@@ -220,7 +264,7 @@ namespace BtrieveWrapper.Orm.Models
             }
         }
 
-        public static Model FromDdf(string uriHost, string uriDbName, string uriUser = null, string uriPassword = null, bool? uriPrompt = null, string ownerName = null, string dllPath = null, string nameSpace = null) {
+        public static Model FromDdf(string uriHost, string uriDbName, string uriUser = null, string uriPassword = null, bool? uriPrompt = null, string ownerName = null, string dllPath = null, IEnumerable<string> depedencyPaths = null, string nameSpace = null) {
             Model result = new Model();
             using (var client = new SchemaDbClient(dllPath))
             using (var fieldSchemaManager = client.FieldSchema(Path.Uri(uriHost, uriDbName, uriUser: uriUser, uriPassword: uriPassword, uriPrompt: uriPrompt), ownerName))
@@ -229,7 +273,7 @@ namespace BtrieveWrapper.Orm.Models
                 var fileSchemas = fileSchemaManager.Query().Where(s => !s.IsSchema).ToArray();
                 var records = new List<Record>();
                 foreach (var fileSchema in fileSchemas) {
-                    var record = Record.FromBtrieveFile(Path.Uri(uriHost, uriDbName, fileSchema.Name, uriUser: uriUser, uriPassword: uriPassword, uriPrompt: uriPrompt), dllPath, ownerName: ownerName);
+                    var record = Record.FromBtrieveFile(Path.Uri(uriHost, uriDbName, fileSchema.Name, uriUser: uriUser, uriPassword: uriPassword, uriPrompt: uriPrompt), dllPath, depedencyPaths, ownerName: ownerName);
                     var newFields = new List<Field>();
                     foreach (var fieldSchema in fieldSchemas.Where(s => s.FileId == fileSchema.Id)) {
                         var field = record.Fields
@@ -283,6 +327,7 @@ namespace BtrieveWrapper.Orm.Models
                     records.Add(record);
                 }
                 result.DllPath = dllPath;
+                result.DependencyPaths = depedencyPaths.ToArray();
                 result.Name = uriDbName;
                 result.PathType = PathType.Uri;
                 result.UriHost = uriHost;

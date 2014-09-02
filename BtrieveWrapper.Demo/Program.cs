@@ -10,7 +10,7 @@ namespace BtrieveWrapper.Demo
             DemodataDbClient client = new DemodataDbClient();
 
             Console.WriteLine("[Read people whose last initial is 'D']");
-            using (PersonManager people = client.Person()) {
+            using (RecordManager<Person, PersonKeyCollection> people = client.Person()) {
                 var query = people.Query(p =>
                     p.Last_Name.GreaterThanOrEqual("D") &&
                     p.Last_Name.LessThan("E"));
@@ -24,7 +24,7 @@ namespace BtrieveWrapper.Demo
             Console.WriteLine();
 
             Console.WriteLine("[Person CRUD]");
-            using (PersonManager people = client.Person()) {
+            using (RecordManager<Person, PersonKeyCollection> people = client.Person()) {
                 Person person;
                 using (Transaction transaction = client.BeginTransaction()) {
                     Console.Write("Create person: ");

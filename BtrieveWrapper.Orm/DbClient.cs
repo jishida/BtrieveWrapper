@@ -10,18 +10,18 @@ namespace BtrieveWrapper.Orm
     public class DbClient : TransactionalObjectFactory
     {
         Dictionary<int, byte[]> _temporaryBufferDictionary = new Dictionary<int, byte[]>();
-        Dictionary<Type, Func<Operator, Path, string, OpenMode?, int, byte[], ITransactionalObject>> _managerConstructorDictionary
-            = new Dictionary<Type, Func<Operator, Path, string, OpenMode?, int, byte[], ITransactionalObject>>();
+        Dictionary<Type, Func<NativeOperator, Path, string, OpenMode?, int, byte[], ITransactionalObject>> _managerConstructorDictionary
+            = new Dictionary<Type, Func<NativeOperator, Path, string, OpenMode?, int, byte[], ITransactionalObject>>();
 
-        protected DbClient(string dllPath = null, string applicationId = "BW")
-            : base(new Operator(applicationId, Resource.GetThreadId(), dllPath)) { }
+        protected DbClient(string applicationId = "BW", string dllPath = null, IEnumerable<string> dependencyPaths = null)
+            : base(new NativeOperator(applicationId, Resource.GetThreadId(), dllPath, dependencyPaths)) { }
 
         protected DbClient(INativeLibrary nativeLibrary, string applicationId = "BW")
-            : base(new Operator(applicationId, Resource.GetThreadId(), nativeLibrary)) { }
+            : base(new NativeOperator(applicationId, Resource.GetThreadId(), nativeLibrary)) { }
 
         static bool CheckManagerType(Type managerType) {
             while (managerType != typeof(object)) {
-                if (managerType.BaseType.IsGenericType && managerType.BaseType.GetGenericTypeDefinition() == typeof(RecordManager<>)) {
+                if (managerType.BaseType.IsGenericType && managerType.BaseType.GetGenericTypeDefinition() == typeof(RecordManager<,>)) {
                     return true;
                 }
                 managerType = managerType.BaseType;
@@ -40,44 +40,19 @@ namespace BtrieveWrapper.Orm
             this.Transaction.Committing -= OnTransactionCommitting;
         }
 
-        public object CreateManager(Type managerType, Path path = null, string ownerName = null, OpenMode? openMode = null, int recycleCount = 1000, int temporaryBufferId = 0) {
-            if (managerType == null) {
-                throw new ArgumentNullException();
-            }
-            if (!_managerConstructorDictionary.ContainsKey(managerType)) {
-                if (!CheckManagerType(managerType)) {
-                    throw new ArgumentException();
-                }
-                var constructorInfo = managerType.GetConstructor(new[] { typeof(Operator), typeof(Path), typeof(string), typeof(OpenMode?), typeof(int), typeof(byte[]) });
-                if (constructorInfo == null) {
-                    throw new InvalidDefinitionException();
-                }
-#if NET_4_0
-                var parameters = new[] { 
-                    Expression.Parameter(typeof(Operator)), 
-                    Expression.Parameter(typeof(Path)), 
-                    Expression.Parameter(typeof(string)), 
-                    Expression.Parameter(typeof(OpenMode?)), 
-                    Expression.Parameter(typeof(int)), 
-                    Expression.Parameter(typeof(byte[])) };
-#else
-                var parameters = new[] { 
-                    Expression.Parameter(typeof(Operator), "nativeOperator"), 
-                    Expression.Parameter(typeof(Path), "path"), 
-                    Expression.Parameter(typeof(string), "ownerName"), 
-                    Expression.Parameter(typeof(OpenMode?), "openMode"), 
-                    Expression.Parameter(typeof(int), "reusableCapacity"), 
-                    Expression.Parameter(typeof(byte[]), "temporaryBuffer") };
-#endif
-                var newExpression = Expression.New(constructorInfo, parameters);
-                var lambda = Expression.Lambda<Func<Operator, Path, string, OpenMode?, int, byte[], ITransactionalObject>>(newExpression, parameters);
-                _managerConstructorDictionary[managerType] = lambda.Compile();
-            }
-            var constructor = _managerConstructorDictionary[managerType];
+        public object CreateManager<TRecord, TKeyCollection>(Path path = null, string ownerName = null, OpenMode? openMode = null, int recycleCount = 1000, int temporaryBufferId = 0)
+            where TRecord : Record<TRecord>
+            where TKeyCollection : KeyCollection<TRecord>, new() {
             var temporaryBuffer = _temporaryBufferDictionary.ContainsKey(temporaryBufferId) ? _temporaryBufferDictionary[temporaryBufferId] : Resource.GetBuffer();
-            var result = constructor(this.Operator, path, ownerName, openMode, recycleCount, temporaryBuffer);
+            var result = new RecordManager<TRecord, TKeyCollection>(this.Operator, path, ownerName, openMode, recycleCount, temporaryBuffer);
             this.AddTransactionalObject(result);
             return result;
+        }
+
+        public object CreateManager<TRecord, TKeyCollection>(string path, string ownerName = null, OpenMode? openMode = null, int recycleCount = 1000, int temporaryBufferId = 0)
+            where TRecord : Record<TRecord>
+            where TKeyCollection : KeyCollection<TRecord>, new() {
+            return this.CreateManager<TRecord, TKeyCollection>(Path.Absolute(path), ownerName, openMode, recycleCount, temporaryBufferId);
         }
 
         public void SaveChanges(bool detachAllRecordsAfterSave = false, LockMode lockMode = LockMode.WaitLock) {

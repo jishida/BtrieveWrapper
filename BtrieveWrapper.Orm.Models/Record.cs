@@ -433,9 +433,9 @@ namespace BtrieveWrapper.Orm.Models
             }
         }
 
-        public static Record FromBtrieveFile(Path path, string dllPath = null, byte defaultByte = 0x00, string ownerName = null) {
+        public static Record FromBtrieveFile(Path path, string dllPath = null, IEnumerable<string> dependencyPaths = null, byte defaultByte = 0x00, string ownerName = null) {
             StatData stat;
-            var nativeOperator = new Operator(dllPath);
+            var nativeOperator = new NativeOperator(dllPath: dllPath, dependencyPaths: dependencyPaths);
             var positionBlock = nativeOperator.Open(path.GetFilePath(), ownerName);
             try {
                 stat = nativeOperator.Stat(positionBlock);

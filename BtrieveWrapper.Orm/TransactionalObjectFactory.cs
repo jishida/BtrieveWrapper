@@ -9,13 +9,13 @@ namespace BtrieveWrapper.Orm
     {
         List<ITransactionalObject> _managedObjects;
 
-        protected TransactionalObjectFactory(Operator nativeOperator) {
+        protected TransactionalObjectFactory(NativeOperator nativeOperator) {
             this.Operator = nativeOperator;
             this.Transaction = null;
             _managedObjects = new List<ITransactionalObject>();
         }
 
-        protected Operator Operator { get; private set; }
+        protected NativeOperator Operator { get; private set; }
         protected Transaction Transaction { get; private set; }
         protected IEnumerable<object> ManagedObjects { get { return _managedObjects.Select(o => (object)o); } }
 

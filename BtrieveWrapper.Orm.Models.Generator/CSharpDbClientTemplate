@@ -2,14 +2,18 @@
 {
 	public class {% DisplayName %}DbClient : BtrieveWrapper.Orm.DbClient
     {
-        public {% DisplayName %}DbClient(string dllPath = {% if DllPath %}@"{% DllPath %}"{% else %}null{% endif %}, string applicationId = "BW")
-            : base(dllPath, applicationId) { }
+        public {% DisplayName %}DbClient(string applicationId = "BW", string dllPath = {% if DllPath %}@"{% DllPath %}"{% else %}null{% endif %}, System.Collections.Generic.IEnumerable<string> dependencyPaths = {% DisplayDependencyPaths %})
+            : base(applicationId, dllPath, dependencyPaths) { }
 
         public {% DisplayName %}DbClient(BtrieveWrapper.INativeLibrary nativeLibrary, string applicationId = "BW")
             : base(nativeLibrary, applicationId) { }{% for record in Records %}
 
-        public {% record.DisplayName %}Manager {% record.DisplayName %}(BtrieveWrapper.Orm.Path path = null, string ownerName = null, BtrieveWrapper.OpenMode? openMode = null, int recycleCount = 1000, int temporaryBufferId = 0) {
-            return ({% record.DisplayName %}Manager)this.CreateManager(typeof({% record.DisplayName %}Manager), path, ownerName, openMode, recycleCount, temporaryBufferId);
+        public BtrieveWrapper.Orm.RecordManager<{% record.DisplayName %}, {% record.DisplayName %}KeyCollection> {% record.DisplayName %}(BtrieveWrapper.Orm.Path path = null, string ownerName = null, BtrieveWrapper.OpenMode? openMode = null, int recycleCount = 1000, int temporaryBufferId = 0) {
+            return (BtrieveWrapper.Orm.RecordManager<{% record.DisplayName %}, {% record.DisplayName %}KeyCollection>)this.CreateManager<{% record.DisplayName %}, {% record.DisplayName %}KeyCollection>(path, ownerName, openMode, recycleCount, temporaryBufferId);
+        }
+
+        public BtrieveWrapper.Orm.RecordManager<{% record.DisplayName %}, {% record.DisplayName %}KeyCollection> {% record.DisplayName %}(string path, string ownerName = null, BtrieveWrapper.OpenMode? openMode = null, int recycleCount = 1000, int temporaryBufferId = 0) {
+            return (BtrieveWrapper.Orm.RecordManager<{% record.DisplayName %}, {% record.DisplayName %}KeyCollection>)this.CreateManager<{% record.DisplayName %}, {% record.DisplayName %}KeyCollection>(path, ownerName, openMode, recycleCount, temporaryBufferId);
         }{% endfor %}
     }
 }

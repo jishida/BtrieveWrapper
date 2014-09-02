@@ -6,28 +6,43 @@ using System.Text;
 
 namespace BtrieveWrapper.Orm
 {
-    public class RecordManager<TRecord> : RecordReader<TRecord>, IRecordManager where TRecord : Record<TRecord>
+    public class RecordManager<TRecord, TKeyCollection> : RecordReader<TRecord, TKeyCollection>, IRecordManager
+        where TRecord : Record<TRecord>
+        where TKeyCollection : KeyCollection<TRecord>, new()
     {
         List<TRecord> _managedRecords;
         List<TRecord> _rollbackedRecords;
 
         public RecordManager(
             Path path = null,
-            string dllPath = null,
-            string applicationId = "BW",
-            ushort threadId = 0,
             string ownerName = null,
             OpenMode? openMode = null,
+            string applicationId = "BW",
+            ushort threadId = 0,
+            string dllPath = null,
+            IEnumerable<string> dependencyPaths = null,
             int reusableCapacity = 1000,
             byte[] temporaryBuffer = null)
-            : base(path, dllPath, applicationId, threadId, ownerName, openMode, reusableCapacity, temporaryBuffer) {
+            : base(path, ownerName, openMode, applicationId, threadId, dllPath, dependencyPaths, reusableCapacity, temporaryBuffer) {
 
             _managedRecords = new List<TRecord>();
             _rollbackedRecords = new List<TRecord>();
         }
 
         public RecordManager(
-            Operator nativeOperator,
+            string path,
+            string ownerName = null,
+            OpenMode? openMode = null,
+            string applicationId = "BW",
+            ushort threadId = 0,
+            string dllPath = null,
+            IEnumerable<string> dependencyPaths = null,
+            int reusableCapacity = 1000,
+            byte[] temporaryBuffer = null)
+            : this(Path.Absolute(path), ownerName, openMode, applicationId, threadId, dllPath, dependencyPaths, reusableCapacity, temporaryBuffer) { }
+
+        public RecordManager(
+            NativeOperator nativeOperator,
             Path path = null,
             string ownerName = null,
             OpenMode? openMode = null,
@@ -38,6 +53,15 @@ namespace BtrieveWrapper.Orm
             _managedRecords = new List<TRecord>();
             _rollbackedRecords = new List<TRecord>();
         }
+
+        public RecordManager(
+            NativeOperator nativeOperator,
+            string path,
+            string ownerName = null,
+            OpenMode? openMode = null,
+            int reusableCapacity = 1000,
+            byte[] temporaryBuffer = null)
+            : this(nativeOperator, Path.Absolute(path), ownerName, openMode, reusableCapacity, temporaryBuffer) { }
 
         public void Detach(TRecord record) {
             if (record == null) {
@@ -151,15 +175,23 @@ namespace BtrieveWrapper.Orm
         }
 
         public TRecord GetAndManage(System.Linq.Expressions.Expression<Func<TRecord, bool>> whereExpression = null, LockMode lockMode = LockMode.None) {
-            var result = this.Get(null, whereExpression, lockMode);
+            var result = this.Get(whereExpression, lockMode);
             if (result != null) {
                 this.ManageRecord(result);
             }
             return result;
         }
 
-        public TRecord GetAndManage(KeyInfo key, System.Linq.Expressions.Expression<Func<TRecord, bool>> whereExpression = null, LockMode lockMode = LockMode.None) {
-            var result = this.Get(key, whereExpression, lockMode);
+        public TRecord GetAndManage(System.Linq.Expressions.Expression<Func<TRecord, bool>> whereExpression, KeyInfo key, LockMode lockMode = LockMode.None) {
+            var result = this.Get(whereExpression, key, lockMode);
+            if (result != null) {
+                this.ManageRecord(result);
+            }
+            return result;
+        }
+
+        public TRecord GetAndManage(System.Linq.Expressions.Expression<Func<TRecord, bool>> whereExpression, Func<TKeyCollection, KeyInfo> keySelector, LockMode lockMode = LockMode.None) {
+            var result = this.Get(whereExpression, keySelector == null ? null : keySelector(this.Keys), lockMode);
             if (result != null) {
                 this.ManageRecord(result);
             }
@@ -176,29 +208,29 @@ namespace BtrieveWrapper.Orm
 
         public IEnumerable<TRecord> QueryAndManage(
             System.Linq.Expressions.Expression<Func<TRecord, bool>> whereExpression = null,
-            TRecord startingRecord = null,
-            int limit = 0,
             LockMode lockMode = LockMode.None,
+            TRecord startingRecord = null,
             bool skipStartingRecord = false,
+            int limit = 0,
             bool reverse = false,
             ushort rejectCount = 0,
             bool isIgnoreCase = false) {
 
-            return this.QueryAndManage(new QueryParameter<TRecord>(whereExpression, startingRecord, lockMode, skipStartingRecord, limit, reverse, rejectCount, isIgnoreCase));
+                return this.QueryAndManage(new QueryParameter<TRecord>(whereExpression, lockMode, startingRecord, skipStartingRecord, limit, reverse, rejectCount, isIgnoreCase));
         }
 
         public IEnumerable<TRecord> QueryAndManage(
+            System.Linq.Expressions.Expression<Func<TRecord, bool>> whereExpression,
             KeyInfo key,
-            System.Linq.Expressions.Expression<Func<TRecord, bool>> whereExpression = null,
-            TRecord startingRecord = null,
-            int limit = 0,
             LockMode lockMode = LockMode.None,
+            TRecord startingRecord = null,
             bool skipStartingRecord = false,
+            int limit = 0,
             bool reverse = false,
             ushort rejectCount = 0,
             bool isIgnoreCase = false) {
 
-            return this.QueryAndManage(new QueryParameter<TRecord>(key, whereExpression, startingRecord, lockMode, skipStartingRecord, limit, reverse, rejectCount, isIgnoreCase));
+            return this.QueryAndManage(new QueryParameter<TRecord>(key, whereExpression, lockMode, startingRecord, skipStartingRecord, limit, reverse, rejectCount, isIgnoreCase));
         }
 
 

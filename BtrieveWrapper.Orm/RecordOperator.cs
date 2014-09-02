@@ -15,34 +15,24 @@ namespace BtrieveWrapper.Orm
         Func<byte[], object> _recordConstructor;
         int _reusableCapacity;
         Queue<TRecord> _reusableRecords;
-        Operator _nativeOperator;
+        NativeOperator _nativeOperator;
 
-        public RecordOperator(string dllPath = null, Path path = null, string ownerName = null, OpenMode? openMode = null, int reusableCapacity = 1000, byte[] temporaryBuffer = null)
-            : this(
-                new Operator(
-                    dllPath ?? Resource.GetRecordInfo(typeof(TRecord)).DllPath,
-                    false),
-                path,
-                ownerName,
-                openMode,
-                reusableCapacity,
-                temporaryBuffer) { }
+        public RecordOperator(Path path = null, string ownerName = null, OpenMode? openMode = null, string dllPath = null, IEnumerable<string> dependencyPaths = null, int reusableCapacity = 1000, byte[] temporaryBuffer = null)
+            : this(new NativeOperator(false, dllPath ?? Resource.GetRecordInfo(typeof(TRecord)).DllPath, dependencyPaths ?? Resource.GetRecordInfo(typeof(TRecord)).DependencyPaths), path, ownerName, openMode, reusableCapacity, temporaryBuffer) { }
 
-        public RecordOperator(string applicationId, ushort threadId, string dllPath = null, Path path = null, string ownerName = null, OpenMode? openMode = null, int reusableCapacity = 1000, byte[] temporaryBuffer = null)
-            : this(
-                new Operator(
-                    dllPath ?? Resource.GetRecordInfo(typeof(TRecord)).DllPath,
-                    true),
-                path,
-                ownerName,
-                openMode,
-                reusableCapacity,
-                temporaryBuffer) {
+        public RecordOperator(string path, string ownerName = null, OpenMode? openMode = null, string dllPath = null, IEnumerable<string> dependencyPaths = null, int reusableCapacity = 1000, byte[] temporaryBuffer = null)
+            : this(Path.Absolute(path), ownerName, openMode, dllPath, dependencyPaths, reusableCapacity, temporaryBuffer) { }
+
+        public RecordOperator(string applicationId, ushort threadId, string path, string ownerName = null, OpenMode? openMode = null, string dllPath = null, IEnumerable<string> dependencyPaths = null, int reusableCapacity = 1000, byte[] temporaryBuffer = null)
+            : this(applicationId, threadId, Path.Absolute(path), ownerName, openMode, dllPath, dependencyPaths, reusableCapacity, temporaryBuffer) { }
+
+        public RecordOperator(string applicationId, ushort threadId, Path path = null, string ownerName = null, OpenMode? openMode = null, string dllPath = null, IEnumerable<string> dependencyPaths = null, int reusableCapacity = 1000, byte[] temporaryBuffer = null)
+            : this(new NativeOperator(true, dllPath ?? Resource.GetRecordInfo(typeof(TRecord)).DllPath, dependencyPaths ?? Resource.GetRecordInfo(typeof(TRecord)).DependencyPaths), path, ownerName, openMode, reusableCapacity, temporaryBuffer) {
             _nativeOperator.ClientId.ApplicationId = applicationId;
             _nativeOperator.ClientId.ThreadId = threadId;
         }
 
-        public RecordOperator(Operator nativeOperator, Path path, string ownerName, OpenMode? openMode, int reusableCapacity, byte[] temporaryBuffer = null) {
+        public RecordOperator(NativeOperator nativeOperator, Path path, string ownerName, OpenMode? openMode, int reusableCapacity, byte[] temporaryBuffer = null) {
             var recordType = typeof(TRecord);
             var recordConstructor = recordType.GetConstructor(new Type[] { typeof(byte[]) });
             if (recordConstructor == null) {
@@ -64,6 +54,9 @@ namespace BtrieveWrapper.Orm
             _reusableCapacity = reusableCapacity;
             _reusableRecords = new Queue<TRecord>(_reusableCapacity);
         }
+
+        public RecordOperator(NativeOperator nativeOperator, string path, string ownerName = null, OpenMode? openMode = null, int reusableCapacity = 1000, byte[] temporaryBuffer = null)
+            : this(nativeOperator, Path.Absolute(path), ownerName, openMode, reusableCapacity, temporaryBuffer) { }
 
         public sbyte PrimaryKeyNumber { get; private set; }
         public StatData Stat { get; private set; }

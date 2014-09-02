@@ -70,15 +70,11 @@
         }
     }
 
-    public class RoomManager : BtrieveWrapper.Orm.RecordManager<Room> {
-        public RoomManager(BtrieveWrapper.Orm.Path path = null, string dllPath = null, string applicationId = "BW", ushort threadId = 0 , string ownerName = null, BtrieveWrapper.OpenMode? openMode = null, int reusableCapacity = 1000, byte[] temporaryBuffer = null)
-            : base(path, dllPath, applicationId, threadId, ownerName, openMode, reusableCapacity, temporaryBuffer) { }
+    public class RoomKeyCollection : BtrieveWrapper.Orm.KeyCollection<Room> {
+        public RoomKeyCollection() { }
 
-        public RoomManager(BtrieveWrapper.Operator nativeOperator, BtrieveWrapper.Orm.Path path = null, string ownerName = null, BtrieveWrapper.OpenMode? openMode = null, int reusableCapacity = 1000, byte[] temporaryBuffer = null)
-            : base(nativeOperator, path, ownerName, openMode, reusableCapacity, temporaryBuffer) { }
+        public BtrieveWrapper.Orm.KeyInfo Key0 { get { return this[0]; } }
 
-        public BtrieveWrapper.Orm.KeyInfo Key0 { get { return this.Keys[0]; } }
-
-        public BtrieveWrapper.Orm.KeyInfo Key1 { get { return this.Keys[1]; } }
+        public BtrieveWrapper.Orm.KeyInfo Key1 { get { return this[1]; } }
     }
 }
