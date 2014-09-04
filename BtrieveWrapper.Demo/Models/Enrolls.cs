@@ -51,7 +51,7 @@
     }
 
     public class EnrollsKeyCollection : BtrieveWrapper.Orm.KeyCollection<Enrolls> {
-        public EnrollsKeyCollection() { }
+        public EnrollsKeyCollection() : base() { }
 
         public BtrieveWrapper.Orm.KeyInfo Key0 { get { return this[0]; } }
 

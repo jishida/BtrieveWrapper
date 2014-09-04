@@ -71,7 +71,7 @@
     }
 
     public class RoomKeyCollection : BtrieveWrapper.Orm.KeyCollection<Room> {
-        public RoomKeyCollection() { }
+        public RoomKeyCollection() : base() { }
 
         public BtrieveWrapper.Orm.KeyInfo Key0 { get { return this[0]; } }
 

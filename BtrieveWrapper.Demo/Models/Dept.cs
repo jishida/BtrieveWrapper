@@ -64,7 +64,7 @@
     }
 
     public class DeptKeyCollection : BtrieveWrapper.Orm.KeyCollection<Dept> {
-        public DeptKeyCollection() { }
+        public DeptKeyCollection() : base() { }
 
         public BtrieveWrapper.Orm.KeyInfo Key0 { get { return this[0]; } }
 

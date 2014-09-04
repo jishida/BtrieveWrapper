@@ -61,7 +61,7 @@
 
     public class CourseKeyCollection : BtrieveWrapper.Orm.KeyCollection<Course>
     {
-        public CourseKeyCollection() { }
+        public CourseKeyCollection() : base() { }
 
         public BtrieveWrapper.Orm.KeyInfo Key0 { get { return this[0]; } }
 

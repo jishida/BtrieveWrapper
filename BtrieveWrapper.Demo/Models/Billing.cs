@@ -97,7 +97,7 @@
     }
 
     public class BillingKeyCollection : BtrieveWrapper.Orm.KeyCollection<Billing> {
-        public BillingKeyCollection() { }
+        public BillingKeyCollection() : base() { }
 
         public BtrieveWrapper.Orm.KeyInfo Key0 { get { return this[0]; } }
     }

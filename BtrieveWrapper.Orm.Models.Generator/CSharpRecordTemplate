@@ -22,7 +22,7 @@
     }
 
     public class {% DisplayName %}KeyCollection : BtrieveWrapper.Orm.KeyCollection<{% DisplayName %}> {
-        public {% Name %}KeyCollection() { }{% for key in Keys %}
+        public {% Name %}KeyCollection() : base() { }{% for key in Keys %}
 
         public BtrieveWrapper.Orm.KeyInfo {% key.DisplayName %} { get { return this[{% key.KeyNumber %}]; } }{% endfor %}
     }

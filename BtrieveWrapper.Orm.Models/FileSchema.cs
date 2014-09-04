@@ -55,7 +55,7 @@
     }
 
     public class FileSchemaKeyCollection : BtrieveWrapper.Orm.KeyCollection<FileSchema> {
-        public FileSchemaKeyCollection() { }
+        public FileSchemaKeyCollection() : base() { }
 
         public BtrieveWrapper.Orm.KeyInfo Key0 { get { return this[0]; } }
 

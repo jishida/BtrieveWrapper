@@ -299,7 +299,7 @@
 
     public class PersonKeyCollection : BtrieveWrapper.Orm.KeyCollection<Person>
     {
-        public PersonKeyCollection() { }
+        public PersonKeyCollection() : base() { }
 
         public BtrieveWrapper.Orm.KeyInfo Key0 { get { return this[0]; } }
 

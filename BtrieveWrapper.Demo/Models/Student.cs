@@ -107,7 +107,7 @@
 
     public class StudentKeyCollection : BtrieveWrapper.Orm.KeyCollection<Student>
     {
-        public StudentKeyCollection() { }
+        public StudentKeyCollection() : base() { }
 
         public BtrieveWrapper.Orm.KeyInfo Key0 { get { return this[0]; } }
 

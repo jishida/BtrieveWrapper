@@ -104,7 +104,7 @@
 
     public class ClassKeyCollection : BtrieveWrapper.Orm.KeyCollection<Class>
     {
-        public ClassKeyCollection() { }
+        public ClassKeyCollection() : base() { }
 
         public BtrieveWrapper.Orm.KeyInfo Key0 { get { return this[0]; } }
 
