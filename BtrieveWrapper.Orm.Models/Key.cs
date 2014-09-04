@@ -40,7 +40,8 @@ namespace BtrieveWrapper.Orm.Models
             this.KeySegmentCollection = new ObservableCollection<KeySegment>();
             this.KeySegmentCollection.CollectionChanged+=KeySegmentCollection_CollectionChanged;
 #else
-            this.KeySegmentCollection = new List<KeySegment>();
+            this.KeySegmentCollection = new ObservableList<KeySegment>();
+            this.KeySegmentCollection.OnAdded += KeySegmentCollection_OnAdded;
 #endif
         }
 
@@ -70,7 +71,15 @@ namespace BtrieveWrapper.Orm.Models
 
         [XmlIgnore]
         public ObservableCollection<KeySegment> KeySegmentCollection { get; private set; }
-#else
+#else   
+        void KeySegmentCollection_OnAdded(object sender, KeySegment e) {
+            e.Key = this;
+            ushort index = 0;
+            foreach (var keySegment in this.KeySegmentCollection) {
+                keySegment.Index = index++;
+            }
+        }
+
         [XmlAttribute]
         public string Name { get; set; }
         [XmlAttribute]
@@ -83,8 +92,9 @@ namespace BtrieveWrapper.Orm.Models
         public NullKeyOption NullKeyOption { get; set; }
 
         [XmlIgnore]
-        public List<KeySegment> KeySegmentCollection { get; private set; }
+        public ObservableList<KeySegment> KeySegmentCollection { get; private set; }
 #endif
+
         [XmlArrayItem]
         public KeySegment[] Segments { get { return this.KeySegmentCollection.ToArray(); } 
             set {

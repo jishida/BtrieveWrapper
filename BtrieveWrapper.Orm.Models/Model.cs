@@ -58,7 +58,8 @@ namespace BtrieveWrapper.Orm.Models
             this.RecordCollection.CollectionChanged += RecordCollection_CollectionChanged;
             this.DependencyPathCollection = new ObservableCollection<string>();
 #else
-            this.RecordCollection = new List<Record>();
+            this.RecordCollection = new ObservableList<Record>();
+            this.RecordCollection.OnAdded += RecordCollection_OnAdded;
             this.DependencyPathCollection = new List<string>();
 #endif
         }
@@ -100,6 +101,10 @@ namespace BtrieveWrapper.Orm.Models
         [XmlIgnore]
         public ObservableCollection<Record> RecordCollection { get; private set; }
 #else
+        void RecordCollection_OnAdded(object sender, Record e) {
+            e.Model = this;
+        }
+
         [XmlAttribute]
         public string Name { get; set; }
         [XmlAttribute]
@@ -126,7 +131,7 @@ namespace BtrieveWrapper.Orm.Models
         public List<string> DependencyPathCollection { get; private set; }
 
         [XmlIgnore]
-        public List<Record> RecordCollection { get; private set; }
+        public ObservableList<Record> RecordCollection { get; private set; }
 #endif
         [XmlArrayItem]
         public string[] DependencyPaths {

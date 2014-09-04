@@ -98,11 +98,12 @@ namespace BtrieveWrapper.Orm.Models
             this.FieldCollection.CollectionChanged += FieldCollection_CollectionChanged;
             this.KeyCollection.CollectionChanged += KeyCollection_CollectionChanged;
 #else
-            this.FieldCollection = new List<Field>();
-            this.KeyCollection = new List<Key>();
+            this.FieldCollection = new ObservableList<Field>();
+            this.KeyCollection = new ObservableList<Key>();
+            this.FieldCollection.OnAdded += FieldCollection_OnAdded;
+            this.KeyCollection.OnAdded += KeyCollection_OnAdded;
 #endif
         }
-
 
 #if NET_3_5
         void FieldCollection_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e) {
@@ -179,6 +180,17 @@ namespace BtrieveWrapper.Orm.Models
         [XmlIgnore]
         public ObservableCollection<Key> KeyCollection { get; private set; }
 #else
+        void KeyCollection_OnAdded(object sender, Key e) {
+            e.Record = this;
+        }
+
+        void FieldCollection_OnAdded(object sender, Field e) {
+            e.Record = this;
+            if (e.Id == 0) {
+                e.Id = this.FieldCollection.Max(f => f.Id) + 1;
+            }
+        }
+
         [XmlAttribute]
         public string Name { get; set; }
         [XmlAttribute]
@@ -230,9 +242,9 @@ namespace BtrieveWrapper.Orm.Models
         public ushort RejectCount { get; set; }
 
         [XmlIgnore]
-        public List<Field> FieldCollection { get; private set; }
+        public ObservableList<Field> FieldCollection { get; private set; }
         [XmlIgnore]
-        public List<Key> KeyCollection { get; private set; }
+        public ObservableList<Key> KeyCollection { get; private set; }
 #endif
 
         [XmlArrayItem]
