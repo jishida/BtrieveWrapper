@@ -63,10 +63,12 @@ namespace BtrieveWrapper
 			}
 			_handle = NativeMethods.LoadLibrary(dllPath);
 			if (_handle == IntPtr.Zero) {
-				foreach(var dependencyHandle in _dependencyHandles) {
-					NativeMethods.FreeLibrary(dependencyHandle);
-				}
-				throw new ArgumentException();
+                if (_dependencyHandles != null) {
+                    foreach (var dependencyHandle in Enumerable.Reverse(_dependencyHandles)) {
+                        NativeMethods.FreeLibrary(dependencyHandle);
+                    }
+                }
+                throw new ArgumentException();
 			}
 			var btrCallFunctionPointer = NativeMethods.GetProcAddress(_handle, "BTRCALL");
 			var btrCallIdFunctionPointer = NativeMethods.GetProcAddress(_handle, "BTRCALLID");
@@ -93,9 +95,11 @@ namespace BtrieveWrapper
 			}
 			_handle = NativeMethods.dlopen(dllPath, RTLD_NOW|RTLD_GLOBAL);
 			if (_handle == IntPtr.Zero) {
-				foreach(var dependencyHandle in _dependencyHandles) {
-					NativeMethods.dlclose(dependencyHandle);
-				}
+                if (_dependencyHandles != null) {
+                    foreach (var dependencyHandle in Enumerable.Reverse(_dependencyHandles)) {
+		    			NativeMethods.dlclose(dependencyHandle);
+			    	}
+                }
 				throw new ArgumentException();
 			}
 			var btrCallFunctionPointer = NativeMethods.dlsym(_handle, "BTRCALL");
@@ -111,7 +115,7 @@ namespace BtrieveWrapper
 				throw new ArgumentException();
 			}
 #endif
-		}
+        }
 
         public short BtrCall(ushort operationCode, byte[] positionBlock, byte[] dataBuffer, ref ushort dataLength, byte[] keyBuffer, ushort keyLength, sbyte keyNumber) {
             if (_handle == IntPtr.Zero) {
@@ -139,18 +143,22 @@ namespace BtrieveWrapper
                 _btrCall = null;
                 _btrCallId = null;
 #if WINDOWS
-				foreach(var dependencyHandle in _dependencyHandles) {
-					NativeMethods.FreeLibrary(dependencyHandle);
-				}
+                if (_dependencyHandles != null) {
+                    foreach (var dependencyHandle in Enumerable.Reverse(_dependencyHandles)) {
+                        NativeMethods.FreeLibrary(dependencyHandle);
+                    }
+                }
                 NativeMethods.FreeLibrary(_handle);
 #endif
 #if LINUX
-				foreach(var dependencyHandle in _dependencyHandles) {
-					NativeMethods.dlclose(dependencyHandle);
-				}
+                if (_dependencyHandles != null) {
+                    foreach (var dependencyHandle in Enumerable.Reverse(_dependencyHandles)) {
+    					NativeMethods.dlclose(dependencyHandle);
+				    }
+                }
 				NativeMethods.dlclose(_handle);
 #endif
-				_dependencyHandles = null;
+                _dependencyHandles = null;
                 _handle = IntPtr.Zero;
             }
         }
