@@ -19,6 +19,13 @@ namespace BtrieveWrapper.Orm
         protected DbClient(INativeLibrary nativeLibrary, string applicationId = "BW")
             : base(new NativeOperator(applicationId, Resource.GetThreadId(), nativeLibrary)) { }
 
+        public string DefaultRelativeDirectory { get; set; }
+        public string DefaultUriHost { get; set; }
+        public string DefaultUriUser { get; set; }
+        public string DefaultUriDbName { get; set; }
+        public string DefaultUriPassword { get; set; }
+        public bool? DefaultUriPrompt { get; set; }
+
         static bool CheckManagerType(Type managerType) {
             while (managerType != typeof(object)) {
                 if (managerType.BaseType.IsGenericType && managerType.BaseType.GetGenericTypeDefinition() == typeof(RecordManager<,>)) {
@@ -43,6 +50,21 @@ namespace BtrieveWrapper.Orm
         public object CreateManager<TRecord, TKeyCollection>(Path path = null, string ownerName = null, OpenMode? openMode = null, int recycleCount = 1000, int temporaryBufferId = 0)
             where TRecord : Record<TRecord>
             where TKeyCollection : KeyCollection<TRecord>, new() {
+            if (path == null) {
+                var recordInfo = Resource.GetRecordInfo(typeof(TRecord));
+                if (recordInfo.PathType == PathType.Relative &&
+                    this.DefaultRelativeDirectory != null) {
+                    path = Path.Relative(relativeDirectory: this.DefaultRelativeDirectory);
+                } else if (recordInfo.PathType == PathType.Uri &&
+                    (this.DefaultUriHost != null || this.DefaultUriUser != null || this.DefaultUriDbName != null || this.DefaultUriPassword != null || this.DefaultUriPrompt != null)) {
+                    path = Path.Uri(
+                        uriHost: this.DefaultUriHost,
+                        uriUser: this.DefaultUriUser,
+                        uriDbName: this.DefaultUriDbName,
+                        uriPassword: this.DefaultUriPassword,
+                        uriPrompt: this.DefaultUriPrompt);
+                }
+            }
             var temporaryBuffer = _temporaryBufferDictionary.ContainsKey(temporaryBufferId) ? _temporaryBufferDictionary[temporaryBufferId] : Resource.GetBuffer();
             var result = new RecordManager<TRecord, TKeyCollection>(this.Operator, path, ownerName, openMode, recycleCount, temporaryBuffer);
             this.AddTransactionalObject(result);
