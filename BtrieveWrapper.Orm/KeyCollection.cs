@@ -41,5 +41,7 @@ namespace BtrieveWrapper.Orm
     public class KeyCollection<TRecord> : KeyCollection where TRecord : Record<TRecord>
     {
         public KeyCollection() : base(typeof(TRecord)) { }
+
+        public static KeyCollection<TRecord> Keys { get { return new KeyCollection<TRecord>(); } }
     }
 }

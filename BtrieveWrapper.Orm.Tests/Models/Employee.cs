@@ -93,6 +93,8 @@
         public override int GetHashCode() {
             return this.Id;
         }
+
+        public static EmployeeKeyCollection Keys { get { return GetKeyCollection<EmployeeKeyCollection>(); } }
     }
 
     public class EmployeeKeyCollection : BtrieveWrapper.Orm.KeyCollection<Employee>

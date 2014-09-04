@@ -65,6 +65,8 @@
         public override int GetHashCode() {
             return this.Id;
         }
+
+        public static CompanyKeyCollection Keys { get { return GetKeyCollection<CompanyKeyCollection>(); } }
     }
 
     public class CompanyKeyCollection : BtrieveWrapper.Orm.KeyCollection<Company> {
