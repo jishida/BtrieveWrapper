@@ -22,12 +22,22 @@ namespace BtrieveWrapper.Orm
         static Dictionary<MethodInfo, ExpressionType> _stringExtensionMethodTypeDictionary = new Dictionary<MethodInfo, ExpressionType>();
         static Dictionary<MethodInfo, MethodInfo> _reversedStringExtensionMethodDictionary = new Dictionary<MethodInfo, MethodInfo>();
         static Dictionary<MethodInfo, MethodInfo> _flippedStringExtensionMethodDictionary = new Dictionary<MethodInfo, MethodInfo>();
+        static Dictionary<Type, KeyCollection> _keyCollectionDictionary = new Dictionary<Type, KeyCollection>();
 
         static HashSet<ushort> _threadIds = new HashSet<ushort>();
 
         static Resource() {
             Resource.Is64bit = IntPtr.Size == 8;
             Resource.SetStringExtensionMethods();
+        }
+
+        public static KeyCollection GetKeyCollection<TKeyCollection>()
+            where TKeyCollection : KeyCollection, new() {
+            var keyCollectionType = typeof(TKeyCollection);
+            if (!_keyCollectionDictionary.ContainsKey(keyCollectionType)) {
+                _keyCollectionDictionary[keyCollectionType] = new TKeyCollection();
+            }
+            return _keyCollectionDictionary[keyCollectionType];
         }
 
         public static MethodInfo GetStringExtensionMethod(ExpressionType type) {

@@ -19,6 +19,8 @@
             get { return {% if field.ValueTypeDisplayName %}({% field.ValueTypeDisplayName %}){% endif %}this.GetValue("{% field.DisplayName %}"); }
             set { this.SetValue("{% field.DisplayName %}", value); }
         }{% endfor %}
+
+		public static {% DisplayName %}KeyCollection Keys { get { return GetKeyCollection<{% DisplayName %}KeyCollection>(); } }
     }
 
     public class {% DisplayName %}KeyCollection : BtrieveWrapper.Orm.KeyCollection<{% DisplayName %}> {

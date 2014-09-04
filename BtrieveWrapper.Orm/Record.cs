@@ -240,10 +240,9 @@ namespace BtrieveWrapper.Orm
             throw new NotSupportedException();
         }
 
-        public static KeyCollection Keys{
-            get {
-                return Resource.GetRecordInfo(typeof(TRecord)).Keys;
-            }
+        public static TKeyCollection GetKeyCollection<TKeyCollection>()
+            where TKeyCollection : KeyCollection<TRecord>, new() {
+            return Resource.GetKeyCollection<TKeyCollection>() as TKeyCollection;
         }
     }
 }
