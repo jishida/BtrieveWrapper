@@ -133,20 +133,24 @@ namespace BtrieveWrapper.Orm
         }
 
         public void Create(Path path = null, bool overwrite = false) {
-            var record = this.RecordInfo;
-            var fileSpec = record.GetCreateFileSpec();
-            var keySpecs = record.Keys.SelectMany(k => k.Segments.Select(s => s.GetCreateKeySpec()));
+            var recordInfo = this.RecordInfo;
+            var fileSpec = recordInfo.GetCreateFileSpec();
+            var keySpecs = recordInfo.Keys.SelectMany(k => k.Segments.Select(s => s.GetCreateKeySpec()));
             var createData = new CreateData(fileSpec, keySpecs);
             var filePath = Path.Merge(path, this.Path).GetFilePath();
             _nativeOperator.Create(filePath, createData, overwrite);
-            if(this.RecordInfo.OwnerName!=null){
+            if (recordInfo.OwnerName != null) {
                 var positionBlock=_nativeOperator.Open(filePath);
                 try {
-                    _nativeOperator.SetOwner(positionBlock, this.RecordInfo.OwnerName, this.RecordInfo.OwnerNameOption);
+                    _nativeOperator.SetOwner(positionBlock, recordInfo.OwnerName, recordInfo.OwnerNameOption);
                 } finally {
                     _nativeOperator.Close(positionBlock);
                 }
             }
+        }
+
+        public void Create(string path, bool overwrite = false) {
+            this.Create(Path.Absolute(path), overwrite);
         }
 
         public void Open(Path path = null) {
@@ -159,6 +163,10 @@ namespace BtrieveWrapper.Orm
                     throw new InvalidDefinitionException();
                 }
             }
+        }
+
+        public void Open(string path) {
+            this.Open(Path.Absolute(path));
         }
 
         public void Close() {
@@ -191,7 +199,7 @@ namespace BtrieveWrapper.Orm
             }
             ushort position = 2;
             var recordList=new List<TRecord>();
-            ushort capacity = (ushort)(Config.MaxBufferLength - 412);
+            ushort capacity = (ushort)(Config.MaxBufferLength - Config.ExtendedOperationBufferMargin);
             foreach (var record in records) {
                 if (position + this.RecordInfo.DataBufferCapacity + 2 > capacity) {
                     Array.Copy(BitConverter.GetBytes(recordList.Count), this.TemporaryBuffer, 2);
@@ -683,6 +691,7 @@ namespace BtrieveWrapper.Orm
             var useLimit = limit > 0;
             rejectCount = rejectCount == 0 ? this.RecordInfo.RejectCount : rejectCount;
             var isFirst = true;
+            var bufferLength = Config.MaxBufferLength - Config.ExtendedOperationBufferMargin;
             for (; ; ) {
                 var dataBufferLength = (ushort)(filter == null ? 16 : filter.Length + 16);
                 Array.Copy(BitConverter.GetBytes(dataBufferLength), 0, this.TemporaryBuffer, 0, 2);
@@ -695,7 +704,7 @@ namespace BtrieveWrapper.Orm
                     filter.SetDataBuffer(this.TemporaryBuffer);
                 }
                 var position = (ushort)(filter == null ? 8 : filter.Length + 8);
-                var count = (ushort)((Config.MaxBufferLength) / (this.RecordInfo.DataBufferCapacity + 6));
+                var count = (ushort)(bufferLength / (this.RecordInfo.DataBufferCapacity + 6));
                 if (useLimit && count > limit) {
                     count = (ushort)limit;
                 }
