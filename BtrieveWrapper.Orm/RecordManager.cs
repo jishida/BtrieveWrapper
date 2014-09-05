@@ -129,10 +129,10 @@ namespace BtrieveWrapper.Orm
                     default:
                         throw new ArgumentException();
                 }
-                record.ChangeState(RecordStateTransitions.Save, this.Transaction != null);
+                record.ChangeState(RecordStateTransitions.Save, this.CheckTransaction());
                 if (record.RecordState == RecordState.Detached) {
                     _managedRecords.Remove(record);
-                    if (this.Transaction != null && record.RollbackedState != RecordState.Detached && !record.IsRollbackedMember) {
+                    if (this.CheckTransaction() && record.RollbackedState != RecordState.Detached && !record.IsRollbackedMember) {
                         record.IsRollbackedMember = true;
                         _rollbackedRecords.Add(record);
                     }
@@ -167,7 +167,7 @@ namespace BtrieveWrapper.Orm
             if (record.RecordState == RecordState.Detached && record.IsManagedMember) {
                 record.IsManagedMember = false;
                 _managedRecords.Remove(record);
-                if (this.Transaction != null && !record.IsRollbackedMember) {
+                if (this.CheckTransaction() && !record.IsRollbackedMember) {
                     record.IsRollbackedMember = true;
                     _rollbackedRecords.Add(record);
                 }
@@ -259,25 +259,14 @@ namespace BtrieveWrapper.Orm
             }
         }
 
-
-        protected override void SetTransaction(Transaction transaction) {
-            base.SetTransaction(transaction);
-            this.Transaction.Committed += OnTransactionCommitted;
-            this.Transaction.Rollbacked += OnTransactionRollbacked;
-        }
-
-        #region IRecordManager
-
-        void OnTransactionCommitted(object sender, EventArgs e) {
-            this.Transaction.Committed -= OnTransactionCommitted;
+        protected override void OnTransactionCommitted() {
             foreach (var record in _managedRecords) {
                 record.Commit();
             }
             _rollbackedRecords.Clear();
         }
 
-        void OnTransactionRollbacked(object sender, EventArgs e) {
-            this.Transaction.Rollbacked -= OnTransactionRollbacked;
+        protected override void OnTransactionRollbacked() {
             var detachedRecords = new List<TRecord>();
             foreach (var record in _managedRecords) {
                 record.Rollback();
@@ -326,10 +315,10 @@ namespace BtrieveWrapper.Orm
                         this.Operator.GetEqual(record.GetKeyValue(this.PrimaryKey), lockBias, true);
                     }
                     this.Operator.Delete();
-                    record.ChangeState(RecordStateTransitions.Save, this.Transaction != null);
+                    record.ChangeState(RecordStateTransitions.Save, this.CheckTransaction());
                     record.IsManagedMember = false;
                     _managedRecords.Remove(record);
-                    if (this.Transaction != null && record.RollbackedState != RecordState.Detached && !record.IsRollbackedMember) {
+                    if (this.CheckTransaction() && record.RollbackedState != RecordState.Detached && !record.IsRollbackedMember) {
                         record.IsRollbackedMember = true;
                         _rollbackedRecords.Add(record);
                     }
@@ -342,7 +331,7 @@ namespace BtrieveWrapper.Orm
                         this.Operator.GetEqual(record.GetKeyValue(this.PrimaryKey), lockBias, true);
                     }
                     this.Operator.Update(record);
-                    record.ChangeState(RecordStateTransitions.Save, this.Transaction != null);
+                    record.ChangeState(RecordStateTransitions.Save, this.CheckTransaction());
                 }
             }
             if (detachAllRecordsAfterSave) {
@@ -352,11 +341,9 @@ namespace BtrieveWrapper.Orm
 
         void OnInserted(IEnumerable<TRecord> records) {
             foreach (var record in records) {
-                record.ChangeState(RecordStateTransitions.Save, this.Transaction != null);
+                record.ChangeState(RecordStateTransitions.Save, this.CheckTransaction());
             }
         }
-
-        #endregion
 
     }
 }

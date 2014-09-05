@@ -9,32 +9,36 @@ namespace BtrieveWrapper.Orm
         where TRecord : Record<TRecord>
         where TKeyCollection : KeyCollection<TRecord>, new()
     {
-        protected class Connection : IDisposable
+        protected sealed class Connection : IDisposable
         {
             RecordReader<TRecord, TKeyCollection> _manager = null;
 
-            public Connection(RecordReader<TRecord, TKeyCollection> manager) {
-                _manager = manager._connection == null
-                    ? manager
-                    : null;
-                if (_manager != null) {
-                    if (!_manager.Operator.IsOpened) {
-                        _manager.Operator.Open();
-                    }
+            Connection() { }
 
-                    if (_manager._stat == null) {
-                        _manager._stat = _manager.Operator.Stat;
-                        this.ValidateStat();
+            public Connection(RecordReader<TRecord, TKeyCollection> manager) {
+                if (manager._connection == null) {
+                    if (manager.CheckTransaction()) {
+                        manager._connection = new Connection();
+                        manager._connection._manager = manager;
+                    }else{
+                        _manager = manager;
+                    }
+                    if (!manager.Operator.IsOpened) {
+                        manager.Operator.Open();
+                        if (manager._stat == null) {
+                            manager._stat = manager.Operator.Stat;
+                            ValidateStat(manager);
+                        }
                     }
                 }
             }
 
-            void ValidateStat() {
+            static void ValidateStat(RecordReader<TRecord, TKeyCollection> manager) {
                 var keySpecs = new List<KeySpec>();
-                foreach (var keySpec in _manager._stat.KeySpecs) {
+                foreach (var keySpec in manager._stat.KeySpecs) {
                     keySpecs.Add(keySpec);
                     if (!keySpec.IsSegmentKey) {
-                        var fields = _manager.Operator.RecordInfo.Fields.Where(f => f.KeySegments.Any(a => a.KeyNumber == keySpec.Number));
+                        var fields = manager.Operator.RecordInfo.Fields.Where(f => f.KeySegments.Any(a => a.KeyNumber == keySpec.Number));
                         if (fields.Count() != keySpecs.Count()) {
                             throw new InvalidDefinitionException();
                         }
@@ -70,7 +74,6 @@ namespace BtrieveWrapper.Orm
 
         Connection _connection = null;
         StatData _stat;
-        bool _isOpendByTransaction = false;
 
         public RecordReader(
             Path path = null,
@@ -137,7 +140,11 @@ namespace BtrieveWrapper.Orm
         public TKeyCollection Keys { get; private set; }
         public bool AutoUnlockUnhandledRecord { get; private set; }
         public bool IsOpened { get { return _connection != null; } }
-        protected Transaction Transaction { get; private set; }
+        protected TransactionalObjectFactory Factory { get; private set; }
+
+        protected bool CheckTransaction() {
+            return this.Factory != null && this.Factory.Transaction != null;
+        }
 
         void UnlockLastRecord(LockMode lockMode) {
             switch (lockMode) {
@@ -212,7 +219,7 @@ namespace BtrieveWrapper.Orm
             if (keyValue.Key.DuplicateKeyOption != DuplicateKeyOption.Unique || keyValue.ComplementCount != 0) {
                 throw new ArgumentException();
             }
-            var lockBias = Utility.GetLockBias(this.Transaction == null ? lockMode : this.Transaction.LockMode);
+            var lockBias = Utility.GetLockBias(this.CheckTransaction() ? this.Factory.Transaction.LockMode : lockMode);
             TRecord result;
             using (var connector = new Connection(this)) {
                 try {
@@ -298,7 +305,7 @@ namespace BtrieveWrapper.Orm
             if (parameter.StartingRecord != null && parameter.StartingRecord.RecordState == RecordState.Incomplete) {
                 throw new ArgumentException();
             }
-            var lockMode = this.Transaction == null ? parameter.LockMode : this.Transaction.LockMode;
+            var lockMode = this.CheckTransaction() ? this.Factory.Transaction.LockMode : parameter.LockMode;
             var lockBias = Utility.GetLockBias(lockMode);
             var unlock = _connection != null && this.AutoUnlockUnhandledRecord;
             KeyValue keyValue = parameter.UniqueKeyValue;
@@ -399,28 +406,22 @@ namespace BtrieveWrapper.Orm
                 }
             }
         }
-        
 
-        void ITransactionalObject.SetTransaction(Transaction transaction) {
-            this.SetTransaction(transaction);
+        void ITransactionalObject.SetFactory(TransactionalObjectFactory factory) {
+            this.Factory = factory;
         }
 
-        protected virtual void SetTransaction(Transaction transaction) {
-            this.Transaction = transaction;
-            this.Transaction.Disposing += this.OnTransactionDisposing;
-            if (_connection == null) {
-                this.Open();
-            }
+        void ITransactionalObject.TransactionCommitted() {
+            this.OnTransactionCommitted();
         }
 
-        void OnTransactionDisposing(object sender, EventArgs e) {
-            if (_isOpendByTransaction) {
-                _isOpendByTransaction = false;
-                this.Close();
-            }
-            this.Transaction.Disposing -= this.OnTransactionDisposing;
-            this.Transaction = null;
+        void ITransactionalObject.TransactionRollbacked() {
+            this.OnTransactionRollbacked();
         }
+
+        protected virtual void OnTransactionCommitted() { }
+
+        protected virtual void OnTransactionRollbacked() { }
 
         public void Open() {
             if (_connection == null) {
@@ -447,9 +448,6 @@ namespace BtrieveWrapper.Orm
         }
 
         public void Dispose() {
-            if (this.Transaction != null) {
-                throw new InvalidOperationException();
-            }
             this.Dispose(true);
         }
 
