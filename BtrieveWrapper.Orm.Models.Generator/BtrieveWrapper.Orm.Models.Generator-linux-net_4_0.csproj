@@ -68,7 +68,7 @@
     <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|AnyCPU'">
-    <OutputPath>..\bin\debug\linux\net_4_0\AnyCPU\</OutputPath>
+    <OutputPath>..\bin\release\linux\net_4_0\AnyCPU\</OutputPath>
     <DefineConstants>TRACE;NET_4_0;NET_3_5;NET_3_0;NET_2_0;LINUX</DefineConstants>
     <Optimize>true</Optimize>
     <DebugType>none</DebugType>
@@ -90,7 +90,6 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="app.config" />
     <None Include="CSharpDbClientTemplate">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>

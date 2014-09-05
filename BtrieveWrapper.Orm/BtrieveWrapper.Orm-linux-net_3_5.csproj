@@ -9,16 +9,15 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>BtrieveWrapper.Orm</RootNamespace>
     <AssemblyName>BtrieveWrapper.Orm</AssemblyName>
-    <TargetFrameworkVersion>v2.0</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
-    <TargetFrameworkProfile>
-    </TargetFrameworkProfile>
-    <BaseIntermediateOutputPath>obj\windows\net_2_0\</BaseIntermediateOutputPath>
+    <TargetFrameworkProfile>Client</TargetFrameworkProfile>
+    <BaseIntermediateOutputPath>obj\linux\net_3_5\</BaseIntermediateOutputPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x86'">
     <DebugSymbols>true</DebugSymbols>
-    <OutputPath>..\bin\debug\windows\net_2_0\x86\</OutputPath>
-    <DefineConstants>TRACE;DEBUG;NET_3_5;NET_3_0;NET_2_0;WINDOWS</DefineConstants>
+    <OutputPath>..\bin\debug\linux\net_3_5\x86\</OutputPath>
+    <DefineConstants>TRACE;DEBUG;NET_3_5;NET_3_0;NET_2_0;LINUX</DefineConstants>
     <DebugType>full</DebugType>
     <PlatformTarget>x86</PlatformTarget>
     <ErrorReport>prompt</ErrorReport>
@@ -27,8 +26,8 @@
     <Optimize>false</Optimize>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x86'">
-    <OutputPath>..\bin\release\windows\net_2_0\x86\</OutputPath>
-    <DefineConstants>TRACE;NET_3_5;NET_3_0;NET_2_0;WINDOWS</DefineConstants>
+    <OutputPath>..\bin\release\linux\net_3_5\x86\</OutputPath>
+    <DefineConstants>TRACE;NET_3_5;NET_3_0;NET_2_0;LINUX</DefineConstants>
     <Optimize>true</Optimize>
     <DebugType>none</DebugType>
     <UseVSHostingProcess>false</UseVSHostingProcess>
@@ -39,8 +38,8 @@
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x64'">
     <DebugSymbols>true</DebugSymbols>
-    <OutputPath>..\bin\debug\windows\net_2_0\x64\</OutputPath>
-    <DefineConstants>TRACE;DEBUG;NET_3_5;NET_3_0;NET_2_0;WINDOWS</DefineConstants>
+    <OutputPath>..\bin\debug\linux\net_3_5\x64\</OutputPath>
+    <DefineConstants>TRACE;DEBUG;NET_3_5;NET_3_0;NET_2_0;LINUX</DefineConstants>
     <DebugType>full</DebugType>
     <PlatformTarget>x64</PlatformTarget>
     <ErrorReport>prompt</ErrorReport>
@@ -49,8 +48,8 @@
     <Optimize>false</Optimize>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x64'">
-    <OutputPath>..\bin\release\windows\net_2_0\x64\</OutputPath>
-    <DefineConstants>TRACE;NET_3_5;NET_3_0;NET_2_0;WINDOWS</DefineConstants>
+    <OutputPath>..\bin\release\linux\net_3_5\x64\</OutputPath>
+    <DefineConstants>TRACE;NET_3_5;NET_3_0;NET_2_0;LINUX</DefineConstants>
     <Optimize>true</Optimize>
     <DebugType>none</DebugType>
     <UseVSHostingProcess>false</UseVSHostingProcess>
@@ -61,16 +60,16 @@
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|AnyCPU'">
     <DebugSymbols>true</DebugSymbols>
-    <OutputPath>..\bin\debug\windows\net_2_0\AnyCPU\</OutputPath>
-    <DefineConstants>TRACE;DEBUG;NET_3_5;NET_3_0;NET_2_0;WINDOWS</DefineConstants>
+    <OutputPath>..\bin\debug\linux\net_3_5\AnyCPU\</OutputPath>
+    <DefineConstants>TRACE;DEBUG;NET_3_5;NET_3_0;NET_2_0;LINUX</DefineConstants>
     <DebugType>full</DebugType>
     <PlatformTarget>AnyCPU</PlatformTarget>
     <ErrorReport>prompt</ErrorReport>
     <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|AnyCPU'">
-    <OutputPath>..\bin\release\windows\net_2_0\AnyCPU\</OutputPath>
-    <DefineConstants>TRACE;NET_3_5;NET_3_0;NET_2_0;WINDOWS</DefineConstants>
+    <OutputPath>..\bin\release\linux\net_3_5\AnyCPU\</OutputPath>
+    <DefineConstants>TRACE;NET_3_5;NET_3_0;NET_2_0;LINUX</DefineConstants>
     <Optimize>true</Optimize>
     <DebugType>none</DebugType>
     <UseVSHostingProcess>false</UseVSHostingProcess>
@@ -80,6 +79,7 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
+    <Reference Include="System.Core" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AcsIdentifier.cs" />
@@ -161,16 +161,6 @@
     <Compile Include="FilterAnd.cs" />
     <Compile Include="VariableRange.cs" />
   </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\BtrieveWrapper\BtrieveWrapper-windows-net_2_0.csproj">
-      <Project>{A69AE6C8-F511-4A95-825D-F854AEBCF4C8}</Project>
-      <Name>BtrieveWrapper-windows-net_2_0</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\System.Compatibility\System.Compatibility-windows-net_2_0.csproj">
-      <Project>{36d4a5af-cd5d-49ac-8f34-383d8a02fff5}</Project>
-      <Name>System.Compatibility-windows-net_2_0</Name>
-    </ProjectReference>
-  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
@@ -179,4 +169,14 @@
   <Target Name="AfterBuild">
   </Target>
   -->
+  <ItemGroup>
+    <ProjectReference Include="..\BtrieveWrapper\BtrieveWrapper-linux-net_3_5.csproj">
+      <Project>{A69AE6C8-F511-4A95-825D-F854AEBCF4C8}</Project>
+      <Name>BtrieveWrapper-linux-net_3_5</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\System.Compatibility\System.Compatibility-linux-net_3_5.csproj">
+      <Project>{36d4a5af-cd5d-49ac-8f34-383d8a02fff5}</Project>
+      <Name>System.Compatibility-linux-net_3_5</Name>
+    </ProjectReference>
+  </ItemGroup>
 </Project>

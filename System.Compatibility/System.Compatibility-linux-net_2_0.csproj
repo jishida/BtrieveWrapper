@@ -7,25 +7,25 @@
     <ProjectGuid>{36D4A5AF-CD5D-49AC-8F34-383D8A02FFF5}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Compatibility.System.Core</RootNamespace>
-    <AssemblyName>Compatibility.System.Core</AssemblyName>
+    <RootNamespace>System.Compatibility</RootNamespace>
+    <AssemblyName>System.Compatibility</AssemblyName>
     <TargetFrameworkVersion>v2.0</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <TargetFrameworkProfile />
-    <BaseIntermediateOutputPath>obj\windows\net_2_0\</BaseIntermediateOutputPath>
+    <BaseIntermediateOutputPath>obj\linux\net_2_0\</BaseIntermediateOutputPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x86'">
     <DebugSymbols>true</DebugSymbols>
-    <OutputPath>..\bin\debug\windows\net_2_0\x86\</OutputPath>
-    <DefineConstants>TRACE;DEBUG;NET_2_0;WINDOWS</DefineConstants>
+    <OutputPath>..\bin\debug\linux\net_2_0\x86\</OutputPath>
+    <DefineConstants>TRACE;DEBUG;NET_2_0;LINUX</DefineConstants>
     <DebugType>full</DebugType>
     <PlatformTarget>x86</PlatformTarget>
     <ErrorReport>prompt</ErrorReport>
     <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x86'">
-    <OutputPath>..\bin\release\windows\net_2_0\x86\</OutputPath>
-    <DefineConstants>TRACE;NET_2_0;WINDOWS</DefineConstants>
+    <OutputPath>..\bin\release\linux\net_2_0\x86\</OutputPath>
+    <DefineConstants>TRACE;NET_2_0;LINUX</DefineConstants>
     <Optimize>true</Optimize>
     <DebugType>none</DebugType>
     <UseVSHostingProcess>false</UseVSHostingProcess>
@@ -35,16 +35,16 @@
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x64'">
     <DebugSymbols>true</DebugSymbols>
-    <OutputPath>..\bin\debug\windows\net_2_0\x64\</OutputPath>
-    <DefineConstants>TRACE;DEBUG;NET_2_0;WINDOWS</DefineConstants>
+    <OutputPath>..\bin\debug\linux\net_2_0\x64\</OutputPath>
+    <DefineConstants>TRACE;DEBUG;NET_2_0;LINUX</DefineConstants>
     <DebugType>full</DebugType>
     <PlatformTarget>x64</PlatformTarget>
     <ErrorReport>prompt</ErrorReport>
     <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x64'">
-    <OutputPath>..\bin\release\windows\net_2_0\x64\</OutputPath>
-    <DefineConstants>TRACE;NET_2_0;WINDOWS</DefineConstants>
+    <OutputPath>..\bin\release\linux\net_2_0\x64\</OutputPath>
+    <DefineConstants>TRACE;NET_2_0;LINUX</DefineConstants>
     <Optimize>true</Optimize>
     <DebugType>none</DebugType>
     <UseVSHostingProcess>false</UseVSHostingProcess>
@@ -54,16 +54,16 @@
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|AnyCPU'">
     <DebugSymbols>true</DebugSymbols>
-    <OutputPath>..\bin\debug\windows\net_2_0\AnyCPU\</OutputPath>
-    <DefineConstants>TRACE;DEBUG;NET_2_0;WINDOWS</DefineConstants>
+    <OutputPath>..\bin\debug\linux\net_2_0\AnyCPU\</OutputPath>
+    <DefineConstants>TRACE;DEBUG;NET_2_0;LINUX</DefineConstants>
     <DebugType>full</DebugType>
     <PlatformTarget>AnyCPU</PlatformTarget>
     <ErrorReport>prompt</ErrorReport>
     <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|AnyCPU'">
-    <OutputPath>..\bin\release\windows\net_2_0\AnyCPU\</OutputPath>
-    <DefineConstants>TRACE;NET_2_0;WINDOWS</DefineConstants>
+    <OutputPath>..\bin\release\linux\net_2_0\AnyCPU\</OutputPath>
+    <DefineConstants>TRACE;NET_2_0;LINUX</DefineConstants>
     <Optimize>true</Optimize>
     <DebugType>none</DebugType>
     <UseVSHostingProcess>false</UseVSHostingProcess>
@@ -141,12 +141,8 @@
     <Compile Include="System.Linq\SortContext.cs" />
     <Compile Include="System.Linq\SortDirection.cs" />
     <Compile Include="System.Linq\SortSequenceContext.cs" />
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\Compatibility.System\Compatibility.System-windows-net_2_0.csproj">
-      <Project>{0b44d896-62bc-4bb5-98f4-3bc9dfd8d606}</Project>
-      <Name>Compatibility.System-windows-net_2_0</Name>
-    </ProjectReference>
+    <Compile Include="System\Actions.cs" />
+    <Compile Include="System\Funcs.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

@@ -166,9 +166,9 @@
       <Project>{A69AE6C8-F511-4A95-825D-F854AEBCF4C8}</Project>
       <Name>BtrieveWrapper-windows-net_3_5</Name>
     </ProjectReference>
-    <ProjectReference Include="..\Compatibility.System\Compatibility.System-windows-net_3_5.csproj">
-      <Project>{0b44d896-62bc-4bb5-98f4-3bc9dfd8d606}</Project>
-      <Name>Compatibility.System-windows-net_3_5</Name>
+    <ProjectReference Include="..\System.Compatibility\System.Compatibility-windows-net_3_5.csproj">
+      <Project>{36d4a5af-cd5d-49ac-8f34-383d8a02fff5}</Project>
+      <Name>System.Compatibility-windows-net_3_5</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

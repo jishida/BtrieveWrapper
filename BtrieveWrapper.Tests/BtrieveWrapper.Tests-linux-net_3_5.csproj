@@ -3,67 +3,75 @@
   <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
-    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{0B44D896-62BC-4BB5-98F4-3BC9DFD8D606}</ProjectGuid>
+    <Platform Condition=" '$(Platform)' == '' ">x86</Platform>
+    <ProjectGuid>{C4A6042F-1CF7-4B81-BCA1-18CAA4924EF5}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Compatibility.System</RootNamespace>
-    <AssemblyName>Compatibility.System</AssemblyName>
+    <RootNamespace>BtrieveWrapper.Tests</RootNamespace>
+    <AssemblyName>BtrieveWrapper.Tests</AssemblyName>
     <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
-    <TargetFrameworkProfile>Client</TargetFrameworkProfile>
-    <BaseIntermediateOutputPath>obj\windows\net_3_5\</BaseIntermediateOutputPath>
+    <TargetFrameworkProfile />
+    <SolutionDir Condition="$(SolutionDir) == '' Or $(SolutionDir) == '*Undefined*'">..\</SolutionDir>
+    <RestorePackages>true</RestorePackages>
+    <BaseIntermediateOutputPath>obj\linux\net_3_5\</BaseIntermediateOutputPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x86'">
     <DebugSymbols>true</DebugSymbols>
-    <OutputPath>..\bin\debug\windows\net_3_5\x86\</OutputPath>
-    <DefineConstants>TRACE;DEBUG;NET_3_5;NET_3_0;NET_2_0;WINDOWS</DefineConstants>
+    <OutputPath>..\bin\debug\linux\net_3_5\x86\</OutputPath>
+    <DefineConstants>TRACE;DEBUG;NET_3_5;NET_3_0;NET_2_0;LINUX</DefineConstants>
     <DebugType>full</DebugType>
     <PlatformTarget>x86</PlatformTarget>
     <ErrorReport>prompt</ErrorReport>
     <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+    <WarningLevel>4</WarningLevel>
+    <Optimize>false</Optimize>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x86'">
-    <OutputPath>..\bin\release\windows\net_3_5\x86\</OutputPath>
-    <DefineConstants>TRACE;NET_3_5;NET_3_0;NET_2_0;WINDOWS</DefineConstants>
+    <OutputPath>..\bin\release\linux\net_3_5\x86\</OutputPath>
+    <DefineConstants>TRACE;NET_3_5;NET_3_0;NET_2_0;LINUX</DefineConstants>
     <Optimize>true</Optimize>
     <DebugType>none</DebugType>
     <UseVSHostingProcess>false</UseVSHostingProcess>
     <PlatformTarget>x86</PlatformTarget>
     <ErrorReport>prompt</ErrorReport>
     <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+    <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x64'">
     <DebugSymbols>true</DebugSymbols>
-    <OutputPath>..\bin\debug\windows\net_3_5\x64\</OutputPath>
-    <DefineConstants>TRACE;DEBUG;NET_3_5;NET_3_0;NET_2_0;WINDOWS</DefineConstants>
+    <OutputPath>..\bin\debug\linux\net_3_5\x64\</OutputPath>
+    <DefineConstants>TRACE;DEBUG;NET_3_5;NET_3_0;NET_2_0;LINUX</DefineConstants>
     <DebugType>full</DebugType>
     <PlatformTarget>x64</PlatformTarget>
     <ErrorReport>prompt</ErrorReport>
     <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+    <WarningLevel>4</WarningLevel>
+    <Optimize>false</Optimize>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x64'">
-    <OutputPath>..\bin\release\windows\net_3_5\x64\</OutputPath>
-    <DefineConstants>TRACE;NET_3_5;NET_3_0;NET_2_0;WINDOWS</DefineConstants>
+    <OutputPath>..\bin\release\linux\net_3_5\x64\</OutputPath>
+    <DefineConstants>TRACE;NET_3_5;NET_3_0;NET_2_0;LINUX</DefineConstants>
     <Optimize>true</Optimize>
     <DebugType>none</DebugType>
     <UseVSHostingProcess>false</UseVSHostingProcess>
     <PlatformTarget>x64</PlatformTarget>
     <ErrorReport>prompt</ErrorReport>
     <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+    <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|AnyCPU'">
     <DebugSymbols>true</DebugSymbols>
-    <OutputPath>..\bin\debug\windows\net_3_5\AnyCPU\</OutputPath>
-    <DefineConstants>TRACE;DEBUG;NET_3_5;NET_3_0;NET_2_0;WINDOWS</DefineConstants>
+    <OutputPath>..\bin\debug\linux\net_3_5\AnyCPU\</OutputPath>
+    <DefineConstants>TRACE;DEBUG;NET_3_5;NET_3_0;NET_2_0;LINUX</DefineConstants>
     <DebugType>full</DebugType>
     <PlatformTarget>AnyCPU</PlatformTarget>
     <ErrorReport>prompt</ErrorReport>
     <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|AnyCPU'">
-    <OutputPath>..\bin\release\windows\net_3_5\AnyCPU\</OutputPath>
-    <DefineConstants>TRACE;NET_3_5;NET_3_0;NET_2_0;WINDOWS</DefineConstants>
+    <OutputPath>..\bin\release\linux\net_3_5\AnyCPU\</OutputPath>
+    <DefineConstants>TRACE;NET_3_5;NET_3_0;NET_2_0;LINUX</DefineConstants>
     <Optimize>true</Optimize>
     <DebugType>none</DebugType>
     <UseVSHostingProcess>false</UseVSHostingProcess>
@@ -72,18 +80,24 @@
     <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
   <ItemGroup>
-    <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="System\Actions.cs" />
-    <Compile Include="System\Funcs.cs" />
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="xunit">
+      <HintPath>..\packages\xunit.1.9.2\lib\net20\xunit.dll</HintPath>
+    </Reference>
+    <Reference Include="xunit.extensions">
+      <HintPath>..\packages\xunit.extensions.1.9.2\lib\net20\xunit.extensions.dll</HintPath>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Reference Include="System" />
+    <Compile Include="CreateDataFactory.cs" />
+    <Compile Include="OperatorTest.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Settings.cs" />
+    <Compile Include="Temporary.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
-  <PropertyGroup>
-    <PreBuildEvent>
-    </PreBuildEvent>
-  </PropertyGroup>
+  <Import Project="$(SolutionDir)\.nuget\NuGet.targets" Condition="Exists('$(SolutionDir)\.nuget\NuGet.targets')" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
   <Target Name="BeforeBuild">
@@ -91,4 +105,17 @@
   <Target Name="AfterBuild">
   </Target>
   -->
+  <ItemGroup>
+    <ProjectReference Include="..\BtrieveWrapper\BtrieveWrapper-linux-net_3_5.csproj">
+      <Project>{A69AE6C8-F511-4A95-825D-F854AEBCF4C8}</Project>
+      <Name>BtrieveWrapper-linux-net_3_5</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\System.Compatibility\System.Compatibility-linux-net_3_5.csproj">
+      <Project>{36d4a5af-cd5d-49ac-8f34-383d8a02fff5}</Project>
+      <Name>System.Compatibility-linux-net_3_5</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="packages.config" />
+  </ItemGroup>
 </Project>

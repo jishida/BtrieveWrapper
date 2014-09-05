@@ -109,13 +109,9 @@
       <Project>{a69ae6c8-f511-4a95-825d-f854aebcf4c8}</Project>
       <Name>BtrieveWrapper-windows-net_2_0</Name>
     </ProjectReference>
-    <ProjectReference Include="..\Compatibility.System.Core\Compatibility.System.Core-windows-net_2_0.csproj">
+    <ProjectReference Include="..\System.Compatibility\System.Compatibility-windows-net_2_0.csproj">
       <Project>{36d4a5af-cd5d-49ac-8f34-383d8a02fff5}</Project>
-      <Name>Compatibility.System.Core-windows-net_2_0</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\Compatibility.System\Compatibility.System-windows-net_2_0.csproj">
-      <Project>{0b44d896-62bc-4bb5-98f4-3bc9dfd8d606}</Project>
-      <Name>Compatibility.System-windows-net_2_0</Name>
+      <Name>System.Compatibility-windows-net_2_0</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>

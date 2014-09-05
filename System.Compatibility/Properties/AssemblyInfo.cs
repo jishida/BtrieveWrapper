@@ -5,11 +5,11 @@ using System.Runtime.InteropServices;
 // アセンブリに関する一般情報は以下の属性セットをとおして制御されます。
 // アセンブリに関連付けられている情報を変更するには、
 // これらの属性値を変更してください。
-[assembly: AssemblyTitle("Mono.System")]
+[assembly: AssemblyTitle("System.Compatibility")]
 [assembly: AssemblyDescription("")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("")]
-[assembly: AssemblyProduct("Mono.System")]
+[assembly: AssemblyProduct("System.Compatibility")]
 [assembly: AssemblyCopyright("Copyright ©  2014")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
@@ -20,7 +20,7 @@ using System.Runtime.InteropServices;
 [assembly: ComVisible(false)]
 
 // 次の GUID は、このプロジェクトが COM に公開される場合の、typelib の ID です
-[assembly: Guid("060661b9-9a0c-4dc0-8887-56a331132dfd")]
+[assembly: Guid("0ac3f6a8-df16-4fdb-8893-8014f0689898")]
 
 // アセンブリのバージョン情報は、以下の 4 つの値で構成されています:
 //
