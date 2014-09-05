@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using BtrieveWrapper.Orm;
 using BtrieveWrapper.Orm.Models.CustomModels;
 
@@ -11,7 +12,7 @@ namespace BtrieveWrapper.Demo
 
             Console.WriteLine("[Read people whose last initial is 'D']");
             using (RecordManager<Person, PersonKeyCollection> people = client.Person()) {
-                var query = people.Query(p =>
+                IEnumerable<Person> query = people.Query(p =>
                     p.Last_Name.GreaterThanOrEqual("D") &&
                     p.Last_Name.LessThan("E"));
                 foreach (Person person in query) {
@@ -25,10 +26,9 @@ namespace BtrieveWrapper.Demo
 
             Console.WriteLine("[Person CRUD]");
             using (RecordManager<Person, PersonKeyCollection> people = client.Person()) {
-                Person person;
                 using (Transaction transaction = client.BeginTransaction()) {
                     Console.Write("Create person: ");
-                    person = new Person();
+                    Person person = new Person();
                     person.ID = 0;
                     person.First_Name = "Ieyasu";
                     person.Last_Name = "Tokugawa";
