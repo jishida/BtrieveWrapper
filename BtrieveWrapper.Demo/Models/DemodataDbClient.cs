@@ -2,8 +2,8 @@
 {
 	public class DemodataDbClient : BtrieveWrapper.Orm.DbClient
     {
-        public DemodataDbClient(string dllPath = null, string applicationId = "BW")
-            : base(dllPath, applicationId) { }
+        public DemodataDbClient(string applicationId = "BW", string dllPath = null, System.Collections.Generic.IEnumerable<string> dependencyPaths = null)
+            : base(applicationId, dllPath, dependencyPaths) { }
 
         public DemodataDbClient(BtrieveWrapper.INativeLibrary nativeLibrary, string applicationId = "BW")
             : base(nativeLibrary, applicationId) { }
