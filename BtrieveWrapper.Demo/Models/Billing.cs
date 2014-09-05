@@ -94,6 +94,8 @@
             get { return (System.String)this.GetValue("Comments"); }
             set { this.SetValue("Comments", value); }
         }
+
+        public static new BillingKeyCollection Keys { get { return GetKeyCollection<BillingKeyCollection>(); } }
     }
 
     public class BillingKeyCollection : BtrieveWrapper.Orm.KeyCollection<Billing> {

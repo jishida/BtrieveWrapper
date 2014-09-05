@@ -48,6 +48,8 @@
             get { return (System.Nullable<System.Single>)this.GetValue("Grade"); }
             set { this.SetValue("Grade", value); }
         }
+
+        public static new EnrollsKeyCollection Keys { get { return GetKeyCollection<EnrollsKeyCollection>(); } }
     }
 
     public class EnrollsKeyCollection : BtrieveWrapper.Orm.KeyCollection<Enrolls> {

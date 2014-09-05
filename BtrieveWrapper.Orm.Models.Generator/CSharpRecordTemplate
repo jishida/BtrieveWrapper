@@ -20,7 +20,7 @@
             set { this.SetValue("{% field.DisplayName %}", value); }
         }{% endfor %}
 
-		public static {% DisplayName %}KeyCollection Keys { get { return GetKeyCollection<{% DisplayName %}KeyCollection>(); } }
+		public static new {% DisplayName %}KeyCollection Keys { get { return GetKeyCollection<{% DisplayName %}KeyCollection>(); } }
     }
 
     public class {% DisplayName %}KeyCollection : BtrieveWrapper.Orm.KeyCollection<{% DisplayName %}> {

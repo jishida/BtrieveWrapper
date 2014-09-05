@@ -66,7 +66,7 @@
             return this.Id;
         }
 
-        public static CompanyKeyCollection Keys { get { return GetKeyCollection<CompanyKeyCollection>(); } }
+        public static new CompanyKeyCollection Keys { get { return GetKeyCollection<CompanyKeyCollection>(); } }
     }
 
     public class CompanyKeyCollection : BtrieveWrapper.Orm.KeyCollection<Company> {

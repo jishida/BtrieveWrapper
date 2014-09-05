@@ -61,6 +61,8 @@
             get { return (System.UInt64)this.GetValue("Head_Of_Dept"); }
             set { this.SetValue("Head_Of_Dept", value); }
         }
+
+        public static new DeptKeyCollection Keys { get { return GetKeyCollection<DeptKeyCollection>(); } }
     }
 
     public class DeptKeyCollection : BtrieveWrapper.Orm.KeyCollection<Dept> {

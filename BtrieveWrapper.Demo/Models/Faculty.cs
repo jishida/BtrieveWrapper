@@ -94,6 +94,8 @@
             get { return (System.Nullable<System.Double>)this.GetValue("Rsch_Grant_Amount"); }
             set { this.SetValue("Rsch_Grant_Amount", value); }
         }
+
+        public static new FacultyKeyCollection Keys { get { return GetKeyCollection<FacultyKeyCollection>(); } }
     }
 
     public class FacultyKeyCollection : BtrieveWrapper.Orm.KeyCollection<Faculty> {

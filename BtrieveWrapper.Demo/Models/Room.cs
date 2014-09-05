@@ -68,6 +68,8 @@
             get { return (System.String)this.GetValue("Type"); }
             set { this.SetValue("Type", value); }
         }
+
+        public static new RoomKeyCollection Keys { get { return GetKeyCollection<RoomKeyCollection>(); } }
     }
 
     public class RoomKeyCollection : BtrieveWrapper.Orm.KeyCollection<Room> {

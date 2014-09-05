@@ -57,6 +57,8 @@
             get { return (System.String)this.GetValue("Dept_Name"); }
             set { this.SetValue("Dept_Name", value); }
         }
+
+        public static new CourseKeyCollection Keys { get { return GetKeyCollection<CourseKeyCollection>(); } }
     }
 
     public class CourseKeyCollection : BtrieveWrapper.Orm.KeyCollection<Course>

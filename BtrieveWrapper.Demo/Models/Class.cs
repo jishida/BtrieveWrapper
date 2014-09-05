@@ -100,6 +100,8 @@
             get { return (System.UInt64)this.GetValue("Faculty_ID"); }
             set { this.SetValue("Faculty_ID", value); }
         }
+
+        public static new ClassKeyCollection Keys { get { return GetKeyCollection<ClassKeyCollection>(); } }
     }
 
     public class ClassKeyCollection : BtrieveWrapper.Orm.KeyCollection<Class>

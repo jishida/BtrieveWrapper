@@ -103,6 +103,8 @@
             get { return (System.Nullable<System.Int16>)this.GetValue("Cumulative_Hours"); }
             set { this.SetValue("Cumulative_Hours", value); }
         }
+
+        public static new StudentKeyCollection Keys { get { return GetKeyCollection<StudentKeyCollection>(); } }
     }
 
     public class StudentKeyCollection : BtrieveWrapper.Orm.KeyCollection<Student>

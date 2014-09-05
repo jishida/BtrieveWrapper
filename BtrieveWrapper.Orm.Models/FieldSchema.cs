@@ -91,6 +91,8 @@ namespace BtrieveWrapper.Orm.Models
         public BtrieveWrapper.KeyType? KeyType {
             get { if (this.DataType < 227) { return (KeyType)this.DataType; } else { return null; } }
         }
+
+        public static new FieldSchemaKeyCollection Keys { get { return GetKeyCollection<FieldSchemaKeyCollection>(); } }
     }
 
     public class FieldSchemaKeyCollection : BtrieveWrapper.Orm.KeyCollection<FieldSchema>

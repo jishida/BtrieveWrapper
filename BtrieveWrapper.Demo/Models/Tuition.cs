@@ -62,6 +62,8 @@
             get { return (System.String)this.GetValue("Comments"); }
             set { this.SetValue("Comments", value); }
         }
+
+        public static new TuitionKeyCollection Keys { get { return GetKeyCollection<TuitionKeyCollection>(); } }
     }
 
     public class TuitionKeyCollection : BtrieveWrapper.Orm.KeyCollection<Tuition> {

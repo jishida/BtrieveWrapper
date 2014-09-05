@@ -51,7 +51,7 @@
             get { return (this.Flags & 0x10) == 0x10; }
         }
 
-        
+        public static new FileSchemaKeyCollection Keys { get { return GetKeyCollection<FileSchemaKeyCollection>(); } }
     }
 
     public class FileSchemaKeyCollection : BtrieveWrapper.Orm.KeyCollection<FileSchema> {

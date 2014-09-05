@@ -295,6 +295,8 @@
             get { return (System.String)this.GetValue("Comments"); }
             set { this.SetValue("Comments", value); }
         }
+
+        public static new PersonKeyCollection Keys { get { return GetKeyCollection<PersonKeyCollection>(); } }
     }
 
     public class PersonKeyCollection : BtrieveWrapper.Orm.KeyCollection<Person>
