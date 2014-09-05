@@ -3,8 +3,8 @@
 ## Summary
 
 BtrieveWrapper is a wrapper library of Btrieve API, which operates MicroKarnel
-Database Engine (MKDE) of Actian PSQL. It uses Actian PSQL and works on .NET
-Framework 4.0.
+Database Engine (MKDE) of Actian PSQL. It uses Actian PSQL and works on Actian
+PSQL Client and Microsoft .NET Framework 2.0 or higher.
 
 This library provides classes to operate MKDE without SQL.
 Generally, In operating RDBMS with SQL, the parsing process can be overhead and
@@ -18,8 +18,8 @@ provides high usability.
 
 BtrieveWrapper は Actian PSQL のデータベース操作システムである MicroKarnel
 Database Engine (MKDE) を Btrieve API を用いて操作するラッパーライブラリです。
-このライブラリは Actian PSQL を使用しており、動作には.NET Framework 4.0 が必要
-です。
+このライブラリは Actian PSQL を使用しており、動作にはActian PSQL Client と2.0以
+上の Microsoft .NET Framework が必要です。
 
 このライブラリは、 SQL を使用せずに、 MKDE を操作するクラスを提供します。
 一般に、 SQL を用いた RDBMS の操作では SQL のパース処理がオーバーヘッドとなり、
@@ -66,6 +66,7 @@ BtrieveWrapper.Orm.dll を参照したのち、 BtrieveWrapper.Orm.Models.Genera
 あとは以下のようにコードを書けば実行できるはずです。
 ```csharp
 using System;
+using System.Collections.Generic;
 using BtrieveWrapper.Orm;
 using BtrieveWrapper.Orm.Models.CustomModels;
 
@@ -77,8 +78,8 @@ namespace BtrieveWrapper.Demo
             DemodataDbClient client = new DemodataDbClient();
 
             Console.WriteLine("[Read people whose last initial is 'D']");
-            using (PersonManager people = client.Person()) {
-                var query = people.Query(p =>
+            using (RecordManager<Person, PersonKeyCollection> people = client.Person()) {
+                IEnumerable<Person> query = people.Query(p =>
                     p.Last_Name.GreaterThanOrEqual("D") &&
                     p.Last_Name.LessThan("E"));
                 foreach (Person person in query) {
@@ -91,11 +92,10 @@ namespace BtrieveWrapper.Demo
             Console.WriteLine();
 
             Console.WriteLine("[Person CRUD]");
-            using (PersonManager people = client.Person()) {
-                Person person;
+            using (RecordManager<Person, PersonKeyCollection> people = client.Person()) {
                 using (Transaction transaction = client.BeginTransaction()) {
                     Console.Write("Create person: ");
-                    person = new Person();
+                    Person person = new Person();
                     person.ID = 0;
                     person.First_Name = "Ieyasu";
                     person.Last_Name = "Tokugawa";
