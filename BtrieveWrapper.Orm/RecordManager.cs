@@ -6,6 +6,52 @@ using System.Text;
 
 namespace BtrieveWrapper.Orm
 {
+    public class RecordManager<TRecord> : RecordManager<TRecord, KeyCollection<TRecord>> 
+        where TRecord : Record<TRecord>
+    {
+        public RecordManager(
+            Path path = null,
+            string ownerName = null,
+            OpenMode? openMode = null,
+            string applicationId = "BW",
+            ushort threadId = 0,
+            string dllPath = null,
+            IEnumerable<string> dependencyPaths = null,
+            int reusableCapacity = 1000,
+            byte[] temporaryBuffer = null)
+            : base(path, ownerName, openMode, applicationId, threadId, dllPath, dependencyPaths, reusableCapacity, temporaryBuffer) { }
+
+        public RecordManager(
+            string path,
+            string ownerName = null,
+            OpenMode? openMode = null,
+            string applicationId = "BW",
+            ushort threadId = 0,
+            string dllPath = null,
+            IEnumerable<string> dependencyPaths = null,
+            int reusableCapacity = 1000,
+            byte[] temporaryBuffer = null)
+            : base(path, ownerName, openMode, applicationId, threadId, dllPath, dependencyPaths, reusableCapacity, temporaryBuffer) { }
+
+        public RecordManager(
+            NativeOperator nativeOperator,
+            Path path = null,
+            string ownerName = null,
+            OpenMode? openMode = null,
+            int reusableCapacity = 1000,
+            byte[] temporaryBuffer = null)
+            : base(nativeOperator, path, ownerName, openMode, reusableCapacity, temporaryBuffer) { }
+
+        public RecordManager(
+            NativeOperator nativeOperator,
+            string path,
+            string ownerName = null,
+            OpenMode? openMode = null,
+            int reusableCapacity = 1000,
+            byte[] temporaryBuffer = null)
+            : base(nativeOperator, path, ownerName, openMode, reusableCapacity, temporaryBuffer) { }
+    }
+
     public class RecordManager<TRecord, TKeyCollection> : RecordReader<TRecord, TKeyCollection>, IRecordManager
         where TRecord : Record<TRecord>
         where TKeyCollection : KeyCollection<TRecord>, new()

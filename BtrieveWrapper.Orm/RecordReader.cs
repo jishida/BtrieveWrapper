@@ -5,6 +5,53 @@ using System.Text;
 
 namespace BtrieveWrapper.Orm
 {
+    public class RecordReader<TRecord> : RecordReader<TRecord, KeyCollection<TRecord>>
+        where TRecord : Record<TRecord>
+    {
+        public RecordReader(
+            Path path = null,
+            string ownerName = null,
+            OpenMode? openMode = null,
+            string applicationId = "BW",
+            ushort threadId = 0,
+            string dllPath = null,
+            IEnumerable<string> dependencyPaths = null,
+            int reusableCapacity = 1000,
+            byte[] temporaryBuffer = null)
+            : base(path, ownerName, openMode, applicationId, threadId, dllPath, dependencyPaths, reusableCapacity, temporaryBuffer) { }
+
+        public RecordReader(
+            string path,
+            string ownerName = null,
+            OpenMode? openMode = null,
+            string applicationId = "BW",
+            ushort threadId = 0,
+            string dllPath = null,
+            IEnumerable<string> dependencyPaths = null,
+            int reusableCapacity = 1000,
+            byte[] temporaryBuffer = null)
+            : base(path, ownerName, openMode, applicationId, threadId, dllPath, dependencyPaths, reusableCapacity, temporaryBuffer) { }
+
+        public RecordReader(
+            NativeOperator nativeOperator,
+            Path path = null,
+            string ownerName = null,
+            OpenMode? openMode = null,
+            int reusableCapacity = 1000,
+            byte[] temporaryBuffer = null)
+            : base(nativeOperator, path, ownerName, openMode, reusableCapacity, temporaryBuffer) { }
+
+
+        public RecordReader(
+            NativeOperator nativeOperator,
+            string path,
+            string ownerName = null,
+            OpenMode? openMode = null,
+            int reusableCapacity = 1000,
+            byte[] temporaryBuffer = null)
+            : base(nativeOperator, path, ownerName, openMode, reusableCapacity, temporaryBuffer) { }
+    }
+
     public class RecordReader<TRecord, TKeyCollection> : ITransactionalObject
         where TRecord : Record<TRecord>
         where TKeyCollection : KeyCollection<TRecord>, new()
