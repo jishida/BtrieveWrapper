@@ -8,8 +8,7 @@ namespace BtrieveWrapper.Orm.Models.Generator
     class Program
     {
         static int Main(string[] args) {
-#if DEBUG
-#else
+#if !DEBUG
             try {
 #endif
                 Arguments arguments;
@@ -156,8 +155,7 @@ namespace BtrieveWrapper.Orm.Models.Generator
                         throw new ArgumentException();
                 }
                 return 0;
-#if DEBUG
-#else
+#if !DEBUG
             } catch (ArgumentException) {
                 Console.WriteLine("Invalid Arguments.");
                 Console.WriteLine();
