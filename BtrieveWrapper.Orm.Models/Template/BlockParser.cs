@@ -18,6 +18,10 @@ namespace BtrieveWrapper.Orm.Models.Template
 
             public object Context { get; private set; }
             public Dictionary<string, object> Dictionary { get; private set; }
+
+            public override string ToString() {
+                return this.Context.ToString();
+            }
         }
 
         class IfParameter
