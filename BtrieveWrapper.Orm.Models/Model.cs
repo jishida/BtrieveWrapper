@@ -40,6 +40,9 @@ namespace BtrieveWrapper.Orm.Models
             "UriPrompt", typeof(string), typeof(Model));
         public static readonly DependencyProperty RelativeDirectoryProperty = DependencyProperty.Register(
             "RelativeDirectory", typeof(string), typeof(Model));
+        public static readonly DependencyProperty CommentProperty = DependencyProperty.Register(
+            "Comment", typeof(string), typeof(Model));
+
 #endif
 
         public Model() {
@@ -53,6 +56,7 @@ namespace BtrieveWrapper.Orm.Models
             this.UriPassword = null;
             this.UriPrompt = null;
             this.RelativeDirectory = null;
+            this.Comment = null;
 #if NET_3_5
             this.RecordCollection = new ObservableCollection<Record>();
             this.RecordCollection.CollectionChanged += RecordCollection_CollectionChanged;
@@ -95,6 +99,9 @@ namespace BtrieveWrapper.Orm.Models
         [XmlAttribute]
         public string RelativeDirectory { get { return (string)this.GetValue(RelativeDirectoryProperty); } set { this.SetValue(RelativeDirectoryProperty, value); } }
 
+        [XmlAttribute]
+        public string Comment { get { return (string)this.GetValue(CommentProperty); } set { this.SetValue(CommentProperty, value); } }
+
         [XmlIgnore]
         public ObservableCollection<string> DependencyPathCollection { get; private set; }
 
@@ -127,12 +134,27 @@ namespace BtrieveWrapper.Orm.Models
         [XmlAttribute]
         public string RelativeDirectory { get; set; }
 
+        [XmlAttribute]
+        public string Comment { get; set; }
+
         [XmlIgnore]
         public List<string> DependencyPathCollection { get; private set; }
 
         [XmlIgnore]
         public ObservableList<Record> RecordCollection { get; private set; }
 #endif
+
+        [XmlIgnore]
+        public IEnumerable<string> CommentLines {
+            get {
+                if (String.IsNullOrEmpty(this.Comment)) {
+                    return null;
+                }
+                return this.Comment.Split(new[] { Environment.NewLine }, StringSplitOptions.None)
+                    .Select(l => l.Escape());
+            }
+        }
+
         [XmlArrayItem]
         public string[] DependencyPaths {
             get { return this.DependencyPathCollection.ToArray(); }

@@ -67,6 +67,9 @@ namespace BtrieveWrapper.Orm.Models
             "VariableFieldCapacity", typeof(ushort), typeof(Record));
         public static readonly DependencyProperty RejectCountProperty = DependencyProperty.Register(
             "RejectCount", typeof(ushort), typeof(Record));
+        public static readonly DependencyProperty CommentProperty = DependencyProperty.Register(
+            "Comment", typeof(string), typeof(Record));
+
 #endif
         public Record() {
             this.FixedLength = 100;
@@ -91,6 +94,7 @@ namespace BtrieveWrapper.Orm.Models
             this.OpenMode = BtrieveWrapper.OpenMode.Normal;
             this.VariableFieldCapacity = 0;
             this.RejectCount = 0;
+            this.Comment = null;
 
 #if NET_3_5
             this.FieldCollection = new ObservableCollection<Field>();
@@ -175,6 +179,9 @@ namespace BtrieveWrapper.Orm.Models
         [XmlAttribute]
         public ushort RejectCount { get { return (ushort)this.GetValue(RejectCountProperty); } set { this.SetValue(RejectCountProperty, value); } }
 
+        [XmlAttribute]
+        public string Comment { get { return (string)this.GetValue(CommentProperty); } set { this.SetValue(CommentProperty, value); } }
+
         [XmlIgnore]
         public ObservableCollection<Field> FieldCollection { get; private set; }
         [XmlIgnore]
@@ -241,11 +248,25 @@ namespace BtrieveWrapper.Orm.Models
         [XmlAttribute]
         public ushort RejectCount { get; set; }
 
+        [XmlAttribute]
+        public string Comment { get; set; }
+
         [XmlIgnore]
         public ObservableList<Field> FieldCollection { get; private set; }
         [XmlIgnore]
         public ObservableList<Key> KeyCollection { get; private set; }
 #endif
+
+        [XmlIgnore]
+        public IEnumerable<string> CommentLines {
+            get {
+                if (String.IsNullOrEmpty(this.Comment)) {
+                    return null;
+                }
+                return this.Comment.Split(new[] { Environment.NewLine }, StringSplitOptions.None)
+                    .Select(l => l.Escape());
+            }
+        }
 
         [XmlArrayItem]
         public Field[] Fields {

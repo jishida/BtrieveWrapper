@@ -32,6 +32,9 @@ namespace BtrieveWrapper.Orm.Models
             "NullType", typeof(NullType), typeof(Field));
         public static readonly DependencyProperty KeyTypeProperty = DependencyProperty.Register(
             "KeyType", typeof(KeyType), typeof(Field));
+        public static readonly DependencyProperty CommentProperty = DependencyProperty.Register(
+            "Comment", typeof(string), typeof(Field));
+
 #endif
         public Field() {
             this.Id = 0;
@@ -41,6 +44,7 @@ namespace BtrieveWrapper.Orm.Models
             this.Parameter = null;
             this.NullType = Orm.NullType.None;
             this.KeyType = BtrieveWrapper.KeyType.String;
+            this.Comment = null;
         }
 
 #if NET_3_5
@@ -58,6 +62,9 @@ namespace BtrieveWrapper.Orm.Models
         public KeyType KeyType { get { return (KeyType)this.GetValue(KeyTypeProperty); } set { this.SetValue(KeyTypeProperty, value); } }
         [XmlAttribute]
         public NullType NullType { get { return (NullType)this.GetValue(NullTypeProperty); } set { this.SetValue(NullTypeProperty, value); } }
+
+        [XmlAttribute]
+        public string Comment { get { return (string)this.GetValue(CommentProperty); } set { this.SetValue(CommentProperty, value); } }
 
         [XmlIgnore]
         public Type ConverterType {
@@ -83,9 +90,23 @@ namespace BtrieveWrapper.Orm.Models
         public KeyType KeyType { get; set; }
         [XmlAttribute]
         public NullType NullType { get; set; }
+        [XmlAttribute]
+        public string Comment { get; set; }
         [XmlIgnore]
         public Type ConverterType { get; set; }
 #endif
+
+        [XmlIgnore]
+        public IEnumerable<string> CommentLines {
+            get {
+                if (String.IsNullOrEmpty(this.Comment)) {
+                    return null;
+                }
+                return this.Comment.Split(new[] { Environment.NewLine }, StringSplitOptions.None)
+                    .Select(l => l.Escape());
+            }
+        }
+
         [XmlAttribute]
         public string ConverterTypeName {
             get { return this.ConverterType.Assembly.GetName().Name + "," + this.ConverterType.FullName; }

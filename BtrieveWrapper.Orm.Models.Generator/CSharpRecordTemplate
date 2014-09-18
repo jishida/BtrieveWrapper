@@ -12,6 +12,10 @@
 
 		public {% Name %}(byte[] dataBuffer) { }{% for field in Fields %}
 		
+        /// <summary>
+{% if field.CommentLines %}{% for line in field.CommentLines %}        /// {% line %}
+{% endfor %}{% else %}        /// 
+{% endif %}        /// </summary>
 {% for segment in field.KeySegments %}        [BtrieveWrapper.Orm.KeySegment({% segment.Key.KeyNumber %}, {% segment.Index %}{% for parameter in segment.AttributeParameters %},
             {% parameter.Key %} = {% parameter.Value %}{% endfor %})]
 {% endfor %}        [BtrieveWrapper.Orm.Field({% field.Position %}, {% field.Length %}, BtrieveWrapper.KeyType.{% field.KeyType %}, typeof({% field.ConverterType.FullName %}){% if field.Parameter %}, Parameter = {% field.Parameter %}{% endif %}{% if field.NullType = "None" %}{% else %}, NullType = BtrieveWrapper.Orm.NullType.{% field.NullType %}{% endif %})]
@@ -26,6 +30,10 @@
     public class {% DisplayName %}KeyCollection : BtrieveWrapper.Orm.KeyCollection<{% DisplayName %}> {
         public {% Name %}KeyCollection() : base() { }{% for key in Keys %}
 
+        /// <summary>
+{% if key.CommentLines %}{% for line in key.CommentLines %}        /// {% line %}
+{% endfor %}{% else %}        /// 
+{% endif %}        /// </summary>
         public BtrieveWrapper.Orm.KeyInfo {% key.DisplayName %} { get { return this[{% key.KeyNumber %}]; } }{% endfor %}
     }
 }

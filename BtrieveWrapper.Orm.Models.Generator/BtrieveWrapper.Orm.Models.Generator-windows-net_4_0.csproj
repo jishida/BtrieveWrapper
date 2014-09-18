@@ -73,7 +73,6 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="Arguments.cs" />
-    <Compile Include="IModelInitializable.cs" />
     <Compile Include="OperationMode.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

@@ -103,6 +103,7 @@
     <Compile Include="Controls\ByteConverter.cs" />
     <Compile Include="Controls\SByteBinding.cs" />
     <Compile Include="Controls\ByteBinding.cs" />
+    <Compile Include="Controls\MultiLineConverter.cs" />
     <Compile Include="Extensions.cs" />
     <Compile Include="GeneratorWindow.xaml.cs">
       <DependentUpon>GeneratorWindow.xaml</DependentUpon>

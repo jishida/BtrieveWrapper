@@ -3,9 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace BtrieveWrapper.Orm.Models.Generator
+namespace BtrieveWrapper.Orm.Models
 {
-    interface IModelInitializable
+    public interface IModelInitializable
     {
         void Initialize();
     }

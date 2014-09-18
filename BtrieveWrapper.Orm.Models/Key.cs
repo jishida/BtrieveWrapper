@@ -11,6 +11,9 @@ using BtrieveWrapper.Orm;
 
 namespace BtrieveWrapper.Orm.Models
 {
+    /// <summary>
+    /// 
+    /// </summary>
     [Serializable]
     [XmlType(Namespace = "urn:BtrieveWrapperModelSchema")]
     public class Key 
@@ -29,6 +32,9 @@ namespace BtrieveWrapper.Orm.Models
             "IsModifiable", typeof(bool), typeof(Key));
         public static readonly DependencyProperty NullKeyOptionProperty = DependencyProperty.Register(
             "NullKeyOption", typeof(NullKeyOption), typeof(Key));
+        public static readonly DependencyProperty CommentProperty = DependencyProperty.Register(
+            "Comment", typeof(string), typeof(Key));
+
 #endif
 
         public Key() {
@@ -36,6 +42,7 @@ namespace BtrieveWrapper.Orm.Models
             this.DuplicateKeyOption = BtrieveWrapper.DuplicateKeyOption.Unique;
             this.IsModifiable = false;
             this.NullKeyOption = BtrieveWrapper.NullKeyOption.None;
+            this.Comment = null;
 #if NET_3_5
             this.KeySegmentCollection = new ObservableCollection<KeySegment>();
             this.KeySegmentCollection.CollectionChanged+=KeySegmentCollection_CollectionChanged;
@@ -69,6 +76,9 @@ namespace BtrieveWrapper.Orm.Models
         [XmlAttribute]
         public NullKeyOption NullKeyOption { get { return (NullKeyOption)this.GetValue(NullKeyOptionProperty); } set { this.SetValue(NullKeyOptionProperty, value); } }
 
+        [XmlAttribute]
+        public string Comment { get { return (string)this.GetValue(CommentProperty); } set { this.SetValue(CommentProperty, value); } }
+
         [XmlIgnore]
         public ObservableCollection<KeySegment> KeySegmentCollection { get; private set; }
 #else   
@@ -91,9 +101,23 @@ namespace BtrieveWrapper.Orm.Models
         [XmlAttribute]
         public NullKeyOption NullKeyOption { get; set; }
 
+        [XmlAttribute]
+        public string Comment { get; set; }
+
         [XmlIgnore]
         public ObservableList<KeySegment> KeySegmentCollection { get; private set; }
 #endif
+
+        [XmlIgnore]
+        public IEnumerable<string> CommentLines {
+            get {
+                if (String.IsNullOrEmpty(this.Comment)) {
+                    return null;
+                }
+                return this.Comment.Split(new[] { Environment.NewLine }, StringSplitOptions.None)
+                    .Select(l => l.Escape());
+            }
+        }
 
         [XmlArrayItem]
         public KeySegment[] Segments { get { return this.KeySegmentCollection.ToArray(); } 
