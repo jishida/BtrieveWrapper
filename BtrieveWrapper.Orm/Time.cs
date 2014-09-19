@@ -92,6 +92,14 @@ namespace BtrieveWrapper.Orm
             }
         }
 
+        public static bool operator ==(Time time1, Time time2) {
+            return time1.Equals(time2);
+        }
+
+        public static bool operator !=(Time time1, Time time2) {
+            return !time1.Equals(time2);
+        }
+
         public override string ToString() {
             return String.Format("{0}:{1:D2}:{2:D2}.{3:D3}", _hour, _minute, _second, _tenMillisecond);
         }

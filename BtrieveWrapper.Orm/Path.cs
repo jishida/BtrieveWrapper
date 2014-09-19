@@ -74,7 +74,7 @@ namespace BtrieveWrapper.Orm
         public string GetFilePath() {
             switch (this.PathType) {
                 case Orm.PathType.Uri:
-                    if (String.IsNullOrWhiteSpace(this.UriHost)) {
+                    if (String.IsNullOrEmpty(this.UriHost)) {
                         throw new InvalidOperationException();
                     }
 

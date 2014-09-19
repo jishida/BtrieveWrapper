@@ -11,16 +11,16 @@ namespace BtrieveWrapper.Orm
         public QueryParameter(
             KeyInfo key,
             Expression<Func<TRecord, bool>> whereExpression = null,
-            TRecord startingRecord = null,
             LockMode lockMode = LockMode.None,
+            TRecord startingRecord = null,
             bool skipStartingRecord = false,
             int limit = 0,
             bool reverse = false,
             ushort rejectCount = 0,
             bool isIgnoreCase = false) {
 
-            this.StartingRecord = startingRecord;
             this.LockMode = lockMode;
+            this.StartingRecord = startingRecord;
             this.SkipStartingRecord = skipStartingRecord;
             this.Reverse = reverse;
             this.RejectCount = rejectCount;
@@ -38,14 +38,14 @@ namespace BtrieveWrapper.Orm
 
         public QueryParameter(
             Expression<Func<TRecord, bool>> whereExpression = null,
-            TRecord startingRecord = null,
             LockMode lockMode = LockMode.None,
+            TRecord startingRecord = null,
             bool skipStartingRecord = false,
             int limit = 0,
             bool reverse = false,
             ushort rejectCount = 0,
             bool isIgnoreCase = false)
-            : this(null, whereExpression, startingRecord, lockMode, skipStartingRecord, limit, reverse, rejectCount, isIgnoreCase) {
+            : this(null, whereExpression, lockMode, startingRecord, skipStartingRecord, limit, reverse, rejectCount, isIgnoreCase) {
 
             this.Key = this.GetKey();
         }
@@ -170,7 +170,6 @@ namespace BtrieveWrapper.Orm
 
                 return 0x000f0000;
             }
-
 
             if (equalCount == 0 &&
                 greaterCount == 0 &&

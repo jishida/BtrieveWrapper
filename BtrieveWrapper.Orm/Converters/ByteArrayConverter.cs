@@ -28,7 +28,6 @@ namespace BtrieveWrapper.Orm.Converters
                     }
                 }
                 Array.Copy(sourceBytes, 0, destination, position, sourceBytes.Length);
-                var defaultBytes = new byte[length - sourceBytes.Length];
                 for (var i = sourceBytes.Length; i < length; i++) {
                     destination[position + i] = defaultByte;
                 }

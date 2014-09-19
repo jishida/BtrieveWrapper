@@ -1,0 +1,183 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">x86</Platform>
+    <ProjectGuid>{A475ED2C-491E-49BC-A71B-278F5B5CC271}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>BtrieveWrapper.Orm</RootNamespace>
+    <AssemblyName>BtrieveWrapper.Orm</AssemblyName>
+    <TargetFrameworkVersion>v2.0</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <TargetFrameworkProfile>
+    </TargetFrameworkProfile>
+    <BaseIntermediateOutputPath>obj\windows\net_2_0\</BaseIntermediateOutputPath>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x86'">
+    <DebugSymbols>true</DebugSymbols>
+    <OutputPath>..\bin\debug\windows\net_2_0\x86\</OutputPath>
+    <DefineConstants>TRACE;DEBUG;NET_3_5;NET_3_0;NET_2_0;WINDOWS</DefineConstants>
+    <DebugType>full</DebugType>
+    <PlatformTarget>x86</PlatformTarget>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+    <WarningLevel>4</WarningLevel>
+    <Optimize>false</Optimize>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x86'">
+    <OutputPath>..\bin\release\windows\net_2_0\x86\</OutputPath>
+    <DefineConstants>TRACE;NET_3_5;NET_3_0;NET_2_0;WINDOWS</DefineConstants>
+    <Optimize>true</Optimize>
+    <DebugType>none</DebugType>
+    <UseVSHostingProcess>false</UseVSHostingProcess>
+    <PlatformTarget>x86</PlatformTarget>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x64'">
+    <DebugSymbols>true</DebugSymbols>
+    <OutputPath>..\bin\debug\windows\net_2_0\x64\</OutputPath>
+    <DefineConstants>TRACE;DEBUG;NET_3_5;NET_3_0;NET_2_0;WINDOWS</DefineConstants>
+    <DebugType>full</DebugType>
+    <PlatformTarget>x64</PlatformTarget>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+    <WarningLevel>4</WarningLevel>
+    <Optimize>false</Optimize>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x64'">
+    <OutputPath>..\bin\release\windows\net_2_0\x64\</OutputPath>
+    <DefineConstants>TRACE;NET_3_5;NET_3_0;NET_2_0;WINDOWS</DefineConstants>
+    <Optimize>true</Optimize>
+    <DebugType>none</DebugType>
+    <UseVSHostingProcess>false</UseVSHostingProcess>
+    <PlatformTarget>x64</PlatformTarget>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|AnyCPU'">
+    <DebugSymbols>true</DebugSymbols>
+    <OutputPath>..\bin\debug\windows\net_2_0\AnyCPU\</OutputPath>
+    <DefineConstants>TRACE;DEBUG;NET_3_5;NET_3_0;NET_2_0;WINDOWS</DefineConstants>
+    <DebugType>full</DebugType>
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|AnyCPU'">
+    <OutputPath>..\bin\release\windows\net_2_0\AnyCPU\</OutputPath>
+    <DefineConstants>TRACE;NET_3_5;NET_3_0;NET_2_0;WINDOWS</DefineConstants>
+    <Optimize>true</Optimize>
+    <DebugType>none</DebugType>
+    <UseVSHostingProcess>false</UseVSHostingProcess>
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="System" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="AcsIdentifier.cs" />
+    <Compile Include="Converters\TimestampConverter.cs" />
+    <Compile Include="Converters\VariableRangeConverter.cs" />
+    <Compile Include="Config.cs" />
+    <Compile Include="RecordManagerExtentions.cs" />
+    <Compile Include="StringExtensions.cs" />
+    <Compile Include="Time.cs" />
+    <Compile Include="Converters\BinaryStringConverter.cs" />
+    <Compile Include="Converters\Bit.cs" />
+    <Compile Include="Converters\BooleanConverter.cs" />
+    <Compile Include="Converters\DateConverter.cs" />
+    <Compile Include="Converters\DateTimeConverter.cs" />
+    <Compile Include="Converters\DecimalConverter.cs" />
+    <Compile Include="Converters\TimeConverter.cs" />
+    <Compile Include="Converters\ZStringConverter.cs" />
+    <Compile Include="ExpressionFilter.cs" />
+    <Compile Include="ExpressionParser.cs" />
+    <Compile Include="ExpressionStatus.cs" />
+    <Compile Include="FilterComparison.cs" />
+    <Compile Include="Filter.cs" />
+    <Compile Include="Converters\NullFlagConverter.cs" />
+    <Compile Include="DbClient.cs" />
+    <Compile Include="FilterOr.cs" />
+    <Compile Include="FilterOrState.cs" />
+    <Compile Include="FilterType.cs" />
+    <Compile Include="IRecordManager.cs" />
+    <Compile Include="ITransactionalObject.cs" />
+    <Compile Include="NullType.cs" />
+    <Compile Include="Path.cs" />
+    <Compile Include="PathType.cs" />
+    <Compile Include="Converters\DoubleConverter.cs" />
+    <Compile Include="FieldAttribute.cs" />
+    <Compile Include="FieldConverterAttribute.cs" />
+    <Compile Include="FieldInfo.cs" />
+    <Compile Include="Converters\FloatConverter.cs" />
+    <Compile Include="IFieldConverter.cs" />
+    <Compile Include="InvalidDefinitionException.cs" />
+    <Compile Include="KeyAttribute.cs" />
+    <Compile Include="KeyCollection.cs" />
+    <Compile Include="KeyInfo.cs" />
+    <Compile Include="KeySegmentAttribute.cs" />
+    <Compile Include="KeySegmentCollection.cs" />
+    <Compile Include="KeySegmentInfo.cs" />
+    <Compile Include="KeyValue.cs" />
+    <Compile Include="KeyValueSegmentState.cs" />
+    <Compile Include="LockMode.cs" />
+    <Compile Include="MathExtentions.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="ExpressionExtensions.cs" />
+    <Compile Include="QueryParameter.cs" />
+    <Compile Include="Converters\ByteArrayConverter.cs" />
+    <Compile Include="Record.cs" />
+    <Compile Include="RecordAttribute.cs" />
+    <Compile Include="RecordInfo.cs" />
+    <Compile Include="RecordManager.cs" />
+    <Compile Include="RecordOperator.cs" />
+    <Compile Include="RecordReader.cs" />
+    <Compile Include="RecordState.cs" />
+    <Compile Include="RecordStateTransitions.cs" />
+    <Compile Include="Resource.cs" />
+    <Compile Include="Converters\SignedToDecimalConverter.cs" />
+    <Compile Include="Converters\StringConverter.cs" />
+    <Compile Include="Transaction.cs" />
+    <Compile Include="TransactionalObjectFactory.cs" />
+    <Compile Include="Converters\UInt32Converter.cs" />
+    <Compile Include="Converters\Utf8Converter.cs" />
+    <Compile Include="UpdateChunkParameter.cs" />
+    <Compile Include="Utility.cs" />
+    <Compile Include="Converters\UnignedToDecimalConverter.cs" />
+    <Compile Include="Converters\UInt64Converter.cs" />
+    <Compile Include="Converters\UInt16Converter.cs" />
+    <Compile Include="Converters\ByteConverter.cs" />
+    <Compile Include="Converters\Int32Converter.cs" />
+    <Compile Include="Converters\Int16Converter.cs" />
+    <Compile Include="Converters\Int64Converter.cs" />
+    <Compile Include="Converters\SByteConverter.cs" />
+    <Compile Include="Converters\BitBooleanConverter.cs" />
+    <Compile Include="FilterAnd.cs" />
+    <Compile Include="VariableRange.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\BtrieveWrapper\BtrieveWrapper-windows-net_2_0.csproj">
+      <Project>{A69AE6C8-F511-4A95-825D-F854AEBCF4C8}</Project>
+      <Name>BtrieveWrapper-windows-net_2_0</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\System.Compatibility\System.Compatibility-windows-net_2_0.csproj">
+      <Project>{36d4a5af-cd5d-49ac-8f34-383d8a02fff5}</Project>
+      <Name>System.Compatibility-windows-net_2_0</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

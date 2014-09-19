@@ -3,8 +3,8 @@
 ## Summary
 
 BtrieveWrapper is a wrapper library of Btrieve API, which operates MicroKarnel
-Database Engine (MKDE) of Actian PSQL. It uses Actian PSQL and works on .NET
-Framework 4.0.
+Database Engine (MKDE) of Actian PSQL. It uses Actian PSQL and works on Actian
+PSQL Client and Microsoft .NET Framework 2.0 or higher.
 
 This library provides classes to operate MKDE without SQL.
 Generally, In operating RDBMS with SQL, the parsing process can be overhead and
@@ -18,8 +18,8 @@ provides high usability.
 
 BtrieveWrapper は Actian PSQL のデータベース操作システムである MicroKarnel
 Database Engine (MKDE) を Btrieve API を用いて操作するラッパーライブラリです。
-このライブラリは Actian PSQL を使用しており、動作には.NET Framework 4.0 が必要
-です。
+このライブラリは Actian PSQL を使用しており、動作にはActian PSQL Client と2.0以
+上の Microsoft .NET Framework が必要です。
 
 このライブラリは、 SQL を使用せずに、 MKDE を操作するクラスを提供します。
 一般に、 SQL を用いた RDBMS の操作では SQL のパース処理がオーバーヘッドとなり、
@@ -31,6 +31,8 @@ Btrieve API は ISAM ベースの低レベルなデータベース操作を提�
 BtrieveWrapper.Orm は Btrieve API の汎用的な操作をラッピングし、高いユー
 ザビリティを提供します。
 
+PSQL を用いたアプリケーションの開発には AG-TECH社が無償で提供している開発版及び
+評価版を、運用時には製品版をお求め下さい。
 
 ## Demo
 
@@ -64,6 +66,7 @@ BtrieveWrapper.Orm.dll を参照したのち、 BtrieveWrapper.Orm.Models.Genera
 あとは以下のようにコードを書けば実行できるはずです。
 ```csharp
 using System;
+using System.Collections.Generic;
 using BtrieveWrapper.Orm;
 using BtrieveWrapper.Orm.Models.CustomModels;
 
@@ -75,8 +78,8 @@ namespace BtrieveWrapper.Demo
             DemodataDbClient client = new DemodataDbClient();
 
             Console.WriteLine("[Read people whose last initial is 'D']");
-            using (PersonManager people = client.Person()) {
-                var query = people.Query(p =>
+            using (RecordManager<Person, PersonKeyCollection> people = client.Person()) {
+                IEnumerable<Person> query = people.Query(p =>
                     p.Last_Name.GreaterThanOrEqual("D") &&
                     p.Last_Name.LessThan("E"));
                 foreach (Person person in query) {
@@ -89,11 +92,10 @@ namespace BtrieveWrapper.Demo
             Console.WriteLine();
 
             Console.WriteLine("[Person CRUD]");
-            using (PersonManager people = client.Person()) {
-                Person person;
+            using (RecordManager<Person, PersonKeyCollection> people = client.Person()) {
                 using (Transaction transaction = client.BeginTransaction()) {
                     Console.Write("Create person: ");
-                    person = new Person();
+                    Person person = new Person();
                     person.ID = 0;
                     person.First_Name = "Ieyasu";
                     person.Last_Name = "Tokugawa";
@@ -103,7 +105,8 @@ namespace BtrieveWrapper.Demo
                     people.Detach(person);
 
                     person = people.GetAndManage(p => p.ID == 0);
-                    Console.WriteLine("Read person: {0} {1}", person.First_Name, person.Last_Name);
+                    Console.WriteLine("Read person: " +
+                        (person == null ? "not found" : person.First_Name + " " + person.Last_Name));
 
                     Console.Write("Update person: ");
                     person.First_Name = "Iemitsu";
@@ -112,7 +115,8 @@ namespace BtrieveWrapper.Demo
                     people.Detach(person);
 
                     person = people.GetAndManage(p => p.ID == 0);
-                    Console.WriteLine("Read person: {0} {1}", person.First_Name, person.Last_Name);
+                    Console.WriteLine("Read person: " +
+                        (person == null ? "not found" : person.First_Name + " " + person.Last_Name));
 
                     Console.Write("Delete person: ");
                     people.Remove(person);
@@ -121,7 +125,8 @@ namespace BtrieveWrapper.Demo
                     people.Detach(person);
 
                     person = people.Get(p => p.ID == 0);
-                    Console.WriteLine(person == null ? "Person is not found" : "Person is found");
+                    Console.WriteLine("Read person: " +
+                        (person == null ? "not found" : person.First_Name + " " + person.Last_Name));
 
                     transaction.Commit();
                 }

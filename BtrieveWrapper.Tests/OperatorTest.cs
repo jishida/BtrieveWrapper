@@ -10,12 +10,12 @@ namespace BtrieveWrapper.Tests
 {
     public class OperatorTest : IDisposable
     {
-        Operator _operator;
+        NativeOperator _operator;
         Temporary _temp;
 
         public OperatorTest() {
             _temp = new Temporary("OperatorTest");
-            _operator = new Operator();
+            _operator = new NativeOperator();
             _operator.Reset();
         }
 

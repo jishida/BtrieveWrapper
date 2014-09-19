@@ -3,18 +3,21 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Xml.Serialization;
+#if NET_3_5
 using System.Windows;
-
+#endif
 namespace BtrieveWrapper.Orm.Models
 {
     [Serializable]
     [XmlType(Namespace = "urn:BtrieveWrapperModelSchema")]
-    public class Field : DependencyObject
+    public class Field 
+#if NET_3_5
+        : DependencyObject
+#endif
     {
+#if NET_3_5
         public static readonly DependencyProperty IdProperty = DependencyProperty.Register(
-            "Id", typeof(int), typeof(Field), new PropertyMetadata((o, e) => {
-
-            }));
+            "Id", typeof(int), typeof(Field));
         public static readonly DependencyProperty NameProperty = DependencyProperty.Register(
             "Name", typeof(string), typeof(Field));
         public static readonly DependencyProperty PositionProperty = DependencyProperty.Register(
@@ -29,7 +32,10 @@ namespace BtrieveWrapper.Orm.Models
             "NullType", typeof(NullType), typeof(Field));
         public static readonly DependencyProperty KeyTypeProperty = DependencyProperty.Register(
             "KeyType", typeof(KeyType), typeof(Field));
+        public static readonly DependencyProperty CommentProperty = DependencyProperty.Register(
+            "Comment", typeof(string), typeof(Field));
 
+#endif
         public Field() {
             this.Id = 0;
             this.Position = 0;
@@ -38,8 +44,10 @@ namespace BtrieveWrapper.Orm.Models
             this.Parameter = null;
             this.NullType = Orm.NullType.None;
             this.KeyType = BtrieveWrapper.KeyType.String;
+            this.Comment = null;
         }
 
+#if NET_3_5
         [XmlAttribute]
         public int Id { get { return (int)this.GetValue(IdProperty); } set { this.SetValue(IdProperty, value); } }
         [XmlAttribute]
@@ -48,6 +56,57 @@ namespace BtrieveWrapper.Orm.Models
         public ushort Position { get { return (ushort)this.GetValue(PositionProperty); } set { this.SetValue(PositionProperty, value); } }
         [XmlAttribute]
         public ushort Length { get { return (ushort)this.GetValue(LengthProperty); } set { this.SetValue(LengthProperty, value); } }
+        [XmlAttribute]
+        public string Parameter { get { return (string)this.GetValue(ParameterProperty); } set { this.SetValue(ParameterProperty, value); } }
+        [XmlAttribute]
+        public KeyType KeyType { get { return (KeyType)this.GetValue(KeyTypeProperty); } set { this.SetValue(KeyTypeProperty, value); } }
+        [XmlAttribute]
+        public NullType NullType { get { return (NullType)this.GetValue(NullTypeProperty); } set { this.SetValue(NullTypeProperty, value); } }
+
+        [XmlAttribute]
+        public string Comment { get { return (string)this.GetValue(CommentProperty); } set { this.SetValue(CommentProperty, value); } }
+
+        [XmlIgnore]
+        public Type ConverterType {
+            get {
+                return (Type)this.GetValue(ConverterTypeProperty);
+            }
+            set {
+                this.SetValue(ConverterTypeProperty, value);
+            }
+        }
+#else
+        [XmlAttribute]
+        public int Id { get; set; }
+        [XmlAttribute]
+        public string Name { get; set; }
+        [XmlAttribute]
+        public ushort Position { get; set; }
+        [XmlAttribute]
+        public ushort Length { get; set; }
+        [XmlAttribute]
+        public string Parameter { get; set; }
+        [XmlAttribute]
+        public KeyType KeyType { get; set; }
+        [XmlAttribute]
+        public NullType NullType { get; set; }
+        [XmlAttribute]
+        public string Comment { get; set; }
+        [XmlIgnore]
+        public Type ConverterType { get; set; }
+#endif
+
+        [XmlIgnore]
+        public IEnumerable<string> CommentLines {
+            get {
+                if (String.IsNullOrEmpty(this.Comment)) {
+                    return null;
+                }
+                return this.Comment.Split(new[] { Environment.NewLine }, StringSplitOptions.None)
+                    .Select(l => l.Escape());
+            }
+        }
+
         [XmlAttribute]
         public string ConverterTypeName {
             get { return this.ConverterType.Assembly.GetName().Name + "," + this.ConverterType.FullName; }
@@ -59,22 +118,7 @@ namespace BtrieveWrapper.Orm.Models
                 }
             }
         }
-        [XmlAttribute]
-        public string Parameter { get { return (string)this.GetValue(ParameterProperty); } set { this.SetValue(ParameterProperty, value); } }
-        [XmlAttribute]
-        public KeyType KeyType { get { return (KeyType)this.GetValue(KeyTypeProperty); } set { this.SetValue(KeyTypeProperty, value); } }
-        [XmlAttribute]
-        public NullType NullType { get { return (NullType)this.GetValue(NullTypeProperty); } set { this.SetValue(NullTypeProperty, value); } }
 
-        [XmlIgnore]
-        public Type ConverterType {
-            get {
-                return (Type)this.GetValue(ConverterTypeProperty);
-            }
-            set {
-                this.SetValue(ConverterTypeProperty, value);
-            }
-        }
         [XmlIgnore]
         public Type ValueType {
             get {
@@ -126,7 +170,7 @@ namespace BtrieveWrapper.Orm.Models
         }
 
         [XmlIgnore]
-        public string DisplayName { get { return String.IsNullOrWhiteSpace(this.Name) ? String.Format(Config.FieldName, this.Id) : this.Name; } }
+        public string DisplayName { get { return String.IsNullOrEmpty(this.Name) ? String.Format(Config.FieldName, this.Id) : this.Name; } }
 
         [XmlIgnore]
         public Record Record { get; internal set; }

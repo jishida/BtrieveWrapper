@@ -32,5 +32,9 @@ namespace BtrieveWrapper.Orm
         internal ushort Length { get; private set; }
         internal KeySegmentCollection Segments { get; private set; }
         internal RecordInfo Record { get; private set; }
+
+        public KeyValue GetKeyValue(params object[] segmentValues) {
+            return KeyValue.Create(this, segmentValues);
+        }
     }
 }

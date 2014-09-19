@@ -232,6 +232,7 @@ namespace BtrieveWrapper.Orm.Models.Generator.Gui
                         }
                         codeArgs.Add("--silent");
                         var codeStartInfo = new System.Diagnostics.ProcessStartInfo("BtrieveWrapper.Orm.Models.Generator.exe", GetArguments(codeArgs.ToArray()));
+                        codeStartInfo.UseShellExecute = false;
                         var codeProcess = System.Diagnostics.Process.Start(codeStartInfo);
                         codeProcess.WaitForExit();
                         if (codeProcess.ExitCode == 0) {

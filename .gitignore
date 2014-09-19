@@ -17,6 +17,7 @@ Thumbs.db
 *.cache
 *.ilk
 *.log
+*.dll
 [Bb]in
 [Dd]ebug*/
 *.lib
@@ -27,3 +28,4 @@ _ReSharper*/
 [Tt]est[Rr]esult*
 *.vssscc
 $tf*/
+*.userprefs

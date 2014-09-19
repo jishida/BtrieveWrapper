@@ -12,6 +12,10 @@
 
 		public {% Name %}(byte[] dataBuffer) { }{% for field in Fields %}
 		
+        /// <summary>
+{% if field.CommentLines %}{% for line in field.CommentLines %}        /// {% line %}
+{% endfor %}{% else %}        /// 
+{% endif %}        /// </summary>
 {% for segment in field.KeySegments %}        [BtrieveWrapper.Orm.KeySegment({% segment.Key.KeyNumber %}, {% segment.Index %}{% for parameter in segment.AttributeParameters %},
             {% parameter.Key %} = {% parameter.Value %}{% endfor %})]
 {% endfor %}        [BtrieveWrapper.Orm.Field({% field.Position %}, {% field.Length %}, BtrieveWrapper.KeyType.{% field.KeyType %}, typeof({% field.ConverterType.FullName %}){% if field.Parameter %}, Parameter = {% field.Parameter %}{% endif %}{% if field.NullType = "None" %}{% else %}, NullType = BtrieveWrapper.Orm.NullType.{% field.NullType %}{% endif %})]
@@ -19,15 +23,17 @@
             get { return {% if field.ValueTypeDisplayName %}({% field.ValueTypeDisplayName %}){% endif %}this.GetValue("{% field.DisplayName %}"); }
             set { this.SetValue("{% field.DisplayName %}", value); }
         }{% endfor %}
+
+		public static new {% DisplayName %}KeyCollection Keys { get { return GetKeyCollection<{% DisplayName %}KeyCollection>(); } }
     }
 
-    public class {% DisplayName %}Manager : BtrieveWrapper.Orm.RecordManager<{% Name %}> {
-        public {% Name %}Manager(BtrieveWrapper.Orm.Path path = null, string dllPath = null, string applicationId = "BW", ushort threadId = 0 , string ownerName = null, BtrieveWrapper.OpenMode? openMode = null, int reusableCapacity = 1000, byte[] temporaryBuffer = null)
-            : base(path, dllPath, applicationId, threadId, ownerName, openMode, reusableCapacity, temporaryBuffer) { }
+    public class {% DisplayName %}KeyCollection : BtrieveWrapper.Orm.KeyCollection<{% DisplayName %}> {
+        public {% Name %}KeyCollection() : base() { }{% for key in Keys %}
 
-        public {% DisplayName %}Manager(BtrieveWrapper.Operator nativeOperator, BtrieveWrapper.Orm.Path path = null, string ownerName = null, BtrieveWrapper.OpenMode? openMode = null, int reusableCapacity = 1000, byte[] temporaryBuffer = null)
-            : base(nativeOperator, path, ownerName, openMode, reusableCapacity, temporaryBuffer) { }{% for key in Keys %}
-
-        public BtrieveWrapper.Orm.KeyInfo {% key.DisplayName %} { get { return this.Keys[{% key.KeyNumber %}]; } }{% endfor %}
+        /// <summary>
+{% if key.CommentLines %}{% for line in key.CommentLines %}        /// {% line %}
+{% endfor %}{% else %}        /// 
+{% endif %}        /// </summary>
+        public BtrieveWrapper.Orm.KeyInfo {% key.DisplayName %} { get { return this[{% key.KeyNumber %}]; } }{% endfor %}
     }
 }

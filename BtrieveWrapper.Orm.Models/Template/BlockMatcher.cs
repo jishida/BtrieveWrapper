@@ -42,7 +42,6 @@ namespace BtrieveWrapper.Orm.Models.Template
 
         BlockMatch Match(string input) {
             var match = _regex.Match(input);
-            var result = new BlockMatch(_regex.Match(input), this.BlockType);
             return match.Success ? new BlockMatch(match, this.BlockType) : null;
         }
 

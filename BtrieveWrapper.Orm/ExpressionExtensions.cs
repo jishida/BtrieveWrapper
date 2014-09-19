@@ -46,6 +46,7 @@ namespace BtrieveWrapper.Orm
                     conditionalExpression.Test.HasArgument(argument) ||
                     conditionalExpression.IfTrue.HasArgument(argument) ||
                     conditionalExpression.IfFalse.HasArgument(argument);
+#if NET_4_0
             } else if (expression is ConstantExpression || expression is DefaultExpression) {
                 return false;
             } else if (expression is IndexExpression) {
@@ -53,6 +54,10 @@ namespace BtrieveWrapper.Orm
                 return 
                     (indexExpression.Object != null && indexExpression.Object.HasArgument(argument)) || 
                     indexExpression.Arguments.Any(a => a.HasArgument(argument));
+#else
+            } else if (expression is ConstantExpression) {
+                return false;
+#endif
             } else if (expression is NewArrayExpression) {
                 var newArrayExpression = (NewArrayExpression)expression;
                 return newArrayExpression.Expressions.Any(a => a.HasArgument(argument));
@@ -270,7 +275,6 @@ namespace BtrieveWrapper.Orm
         static BinaryExpression GetFixedRelationalExpression(Expression expression1, Expression expression2, ParameterExpression argument, ExpressionType nodeType) {
             try {
                 if (expression1.GetField(argument) != null) {
-                    var value = expression2.ToValue();
                     switch (nodeType) {
                         case ExpressionType.GreaterThan:
                             return Expression.GreaterThan(expression1, expression2);

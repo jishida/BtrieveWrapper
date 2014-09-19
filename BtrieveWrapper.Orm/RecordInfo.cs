@@ -34,6 +34,7 @@ namespace BtrieveWrapper.Orm
             this.PrimaryKeyNumber = attribute.PrimaryKeyNumber;
             this.DefaultByte = attribute.DefaultByte;
             this.DllPath = attribute.DllPath;
+            this.DependencyPaths = attribute.DependencyPaths;
 
             this.PathType = attribute.PathType;
             this.UriHost = attribute.UriHost;
@@ -179,6 +180,7 @@ namespace BtrieveWrapper.Orm
         public sbyte PrimaryKeyNumber { get; private set; }
         public byte DefaultByte { get; private set; }
         public string DllPath { get; private set; }
+        public IEnumerable<string> DependencyPaths { get; private set; }
 
         public PathType PathType { get; private set; }
         public string UriHost { get; private set; }

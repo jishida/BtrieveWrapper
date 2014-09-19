@@ -7,7 +7,9 @@ namespace BtrieveWrapper.Orm
 {
     interface ITransactionalObject : IDisposable
     {
-        void SetTransaction(Transaction transaction);
+        void SetFactory(TransactionalObjectFactory factory);
+        void TransactionCommitted();
+        void TransactionRollbacked();
         event EventHandler Disposing;
     }
 }

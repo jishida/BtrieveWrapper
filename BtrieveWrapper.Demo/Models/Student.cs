@@ -103,17 +103,16 @@
             get { return (System.Nullable<System.Int16>)this.GetValue("Cumulative_Hours"); }
             set { this.SetValue("Cumulative_Hours", value); }
         }
+
+        public static new StudentKeyCollection Keys { get { return GetKeyCollection<StudentKeyCollection>(); } }
     }
 
-    public class StudentManager : BtrieveWrapper.Orm.RecordManager<Student> {
-        public StudentManager(BtrieveWrapper.Orm.Path path = null, string dllPath = null, string applicationId = "BW", ushort threadId = 0 , string ownerName = null, BtrieveWrapper.OpenMode? openMode = null, int reusableCapacity = 1000, byte[] temporaryBuffer = null)
-            : base(path, dllPath, applicationId, threadId, ownerName, openMode, reusableCapacity, temporaryBuffer) { }
+    public class StudentKeyCollection : BtrieveWrapper.Orm.KeyCollection<Student>
+    {
+        public StudentKeyCollection() : base() { }
 
-        public StudentManager(BtrieveWrapper.Operator nativeOperator, BtrieveWrapper.Orm.Path path = null, string ownerName = null, BtrieveWrapper.OpenMode? openMode = null, int reusableCapacity = 1000, byte[] temporaryBuffer = null)
-            : base(nativeOperator, path, ownerName, openMode, reusableCapacity, temporaryBuffer) { }
+        public BtrieveWrapper.Orm.KeyInfo Key0 { get { return this[0]; } }
 
-        public BtrieveWrapper.Orm.KeyInfo Key0 { get { return this.Keys[0]; } }
-
-        public BtrieveWrapper.Orm.KeyInfo Key1 { get { return this.Keys[1]; } }
+        public BtrieveWrapper.Orm.KeyInfo Key1 { get { return this[1]; } }
     }
 }

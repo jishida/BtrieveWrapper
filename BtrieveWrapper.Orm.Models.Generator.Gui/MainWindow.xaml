@@ -58,6 +58,7 @@
                 </Trigger>
             </Style.Triggers>
         </Style>
+        <Controls:MultiLineConverter x:Key="MultiLineConverter"/>
     </Window.Resources>
     <Grid>
         <Grid.RowDefinitions>
@@ -170,6 +171,7 @@
                                 <Label Content="Data Buffer Capacity" Grid.Row="20"/>
                                 <Label Content="Variable Field Capacity" Grid.Row="21"/>
                                 <Label Content="Reject Count" Grid.Row="22"/>
+                                <Label Content="Comment" Grid.Row="23"/>
                                 <TextBox Text="{Binding Name}" Grid.Column="1" Grid.Row="0"/>
                                 <TextBox Name="_fixedLength" Text="{Binding FixedLength}" Grid.Column="1" Grid.Row="1"/>
                                 <TextBox x:Name="_pageSize" Text="{Controls:UInt16Binding PageSize}" Grid.Column="1" Grid.Row="2"/>
@@ -193,6 +195,7 @@
                                 <TextBox Text="{Controls:UInt16Binding DataBufferCapacity}" Grid.Column="1" Grid.Row="20"/>
                                 <TextBox Text="{Controls:UInt16Binding VariableFieldCapacity}" Grid.Column="1" Grid.Row="21"/>
                                 <TextBox Text="{Controls:UInt16Binding RejectCount}" Grid.Column="1" Grid.Row="22"/>
+                                <TextBox Text="{Binding Comment}" Grid.Column="1" Grid.Row="23" AcceptsReturn="True" TextWrapping="Wrap" VerticalScrollBarVisibility="Auto"/>
                             </Grid>
                         </ScrollViewer>
                     </TabItem>
@@ -200,6 +203,7 @@
                         <Grid>
                             <Grid.RowDefinitions>
                                 <RowDefinition/>
+                                <RowDefinition Height="Auto"/>
                                 <RowDefinition Height="Auto"/>
                             </Grid.RowDefinitions>
                             <DataGrid Name="FieldListDataGrid" AutoGenerateColumns="False" ItemsSource="{Binding FieldCollection}">
@@ -211,12 +215,21 @@
                                     <DataGridComboBoxColumn Header="KeyType" ItemsSource="{Binding Source={StaticResource KeyTypes}}" SelectedItemBinding="{Binding KeyType}"/>
                                     <DataGridComboBoxColumn Header="NullType" ItemsSource="{Binding Source={StaticResource NullTypes}}" SelectedItemBinding="{Binding NullType}"/>
                                     <DataGridTextColumn Header="Parameter" Binding="{Binding Parameter, TargetNullValue=''}"/>
+                                    <DataGridTextColumn Header="Comment" Binding="{Binding Comment, TargetNullValue='', Converter={StaticResource MultiLineConverter}}" IsReadOnly="True"/>
                                 </DataGrid.Columns>
                             </DataGrid>
                             <StackPanel Orientation="Horizontal" Grid.Row="1">
                                 <Button x:Name="FieldUpButtion" Content="Up" Margin="4" Width="70" Click="FieldUpButtion_Click" />
                                 <Button x:Name="FieldDownButtion" Content="Down" Margin="4" Width="70" Click="FieldDownButtion_Click" />
                             </StackPanel>
+                            <Grid Grid.Row="2" DataContext="{Binding SelectedItem, ElementName=FieldListDataGrid}">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="Auto"/>
+                                    <ColumnDefinition Width="*"/>
+                                </Grid.ColumnDefinitions>
+                                <Label Content="Comment" Grid.Column="0"/>
+                                <TextBox Name="FieldCommentTextBox" AcceptsReturn="True" TextWrapping="Wrap" VerticalScrollBarVisibility="Auto" Grid.Column="1" Text="{Binding Comment}"/>
+                            </Grid>
                         </Grid>
                     </TabItem>
                     <TabItem Header="Keys">
@@ -225,6 +238,7 @@
                                 <RowDefinition Height="188*"/>
                                 <RowDefinition Height="5"/>
                                 <RowDefinition Height="259*"/>
+                                <RowDefinition Height="Auto"/>
                             </Grid.RowDefinitions>
                             <GroupBox Header="Key List" Grid.Row="0" DataContext="{Binding SelectedItem, ElementName=RecordListDataGrid}">
                                 <Grid >
@@ -239,6 +253,7 @@
                                             <DataGridComboBoxColumn Header="DuplicateKeyOption" ItemsSource="{Binding Source={StaticResource DuplicateKeyOptions}}" SelectedItemBinding="{Binding DuplicateKeyOption}"/>
                                             <DataGridCheckBoxColumn Header="IsModifiable" Binding="{Binding IsModifiable}" />
                                             <DataGridComboBoxColumn Header="NullKeyOption" ItemsSource="{Binding Source={StaticResource NullKeyOptions}}" SelectedItemBinding="{Binding NullKeyOption}"/>
+                                            <DataGridTextColumn Header="Comment" Binding="{Binding Comment, TargetNullValue='', Converter={StaticResource MultiLineConverter}}" IsReadOnly="True"/>
                                         </DataGrid.Columns>
                                     </DataGrid>
                                     <StackPanel Orientation="Horizontal" Grid.Row="1">
@@ -279,8 +294,15 @@
                                         <Button x:Name="KeySegmentDownButton" Content="Down" Margin="4" Width="70" Click="KeySegmentDownButton_Click" />
                                     </StackPanel>
                                 </Grid>
-
                             </GroupBox>
+                            <Grid Grid.Row="3" DataContext="{Binding SelectedItem, ElementName=KeyListDataGrid}">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="Auto"/>
+                                    <ColumnDefinition Width="*"/>
+                                </Grid.ColumnDefinitions>
+                                <Label Content="Comment" Grid.Column="0"/>
+                                <TextBox Name="KeyCommentTextBox" AcceptsReturn="True" TextWrapping="Wrap" VerticalScrollBarVisibility="Auto" Grid.Column="1" Text="{Binding Comment}"/>
+                            </Grid>
                         </Grid>
                     </TabItem>
                 </TabControl>

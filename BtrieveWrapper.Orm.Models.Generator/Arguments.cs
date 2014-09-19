@@ -15,6 +15,7 @@ BtrieveWrapper.Orm.Models.Generator
     --output=<destination path>
     [--mode=<mode>]
     [--btrvlib=<btrieve library path>]
+    [--btrvdependlibs=<btrieve dependency library paths>]
     [--owner-name=<owner name>]
     [--import=<path1>[;<path2>;...;<pathn>]]
     [--template-client=<code template path>]
@@ -51,7 +52,12 @@ BtrieveWrapper.Orm.Models.Generator
         2. GenerateCodeFromModel
 
     --btrvlib
-        Set Btrieve API library path. Default is ""w3btrv7.dll""
+        Set Btrieve API library path.
+        Such as ""W64btrv7.dll""
+
+    --btrvdependlibs
+        Set library paths Btrieve API needs.
+        Such as ""/usr/local/psql/lib64/libpscore.so.3;/usr/local/psql/lib64/libpscl.so.3""
 
     --owner-name
         Set owner name to open btrieve files. Default is empty.
@@ -91,6 +97,7 @@ BtrieveWrapper.Orm.Models.Generator
         static readonly Regex RegexOutput = new Regex(@"^(--output|-o)=(?<p>.*)$", RegexOptions.Compiled);
         static readonly Regex RegexMode = new Regex(@"^--mode=(?<p>.*)$", RegexOptions.Compiled);
         static readonly Regex RegexBtrieveLibrary = new Regex(@"^--btrvlib=(?<p>.*)$", RegexOptions.Compiled);
+        static readonly Regex RegexDependencyLibrary = new Regex(@"^--btrvdependlibs=(?<p>.*)$", RegexOptions.Compiled);
         static readonly Regex RegexOwnerName = new Regex(@"^--owner-name=(?<p>.*)$", RegexOptions.Compiled);
         static readonly Regex RegexImport = new Regex(@"^--import=(?<p>.*)$", RegexOptions.Compiled);
         static readonly Regex RegexTemplateClient = new Regex(@"^--template-client=(?<p>.*)$", RegexOptions.Compiled);
@@ -145,6 +152,13 @@ BtrieveWrapper.Orm.Models.Generator
             } else {
                 var match = RegexBtrieveLibrary.Match(arg);
                 result.BtrieveLibrary = match.Groups["p"].Value;
+            }
+            arg = args.SingleOrDefault(a => RegexDependencyLibrary.IsMatch(a));
+            if (arg == null) {
+                result.DependencyLibraries = new string[0];
+            } else {
+                var match = RegexDependencyLibrary.Match(arg);
+                result.DependencyLibraries = match.Groups["p"].Value.Split(';');
             }
             arg = args.SingleOrDefault(a => RegexOwnerName.IsMatch(a));
             if (arg == null) {
@@ -211,6 +225,7 @@ BtrieveWrapper.Orm.Models.Generator
         public string Input { get; private set; }
         public string Output { get; private set; }
         public string BtrieveLibrary { get; private set; }
+        public string[] DependencyLibraries { get; private set; }
         public string OwnerName { get; private set; }
         public string[] ImportLibraries { get; private set; }
         public string ClientTemplate { get; private set; }
