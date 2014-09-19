@@ -171,7 +171,6 @@ namespace BtrieveWrapper.Orm
                 return 0x000f0000;
             }
 
-
             if (equalCount == 0 &&
                 greaterCount == 0 &&
                 lessCount == 0 &&

@@ -242,7 +242,7 @@ namespace BtrieveWrapper.Orm
             }
         }
 
-        public TRecord Get(System.Linq.Expressions.Expression<Func<TRecord, bool>> whereExpression, KeyInfo key, LockMode lockMode = LockMode.None) {
+        public TRecord GetByKey(KeyInfo key = null, System.Linq.Expressions.Expression<Func<TRecord, bool>> whereExpression = null, LockMode lockMode = LockMode.None) {
             using (var connection = new Connection(this)) {
                 TRecord result = null;
                 foreach (var record in this.Query(new QueryParameter<TRecord>(key, whereExpression, lockMode: lockMode, limit: 2))) {
@@ -255,11 +255,7 @@ namespace BtrieveWrapper.Orm
             }
         }
 
-        public TRecord Get(System.Linq.Expressions.Expression<Func<TRecord, bool>> whereExpression, Func<TKeyCollection, KeyInfo> keySelector, LockMode lockMode = LockMode.None) {
-            return this.Get(whereExpression, keySelector == null ? null : keySelector(this.Keys), lockMode);
-        }
-
-        public TRecord Get(KeyValue keyValue, LockMode lockMode = LockMode.None) {
+        public TRecord GetByKeyValue(KeyValue keyValue, LockMode lockMode = LockMode.None) {
             if (keyValue == null) {
                 throw new ArgumentNullException();
             }
@@ -278,32 +274,9 @@ namespace BtrieveWrapper.Orm
             return result;
         }
 
-        public IEnumerable<TRecord> Query(
-            System.Linq.Expressions.Expression<Func<TRecord, bool>> whereExpression,
-            Func<TKeyCollection, KeyInfo> keySelector,
-            LockMode lockMode = LockMode.None,
-            TRecord startingRecord = null,
-            bool skipStartingRecord = false,
-            int limit = 0,
-            bool reverse = false,
-            ushort rejectCount = 0,
-            bool isIgnoreCase = false) {
-
-            return this.Query(new QueryParameter<TRecord>(
-                keySelector == null ? null : keySelector(this.Keys),
-                whereExpression,
-                lockMode,
-                startingRecord,
-                skipStartingRecord,
-                limit,
-                reverse,
-                rejectCount,
-                isIgnoreCase));
-        }
-
-        public IEnumerable<TRecord> Query(
-            System.Linq.Expressions.Expression<Func<TRecord, bool>> whereExpression,
-            KeyInfo key,
+        public IEnumerable<TRecord> QueryByKey(
+            KeyInfo key = null,
+            System.Linq.Expressions.Expression<Func<TRecord, bool>> whereExpression = null,
             LockMode lockMode = LockMode.None,
             TRecord startingRecord = null,
             bool skipStartingRecord = false,

@@ -228,24 +228,16 @@ namespace BtrieveWrapper.Orm
             return result;
         }
 
-        public TRecord GetAndManage(System.Linq.Expressions.Expression<Func<TRecord, bool>> whereExpression, KeyInfo key, LockMode lockMode = LockMode.None) {
-            var result = this.Get(whereExpression, key, lockMode);
+        public TRecord GetByKeyAndManage(KeyInfo key, System.Linq.Expressions.Expression<Func<TRecord, bool>> whereExpression = null, LockMode lockMode = LockMode.None) {
+            var result = this.GetByKey(key, whereExpression, lockMode);
             if (result != null) {
                 this.ManageRecord(result);
             }
             return result;
         }
 
-        public TRecord GetAndManage(System.Linq.Expressions.Expression<Func<TRecord, bool>> whereExpression, Func<TKeyCollection, KeyInfo> keySelector, LockMode lockMode = LockMode.None) {
-            var result = this.Get(whereExpression, keySelector == null ? null : keySelector(this.Keys), lockMode);
-            if (result != null) {
-                this.ManageRecord(result);
-            }
-            return result;
-        }
-
-        public TRecord GetAndManage(KeyValue keyValue, LockMode lockMode = LockMode.None) {
-            var result = this.Get(keyValue, lockMode);
+        public TRecord GetByKeyValueAndManage(KeyValue keyValue, LockMode lockMode = LockMode.None) {
+            var result = this.GetByKeyValue(keyValue, lockMode);
             if (result != null) {
                 this.ManageRecord(result);
             }
@@ -262,12 +254,21 @@ namespace BtrieveWrapper.Orm
             ushort rejectCount = 0,
             bool isIgnoreCase = false) {
 
-                return this.QueryAndManage(new QueryParameter<TRecord>(whereExpression, lockMode, startingRecord, skipStartingRecord, limit, reverse, rejectCount, isIgnoreCase));
+            return this.QueryAndManage(new QueryParameter<TRecord>(whereExpression, lockMode, startingRecord, skipStartingRecord, limit, reverse, rejectCount, isIgnoreCase));
         }
 
-        public IEnumerable<TRecord> QueryAndManage(
-            System.Linq.Expressions.Expression<Func<TRecord, bool>> whereExpression,
-            KeyInfo key,
+        public IEnumerable<TRecord> QueryAndManage(QueryParameter<TRecord> parameter) {
+            var count = 0;
+            foreach (var record in this.Query(parameter)) {
+                this.ManageRecord(record);
+                yield return record;
+                count++;
+            }
+        }
+
+        public IEnumerable<TRecord> QueryByKeyAndManage(
+            KeyInfo key = null,
+            System.Linq.Expressions.Expression<Func<TRecord, bool>> whereExpression = null,
             LockMode lockMode = LockMode.None,
             TRecord startingRecord = null,
             bool skipStartingRecord = false,
@@ -277,16 +278,6 @@ namespace BtrieveWrapper.Orm
             bool isIgnoreCase = false) {
 
             return this.QueryAndManage(new QueryParameter<TRecord>(key, whereExpression, lockMode, startingRecord, skipStartingRecord, limit, reverse, rejectCount, isIgnoreCase));
-        }
-
-
-        public IEnumerable<TRecord> QueryAndManage(QueryParameter<TRecord> parameter) {
-            var count = 0;
-            foreach (var record in this.Query(parameter)) {
-                this.ManageRecord(record);
-                yield return record;
-                count++;
-            }
         }
 
         void ManageRecord(TRecord record) {
