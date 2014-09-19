@@ -15,34 +15,24 @@ namespace BtrieveWrapper.Orm
         Func<byte[], object> _recordConstructor;
         int _reusableCapacity;
         Queue<TRecord> _reusableRecords;
-        Operator _nativeOperator;
+        NativeOperator _nativeOperator;
 
-        public RecordOperator(string dllPath = null, Path path = null, string ownerName = null, OpenMode? openMode = null, int reusableCapacity = 1000, byte[] temporaryBuffer = null)
-            : this(
-                new Operator(
-                    dllPath ?? Resource.GetRecordInfo(typeof(TRecord)).DllPath,
-                    false),
-                path,
-                ownerName,
-                openMode,
-                reusableCapacity,
-                temporaryBuffer) { }
+        public RecordOperator(Path path = null, string ownerName = null, OpenMode? openMode = null, string dllPath = null, IEnumerable<string> dependencyPaths = null, int reusableCapacity = 1000, byte[] temporaryBuffer = null)
+            : this(new NativeOperator(false, dllPath ?? Resource.GetRecordInfo(typeof(TRecord)).DllPath, dependencyPaths ?? Resource.GetRecordInfo(typeof(TRecord)).DependencyPaths), path, ownerName, openMode, reusableCapacity, temporaryBuffer) { }
 
-        public RecordOperator(string applicationId, ushort threadId, string dllPath = null, Path path = null, string ownerName = null, OpenMode? openMode = null, int reusableCapacity = 1000, byte[] temporaryBuffer = null)
-            : this(
-                new Operator(
-                    dllPath ?? Resource.GetRecordInfo(typeof(TRecord)).DllPath,
-                    true),
-                path,
-                ownerName,
-                openMode,
-                reusableCapacity,
-                temporaryBuffer) {
+        public RecordOperator(string path, string ownerName = null, OpenMode? openMode = null, string dllPath = null, IEnumerable<string> dependencyPaths = null, int reusableCapacity = 1000, byte[] temporaryBuffer = null)
+            : this(Path.Absolute(path), ownerName, openMode, dllPath, dependencyPaths, reusableCapacity, temporaryBuffer) { }
+
+        public RecordOperator(string applicationId, ushort threadId, string path, string ownerName = null, OpenMode? openMode = null, string dllPath = null, IEnumerable<string> dependencyPaths = null, int reusableCapacity = 1000, byte[] temporaryBuffer = null)
+            : this(applicationId, threadId, Path.Absolute(path), ownerName, openMode, dllPath, dependencyPaths, reusableCapacity, temporaryBuffer) { }
+
+        public RecordOperator(string applicationId, ushort threadId, Path path = null, string ownerName = null, OpenMode? openMode = null, string dllPath = null, IEnumerable<string> dependencyPaths = null, int reusableCapacity = 1000, byte[] temporaryBuffer = null)
+            : this(new NativeOperator(true, dllPath ?? Resource.GetRecordInfo(typeof(TRecord)).DllPath, dependencyPaths ?? Resource.GetRecordInfo(typeof(TRecord)).DependencyPaths), path, ownerName, openMode, reusableCapacity, temporaryBuffer) {
             _nativeOperator.ClientId.ApplicationId = applicationId;
             _nativeOperator.ClientId.ThreadId = threadId;
         }
 
-        public RecordOperator(Operator nativeOperator, Path path, string ownerName, OpenMode? openMode, int reusableCapacity, byte[] temporaryBuffer = null) {
+        public RecordOperator(NativeOperator nativeOperator, Path path, string ownerName, OpenMode? openMode, int reusableCapacity, byte[] temporaryBuffer = null) {
             var recordType = typeof(TRecord);
             var recordConstructor = recordType.GetConstructor(new Type[] { typeof(byte[]) });
             if (recordConstructor == null) {
@@ -64,6 +54,9 @@ namespace BtrieveWrapper.Orm
             _reusableCapacity = reusableCapacity;
             _reusableRecords = new Queue<TRecord>(_reusableCapacity);
         }
+
+        public RecordOperator(NativeOperator nativeOperator, string path, string ownerName = null, OpenMode? openMode = null, int reusableCapacity = 1000, byte[] temporaryBuffer = null)
+            : this(nativeOperator, Path.Absolute(path), ownerName, openMode, reusableCapacity, temporaryBuffer) { }
 
         public sbyte PrimaryKeyNumber { get; private set; }
         public StatData Stat { get; private set; }
@@ -140,20 +133,24 @@ namespace BtrieveWrapper.Orm
         }
 
         public void Create(Path path = null, bool overwrite = false) {
-            var record = this.RecordInfo;
-            var fileSpec = record.GetCreateFileSpec();
-            var keySpecs = record.Keys.SelectMany(k => k.Segments.Select(s => s.GetCreateKeySpec()));
+            var recordInfo = this.RecordInfo;
+            var fileSpec = recordInfo.GetCreateFileSpec();
+            var keySpecs = recordInfo.Keys.SelectMany(k => k.Segments.Select(s => s.GetCreateKeySpec()));
             var createData = new CreateData(fileSpec, keySpecs);
             var filePath = Path.Merge(path, this.Path).GetFilePath();
             _nativeOperator.Create(filePath, createData, overwrite);
-            if(this.RecordInfo.OwnerName!=null){
+            if (recordInfo.OwnerName != null) {
                 var positionBlock=_nativeOperator.Open(filePath);
                 try {
-                    _nativeOperator.SetOwner(positionBlock, this.RecordInfo.OwnerName, this.RecordInfo.OwnerNameOption);
+                    _nativeOperator.SetOwner(positionBlock, recordInfo.OwnerName, recordInfo.OwnerNameOption);
                 } finally {
                     _nativeOperator.Close(positionBlock);
                 }
             }
+        }
+
+        public void Create(string path, bool overwrite = false) {
+            this.Create(Path.Absolute(path), overwrite);
         }
 
         public void Open(Path path = null) {
@@ -168,10 +165,16 @@ namespace BtrieveWrapper.Orm
             }
         }
 
+        public void Open(string path) {
+            this.Open(Path.Absolute(path));
+        }
+
         public void Close() {
             if (IsClosable) {
-                _nativeOperator.Close(_positionBlock);
-                _positionBlock = null;
+                if (_positionBlock != null) {
+                    _nativeOperator.Close(_positionBlock);
+                    _positionBlock = null;
+                }
             } else {
                 throw new InvalidOperationException();
             }
@@ -196,7 +199,7 @@ namespace BtrieveWrapper.Orm
             }
             ushort position = 2;
             var recordList=new List<TRecord>();
-            ushort capacity = ushort.MaxValue - 412;
+            ushort capacity = (ushort)(Config.MaxBufferLength - Config.ExtendedOperationBufferMargin);
             foreach (var record in records) {
                 if (position + this.RecordInfo.DataBufferCapacity + 2 > capacity) {
                     Array.Copy(BitConverter.GetBytes(recordList.Count), this.TemporaryBuffer, 2);
@@ -688,6 +691,7 @@ namespace BtrieveWrapper.Orm
             var useLimit = limit > 0;
             rejectCount = rejectCount == 0 ? this.RecordInfo.RejectCount : rejectCount;
             var isFirst = true;
+            var bufferLength = Config.MaxBufferLength - Config.ExtendedOperationBufferMargin;
             for (; ; ) {
                 var dataBufferLength = (ushort)(filter == null ? 16 : filter.Length + 16);
                 Array.Copy(BitConverter.GetBytes(dataBufferLength), 0, this.TemporaryBuffer, 0, 2);
@@ -700,7 +704,7 @@ namespace BtrieveWrapper.Orm
                     filter.SetDataBuffer(this.TemporaryBuffer);
                 }
                 var position = (ushort)(filter == null ? 8 : filter.Length + 8);
-                var count = (ushort)((Config.MaxBufferLength) / (this.RecordInfo.DataBufferCapacity + 6));
+                var count = (ushort)(bufferLength / (this.RecordInfo.DataBufferCapacity + 6));
                 if (useLimit && count > limit) {
                     count = (ushort)limit;
                 }

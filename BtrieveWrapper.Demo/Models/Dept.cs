@@ -61,19 +61,17 @@
             get { return (System.UInt64)this.GetValue("Head_Of_Dept"); }
             set { this.SetValue("Head_Of_Dept", value); }
         }
+
+        public static new DeptKeyCollection Keys { get { return GetKeyCollection<DeptKeyCollection>(); } }
     }
 
-    public class DeptManager : BtrieveWrapper.Orm.RecordManager<Dept> {
-        public DeptManager(BtrieveWrapper.Orm.Path path = null, string dllPath = null, string applicationId = "BW", ushort threadId = 0 , string ownerName = null, BtrieveWrapper.OpenMode? openMode = null, int reusableCapacity = 1000, byte[] temporaryBuffer = null)
-            : base(path, dllPath, applicationId, threadId, ownerName, openMode, reusableCapacity, temporaryBuffer) { }
+    public class DeptKeyCollection : BtrieveWrapper.Orm.KeyCollection<Dept> {
+        public DeptKeyCollection() : base() { }
 
-        public DeptManager(BtrieveWrapper.Operator nativeOperator, BtrieveWrapper.Orm.Path path = null, string ownerName = null, BtrieveWrapper.OpenMode? openMode = null, int reusableCapacity = 1000, byte[] temporaryBuffer = null)
-            : base(nativeOperator, path, ownerName, openMode, reusableCapacity, temporaryBuffer) { }
+        public BtrieveWrapper.Orm.KeyInfo Key0 { get { return this[0]; } }
 
-        public BtrieveWrapper.Orm.KeyInfo Key0 { get { return this.Keys[0]; } }
+        public BtrieveWrapper.Orm.KeyInfo Key1 { get { return this[1]; } }
 
-        public BtrieveWrapper.Orm.KeyInfo Key1 { get { return this.Keys[1]; } }
-
-        public BtrieveWrapper.Orm.KeyInfo Key2 { get { return this.Keys[2]; } }
+        public BtrieveWrapper.Orm.KeyInfo Key2 { get { return this[2]; } }
     }
 }

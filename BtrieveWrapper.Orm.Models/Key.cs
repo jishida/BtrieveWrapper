@@ -4,16 +4,24 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
 using System.Xml.Serialization;
+#if NET_3_5
 using System.Windows;
-
+#endif
 using BtrieveWrapper.Orm;
 
 namespace BtrieveWrapper.Orm.Models
 {
+    /// <summary>
+    /// 
+    /// </summary>
     [Serializable]
     [XmlType(Namespace = "urn:BtrieveWrapperModelSchema")]
-    public class Key : DependencyObject
+    public class Key 
+#if NET_3_5
+        : DependencyObject
+#endif
     {
+#if NET_3_5
         public static readonly DependencyProperty NameProperty = DependencyProperty.Register(
             "Name", typeof(string), typeof(Key));
         public static readonly DependencyProperty KeyNumberProperty = DependencyProperty.Register(
@@ -24,17 +32,27 @@ namespace BtrieveWrapper.Orm.Models
             "IsModifiable", typeof(bool), typeof(Key));
         public static readonly DependencyProperty NullKeyOptionProperty = DependencyProperty.Register(
             "NullKeyOption", typeof(NullKeyOption), typeof(Key));
+        public static readonly DependencyProperty CommentProperty = DependencyProperty.Register(
+            "Comment", typeof(string), typeof(Key));
+
+#endif
 
         public Key() {
-            this.KeySegmentCollection = new ObservableCollection<KeySegment>();
             this.KeyNumber = 0;
             this.DuplicateKeyOption = BtrieveWrapper.DuplicateKeyOption.Unique;
             this.IsModifiable = false;
             this.NullKeyOption = BtrieveWrapper.NullKeyOption.None;
-
+            this.Comment = null;
+#if NET_3_5
+            this.KeySegmentCollection = new ObservableCollection<KeySegment>();
             this.KeySegmentCollection.CollectionChanged+=KeySegmentCollection_CollectionChanged;
+#else
+            this.KeySegmentCollection = new ObservableList<KeySegment>();
+            this.KeySegmentCollection.OnAdded += KeySegmentCollection_OnAdded;
+#endif
         }
 
+#if NET_3_5
         void KeySegmentCollection_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e) {
             if (e.Action == System.Collections.Specialized.NotifyCollectionChangedAction.Add) {
                 foreach (KeySegment keySegment in e.NewItems) {
@@ -58,6 +76,49 @@ namespace BtrieveWrapper.Orm.Models
         [XmlAttribute]
         public NullKeyOption NullKeyOption { get { return (NullKeyOption)this.GetValue(NullKeyOptionProperty); } set { this.SetValue(NullKeyOptionProperty, value); } }
 
+        [XmlAttribute]
+        public string Comment { get { return (string)this.GetValue(CommentProperty); } set { this.SetValue(CommentProperty, value); } }
+
+        [XmlIgnore]
+        public ObservableCollection<KeySegment> KeySegmentCollection { get; private set; }
+#else   
+        void KeySegmentCollection_OnAdded(object sender, KeySegment e) {
+            e.Key = this;
+            ushort index = 0;
+            foreach (var keySegment in this.KeySegmentCollection) {
+                keySegment.Index = index++;
+            }
+        }
+
+        [XmlAttribute]
+        public string Name { get; set; }
+        [XmlAttribute]
+        public sbyte KeyNumber { get; set; }
+        [XmlAttribute]
+        public DuplicateKeyOption DuplicateKeyOption { get; set; }
+        [XmlAttribute]
+        public bool IsModifiable { get; set; }
+        [XmlAttribute]
+        public NullKeyOption NullKeyOption { get; set; }
+
+        [XmlAttribute]
+        public string Comment { get; set; }
+
+        [XmlIgnore]
+        public ObservableList<KeySegment> KeySegmentCollection { get; private set; }
+#endif
+
+        [XmlIgnore]
+        public IEnumerable<string> CommentLines {
+            get {
+                if (String.IsNullOrEmpty(this.Comment)) {
+                    return null;
+                }
+                return this.Comment.Split(new[] { Environment.NewLine }, StringSplitOptions.None)
+                    .Select(l => l.Escape());
+            }
+        }
+
         [XmlArrayItem]
         public KeySegment[] Segments { get { return this.KeySegmentCollection.ToArray(); } 
             set {
@@ -71,10 +132,8 @@ namespace BtrieveWrapper.Orm.Models
         public Record Record { get; internal set; }
 
         [XmlIgnore]
-        public string DisplayName { get { return String.IsNullOrWhiteSpace(this.Name) ? String.Format(Config.KeyName, this.KeyNumber) : this.Name; } }
+        public string DisplayName { get { return String.IsNullOrEmpty(this.Name) ? String.Format(Config.KeyName, this.KeyNumber) : this.Name; } }
 
-        [XmlIgnore]
-        public ObservableCollection<KeySegment> KeySegmentCollection { get; private set; }
 
         [XmlIgnore]
         public IEnumerable<KeyValuePair<string, object>> AttributeParameters {

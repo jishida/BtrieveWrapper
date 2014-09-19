@@ -5,34 +5,87 @@ using System.Text;
 
 namespace BtrieveWrapper.Orm
 {
-    public class RecordReader<TRecord> : ITransactionalObject where TRecord : Record<TRecord>
+    public class RecordReader<TRecord> : RecordReader<TRecord, KeyCollection<TRecord>>
+        where TRecord : Record<TRecord>
     {
-        protected class Connection : IDisposable
+        public RecordReader(
+            Path path = null,
+            string ownerName = null,
+            OpenMode? openMode = null,
+            string applicationId = "BW",
+            ushort threadId = 0,
+            string dllPath = null,
+            IEnumerable<string> dependencyPaths = null,
+            int reusableCapacity = 1000,
+            byte[] temporaryBuffer = null)
+            : base(path, ownerName, openMode, applicationId, threadId, dllPath, dependencyPaths, reusableCapacity, temporaryBuffer) { }
+
+        public RecordReader(
+            string path,
+            string ownerName = null,
+            OpenMode? openMode = null,
+            string applicationId = "BW",
+            ushort threadId = 0,
+            string dllPath = null,
+            IEnumerable<string> dependencyPaths = null,
+            int reusableCapacity = 1000,
+            byte[] temporaryBuffer = null)
+            : base(path, ownerName, openMode, applicationId, threadId, dllPath, dependencyPaths, reusableCapacity, temporaryBuffer) { }
+
+        public RecordReader(
+            NativeOperator nativeOperator,
+            Path path = null,
+            string ownerName = null,
+            OpenMode? openMode = null,
+            int reusableCapacity = 1000,
+            byte[] temporaryBuffer = null)
+            : base(nativeOperator, path, ownerName, openMode, reusableCapacity, temporaryBuffer) { }
+
+
+        public RecordReader(
+            NativeOperator nativeOperator,
+            string path,
+            string ownerName = null,
+            OpenMode? openMode = null,
+            int reusableCapacity = 1000,
+            byte[] temporaryBuffer = null)
+            : base(nativeOperator, path, ownerName, openMode, reusableCapacity, temporaryBuffer) { }
+    }
+
+    public class RecordReader<TRecord, TKeyCollection> : ITransactionalObject
+        where TRecord : Record<TRecord>
+        where TKeyCollection : KeyCollection<TRecord>, new()
+    {
+        protected sealed class Connection : IDisposable
         {
-            RecordReader<TRecord> _manager = null;
+            RecordReader<TRecord, TKeyCollection> _manager = null;
 
-            public Connection(RecordReader<TRecord> manager) {
-                _manager = manager._connection == null
-                    ? manager
-                    : null;
-                if (_manager != null) {
-                    if (!_manager.Operator.IsOpened) {
-                        _manager.Operator.Open();
+            Connection() { }
+
+            public Connection(RecordReader<TRecord, TKeyCollection> manager) {
+                if (manager._connection == null) {
+                    if (manager.CheckTransaction()) {
+                        manager._connection = new Connection();
+                        manager._connection._manager = manager;
+                    }else{
+                        _manager = manager;
                     }
-
-                    if (_manager._stat == null) {
-                        _manager._stat = _manager.Operator.Stat;
-                        this.ValidateStat();
+                    if (!manager.Operator.IsOpened) {
+                        manager.Operator.Open();
+                        if (manager._stat == null) {
+                            manager._stat = manager.Operator.Stat;
+                            ValidateStat(manager);
+                        }
                     }
                 }
             }
 
-            void ValidateStat() {
+            static void ValidateStat(RecordReader<TRecord, TKeyCollection> manager) {
                 var keySpecs = new List<KeySpec>();
-                foreach (var keySpec in _manager._stat.KeySpecs) {
+                foreach (var keySpec in manager._stat.KeySpecs) {
                     keySpecs.Add(keySpec);
                     if (!keySpec.IsSegmentKey) {
-                        var fields = _manager.Operator.RecordInfo.Fields.Where(f => f.KeySegments.Any(a => a.KeyNumber == keySpec.Number));
+                        var fields = manager.Operator.RecordInfo.Fields.Where(f => f.KeySegments.Any(a => a.KeyNumber == keySpec.Number));
                         if (fields.Count() != keySpecs.Count()) {
                             throw new InvalidDefinitionException();
                         }
@@ -66,33 +119,42 @@ namespace BtrieveWrapper.Orm
             }
         }
 
-        static object[] _emptyValues = new object[0];
-        static object[] _singleValues = new object[1];
-
         Connection _connection = null;
         StatData _stat;
-        bool _isOpendByTransaction = false;
 
         public RecordReader(
             Path path = null,
-            string dllPath = null,
-            string applicationId = "BW",
-            ushort threadId = 0,
             string ownerName = null,
             OpenMode? openMode = null,
+            string applicationId = "BW",
+            ushort threadId = 0,
+            string dllPath = null,
+            IEnumerable<string> dependencyPaths = null,
             int reusableCapacity = 1000,
             byte[] temporaryBuffer = null) {
 
-            this.Keys = new KeyCollection(typeof(TRecord));
+            this.Keys = new TKeyCollection();
 
-            this.Operator = new RecordOperator<TRecord>(applicationId, threadId, dllPath, path, ownerName, openMode, reusableCapacity, temporaryBuffer);
+            this.Operator = new RecordOperator<TRecord>(applicationId, threadId, path, ownerName, openMode, dllPath, dependencyPaths, reusableCapacity, temporaryBuffer);
             this.Operator.IsClosable = false;
             this.PrimaryKey = this.Keys[this.Operator.PrimaryKeyNumber];
             _stat = this.Operator.Stat;
         }
 
         public RecordReader(
-            Operator nativeOperator,
+            string path,
+            string ownerName = null,
+            OpenMode? openMode = null,
+            string applicationId = "BW",
+            ushort threadId = 0,
+            string dllPath = null,
+            IEnumerable<string> dependencyPaths = null,
+            int reusableCapacity = 1000,
+            byte[] temporaryBuffer = null)
+            : this(Path.Absolute(path), ownerName, openMode, applicationId, threadId, dllPath, dependencyPaths, reusableCapacity, temporaryBuffer) { }
+
+        public RecordReader(
+            NativeOperator nativeOperator,
             Path path = null,
             string ownerName = null,
             OpenMode? openMode = null,
@@ -103,7 +165,7 @@ namespace BtrieveWrapper.Orm
                 throw new ArgumentNullException();
             }
 
-            this.Keys = new KeyCollection(typeof(TRecord));
+            this.Keys = new TKeyCollection();
 
             this.Operator = new RecordOperator<TRecord>(nativeOperator, path, ownerName, openMode, reusableCapacity, temporaryBuffer);
             this.Operator.IsClosable = false;
@@ -111,12 +173,25 @@ namespace BtrieveWrapper.Orm
             _stat = this.Operator.Stat;
         }
 
+        public RecordReader(
+            NativeOperator nativeOperator,
+            string path,
+            string ownerName = null,
+            OpenMode? openMode = null,
+            int reusableCapacity = 1000,
+            byte[] temporaryBuffer = null)
+            : this(nativeOperator, Path.Absolute(path), ownerName, openMode, reusableCapacity, temporaryBuffer) { }
+
         public RecordOperator<TRecord> Operator { get; protected set; }
         public KeyInfo PrimaryKey { get; private set; }
-        public KeyCollection Keys { get; private set; }
+        public TKeyCollection Keys { get; private set; }
         public bool AutoUnlockUnhandledRecord { get; private set; }
         public bool IsOpened { get { return _connection != null; } }
-        protected Transaction Transaction { get; private set; }
+        protected TransactionalObjectFactory Factory { get; private set; }
+
+        protected bool CheckTransaction() {
+            return this.Factory != null && this.Factory.Transaction != null;
+        }
 
         void UnlockLastRecord(LockMode lockMode) {
             switch (lockMode) {
@@ -167,7 +242,7 @@ namespace BtrieveWrapper.Orm
             }
         }
 
-        public TRecord Get(KeyInfo key, System.Linq.Expressions.Expression<Func<TRecord, bool>> whereExpression = null, LockMode lockMode = LockMode.None) {
+        public TRecord GetByKey(KeyInfo key = null, System.Linq.Expressions.Expression<Func<TRecord, bool>> whereExpression = null, LockMode lockMode = LockMode.None) {
             using (var connection = new Connection(this)) {
                 TRecord result = null;
                 foreach (var record in this.Query(new QueryParameter<TRecord>(key, whereExpression, lockMode: lockMode, limit: 2))) {
@@ -180,14 +255,14 @@ namespace BtrieveWrapper.Orm
             }
         }
 
-        public TRecord Get(KeyValue keyValue, LockMode lockMode = LockMode.None) {
+        public TRecord GetByKeyValue(KeyValue keyValue, LockMode lockMode = LockMode.None) {
             if (keyValue == null) {
                 throw new ArgumentNullException();
             }
             if (keyValue.Key.DuplicateKeyOption != DuplicateKeyOption.Unique || keyValue.ComplementCount != 0) {
                 throw new ArgumentException();
             }
-            var lockBias = Utility.GetLockBias(this.Transaction == null ? lockMode : this.Transaction.LockMode);
+            var lockBias = Utility.GetLockBias(this.CheckTransaction() ? this.Factory.Transaction.LockMode : lockMode);
             TRecord result;
             using (var connector = new Connection(this)) {
                 try {
@@ -199,32 +274,11 @@ namespace BtrieveWrapper.Orm
             return result;
         }
 
-        public IEnumerable<TRecord> Query(
+        public IEnumerable<TRecord> QueryByKey(
+            KeyInfo key = null,
             System.Linq.Expressions.Expression<Func<TRecord, bool>> whereExpression = null,
-            TRecord startingRecord = null,
             LockMode lockMode = LockMode.None,
-            bool skipStartingRecord = false,
-            int limit = 0,
-            bool reverse = false,
-            ushort rejectCount = 0,
-            bool isIgnoreCase = false) {
-
-            return this.Query(new QueryParameter<TRecord>(
-                whereExpression,
-                startingRecord,
-                lockMode,
-                skipStartingRecord,
-                limit,
-                reverse,
-                rejectCount,
-                isIgnoreCase));
-        }
-
-        public IEnumerable<TRecord> Query(
-            KeyInfo key,
-            System.Linq.Expressions.Expression<Func<TRecord, bool>> whereExpression = null,
             TRecord startingRecord = null,
-            LockMode lockMode = LockMode.None,
             bool skipStartingRecord = false,
             int limit = 0,
             bool reverse = false,
@@ -234,8 +288,29 @@ namespace BtrieveWrapper.Orm
             return this.Query(new QueryParameter<TRecord>(
                 key,
                 whereExpression,
-                startingRecord,
                 lockMode,
+                startingRecord,
+                skipStartingRecord,
+                limit,
+                reverse,
+                rejectCount,
+                isIgnoreCase));
+        }
+
+        public IEnumerable<TRecord> Query(
+            System.Linq.Expressions.Expression<Func<TRecord, bool>> whereExpression = null,
+            LockMode lockMode = LockMode.None,
+            TRecord startingRecord = null,
+            bool skipStartingRecord = false,
+            int limit = 0,
+            bool reverse = false,
+            ushort rejectCount = 0,
+            bool isIgnoreCase = false) {
+            
+            return this.Query(new QueryParameter<TRecord>(
+                whereExpression,
+                lockMode,
+                startingRecord,
                 skipStartingRecord,
                 limit,
                 reverse,
@@ -250,7 +325,7 @@ namespace BtrieveWrapper.Orm
             if (parameter.StartingRecord != null && parameter.StartingRecord.RecordState == RecordState.Incomplete) {
                 throw new ArgumentException();
             }
-            var lockMode = this.Transaction == null ? parameter.LockMode : this.Transaction.LockMode;
+            var lockMode = this.CheckTransaction() ? this.Factory.Transaction.LockMode : parameter.LockMode;
             var lockBias = Utility.GetLockBias(lockMode);
             var unlock = _connection != null && this.AutoUnlockUnhandledRecord;
             KeyValue keyValue = parameter.UniqueKeyValue;
@@ -278,7 +353,6 @@ namespace BtrieveWrapper.Orm
             }
 
             var limit = parameter.Limit;
-            var useLimit = limit > 0;
             keyValue = parameter.StartingRecord == null
                 ? null : parameter.StartingRecord.GetKeyValue(this.PrimaryKey);
             using (var connection = new Connection(this)) {
@@ -302,10 +376,9 @@ namespace BtrieveWrapper.Orm
                         throw;
                     }
                 } else {
-                    TRecord record = null;
                     var tryGreater = false;
                     try {
-                        record = this.Operator.GetEqual(keyValue, lockBias, true);
+                        this.Operator.GetEqual(keyValue, lockBias, true);
                     } catch (OperationException e) {
                         if (e.StatusCode == 4 && parameter.UseKey) {
                             tryGreater = true;
@@ -313,19 +386,21 @@ namespace BtrieveWrapper.Orm
                             throw;
                         }
                     }
-                    if (tryGreater) {
-                        keyValue = parameter.StartingRecord.GetKeyValue(parameter.Key);
-                        try {
-                            record = parameter.Reverse
-                                ? this.Operator.GetLessThan(keyValue, lockBias, true)
-                                : this.Operator.GetGreater(keyValue, lockBias, true);
-                        } catch (OperationException e) {
-                            if (e.StatusCode == 9) {
-                                yield break;
-                            }
-                            throw;
-                        }
-                    }
+					if (tryGreater) {
+						keyValue = parameter.StartingRecord.GetKeyValue (parameter.Key);
+						try {
+							if (parameter.Reverse) {
+								this.Operator.GetLessThan (keyValue, lockBias, true);
+							} else {
+								this.Operator.GetGreater (keyValue, lockBias, true);
+							}
+						} catch (OperationException e) {
+							if (e.StatusCode == 9) {
+								yield break;
+							}
+							throw;
+						}
+					}
                 }
                 var records = parameter.UseKey
                     ? parameter.Reverse
@@ -351,28 +426,22 @@ namespace BtrieveWrapper.Orm
                 }
             }
         }
-        
 
-        void ITransactionalObject.SetTransaction(Transaction transaction) {
-            this.SetTransaction(transaction);
+        void ITransactionalObject.SetFactory(TransactionalObjectFactory factory) {
+            this.Factory = factory;
         }
 
-        protected virtual void SetTransaction(Transaction transaction) {
-            this.Transaction = transaction;
-            this.Transaction.Disposing += this.OnTransactionDisposing;
-            if (_connection == null) {
-                this.Open();
-            }
+        void ITransactionalObject.TransactionCommitted() {
+            this.OnTransactionCommitted();
         }
 
-        void OnTransactionDisposing(object sender, EventArgs e) {
-            if (_isOpendByTransaction) {
-                _isOpendByTransaction = false;
-                this.Close();
-            }
-            this.Transaction.Disposing -= this.OnTransactionDisposing;
-            this.Transaction = null;
+        void ITransactionalObject.TransactionRollbacked() {
+            this.OnTransactionRollbacked();
         }
+
+        protected virtual void OnTransactionCommitted() { }
+
+        protected virtual void OnTransactionRollbacked() { }
 
         public void Open() {
             if (_connection == null) {
@@ -399,9 +468,6 @@ namespace BtrieveWrapper.Orm
         }
 
         public void Dispose() {
-            if (this.Transaction != null) {
-                throw new InvalidOperationException();
-            }
             this.Dispose(true);
         }
 

@@ -5,6 +5,7 @@ using System.Text;
 
 namespace BtrieveWrapper.Orm.Models.Template
 {
+    [Serializable]
     public class ConstructionException : Exception
     {
 

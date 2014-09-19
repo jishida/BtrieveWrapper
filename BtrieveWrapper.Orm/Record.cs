@@ -76,7 +76,7 @@ namespace BtrieveWrapper.Orm
             var keyBuffer = new byte[key.Length];
             var position=0;
             foreach (var segment in key.Segments) {
-                Array.Copy(this.DataBuffer, segment.Position, keyBuffer, position, segment.Length);
+                Array.Copy(this.DataBuffer, segment.Field.Position, keyBuffer, position, segment.Length);
                 position += segment.Length;
             }
             return new KeyValue(key, keyBuffer);
@@ -240,10 +240,13 @@ namespace BtrieveWrapper.Orm
             throw new NotSupportedException();
         }
 
-        public static KeyCollection Keys{
-            get {
-                return Resource.GetRecordInfo(typeof(TRecord)).Keys;
-            }
+        public static KeyCollection<TRecord> Keys {
+            get { return GetKeyCollection<KeyCollection<TRecord>>(); }
+        }
+
+        public static TKeyCollection GetKeyCollection<TKeyCollection>()
+            where TKeyCollection : KeyCollection<TRecord>, new() {
+            return Resource.GetKeyCollection<TKeyCollection>() as TKeyCollection;
         }
     }
 }

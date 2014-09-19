@@ -8,20 +8,14 @@ namespace BtrieveWrapper.Orm
     public sealed class Transaction : IDisposable
     {
 
-        string _clientId = null;
-        ushort _threadId;
         bool _disposed = false, _committed = false;
-        Operator _operator;
+        NativeOperator _operator;
 
-        internal Transaction(Operator nativeOperator , TransactionMode transactionMode, LockMode lockMode) {
+        internal Transaction(NativeOperator nativeOperator , TransactionMode transactionMode, LockMode lockMode) {
             _operator = nativeOperator;
             this.TransactionMode = transactionMode;
             this.LockMode = lockMode;
             _operator.BeginTransaction(transactionMode, Utility.GetLockBias(lockMode));
-            if (_operator.ClientId != null) {
-                _clientId = _operator.ClientId.ApplicationId;
-                _threadId = _operator.ClientId.ThreadId;
-            }
         }
 
         public TransactionMode TransactionMode { get; private set; }

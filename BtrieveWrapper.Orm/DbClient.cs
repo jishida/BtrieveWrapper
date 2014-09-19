@@ -10,18 +10,25 @@ namespace BtrieveWrapper.Orm
     public class DbClient : TransactionalObjectFactory
     {
         Dictionary<int, byte[]> _temporaryBufferDictionary = new Dictionary<int, byte[]>();
-        Dictionary<Type, Func<Operator, Path, string, OpenMode?, int, byte[], ITransactionalObject>> _managerConstructorDictionary
-            = new Dictionary<Type, Func<Operator, Path, string, OpenMode?, int, byte[], ITransactionalObject>>();
+        Dictionary<Type, Func<NativeOperator, Path, string, OpenMode?, int, byte[], ITransactionalObject>> _managerConstructorDictionary
+            = new Dictionary<Type, Func<NativeOperator, Path, string, OpenMode?, int, byte[], ITransactionalObject>>();
 
-        protected DbClient(string dllPath = null, string applicationId = "BW")
-            : base(new Operator(applicationId, Resource.GetThreadId(), dllPath)) { }
+        protected DbClient(string applicationId = "BW", string dllPath = null, IEnumerable<string> dependencyPaths = null)
+            : base(new NativeOperator(applicationId, Resource.GetThreadId(), dllPath, dependencyPaths)) { }
 
         protected DbClient(INativeLibrary nativeLibrary, string applicationId = "BW")
-            : base(new Operator(applicationId, Resource.GetThreadId(), nativeLibrary)) { }
+            : base(new NativeOperator(applicationId, Resource.GetThreadId(), nativeLibrary)) { }
+
+        public string DefaultRelativeDirectory { get; set; }
+        public string DefaultUriHost { get; set; }
+        public string DefaultUriUser { get; set; }
+        public string DefaultUriDbName { get; set; }
+        public string DefaultUriPassword { get; set; }
+        public bool? DefaultUriPrompt { get; set; }
 
         static bool CheckManagerType(Type managerType) {
             while (managerType != typeof(object)) {
-                if (managerType.BaseType.IsGenericType && managerType.BaseType.GetGenericTypeDefinition() == typeof(RecordManager<>)) {
+                if (managerType.BaseType.IsGenericType && managerType.BaseType.GetGenericTypeDefinition() == typeof(RecordManager<,>)) {
                     return true;
                 }
                 managerType = managerType.BaseType;
@@ -40,34 +47,34 @@ namespace BtrieveWrapper.Orm
             this.Transaction.Committing -= OnTransactionCommitting;
         }
 
-        public object CreateManager(Type managerType, Path path = null, string ownerName = null, OpenMode? openMode = null, int recycleCount = 1000, int temporaryBufferId = 0) {
-            if (managerType == null) {
-                throw new ArgumentNullException();
-            }
-            if (!_managerConstructorDictionary.ContainsKey(managerType)) {
-                if (!CheckManagerType(managerType)) {
-                    throw new ArgumentException();
+        public object CreateManager<TRecord, TKeyCollection>(Path path = null, string ownerName = null, OpenMode? openMode = null, int recycleCount = 1000, int temporaryBufferId = 0)
+            where TRecord : Record<TRecord>
+            where TKeyCollection : KeyCollection<TRecord>, new() {
+            if (path == null) {
+                var recordInfo = Resource.GetRecordInfo(typeof(TRecord));
+                if (recordInfo.PathType == PathType.Relative &&
+                    this.DefaultRelativeDirectory != null) {
+                    path = Path.Relative(relativeDirectory: this.DefaultRelativeDirectory);
+                } else if (recordInfo.PathType == PathType.Uri &&
+                    (this.DefaultUriHost != null || this.DefaultUriUser != null || this.DefaultUriDbName != null || this.DefaultUriPassword != null || this.DefaultUriPrompt != null)) {
+                    path = Path.Uri(
+                        uriHost: this.DefaultUriHost,
+                        uriUser: this.DefaultUriUser,
+                        uriDbName: this.DefaultUriDbName,
+                        uriPassword: this.DefaultUriPassword,
+                        uriPrompt: this.DefaultUriPrompt);
                 }
-                var constructorInfo = managerType.GetConstructor(new[] { typeof(Operator), typeof(Path), typeof(string), typeof(OpenMode?), typeof(int), typeof(byte[]) });
-                if (constructorInfo == null) {
-                    throw new InvalidDefinitionException();
-                }
-                var parameters = new[] { 
-                    Expression.Parameter(typeof(Operator)), 
-                    Expression.Parameter(typeof(Path)), 
-                    Expression.Parameter(typeof(string)), 
-                    Expression.Parameter(typeof(OpenMode?)), 
-                    Expression.Parameter(typeof(int)), 
-                    Expression.Parameter(typeof(byte[])) };
-                var newExpression = Expression.New(constructorInfo, parameters);
-                var lambda = Expression.Lambda<Func<Operator, Path, string, OpenMode?, int, byte[], ITransactionalObject>>(newExpression, parameters);
-                _managerConstructorDictionary[managerType] = lambda.Compile();
             }
-            var constructor = _managerConstructorDictionary[managerType];
             var temporaryBuffer = _temporaryBufferDictionary.ContainsKey(temporaryBufferId) ? _temporaryBufferDictionary[temporaryBufferId] : Resource.GetBuffer();
-            var result = constructor(this.Operator, path, ownerName, openMode, recycleCount, temporaryBuffer);
+            var result = new RecordManager<TRecord, TKeyCollection>(this.Operator, path, ownerName, openMode, recycleCount, temporaryBuffer);
             this.AddTransactionalObject(result);
             return result;
+        }
+
+        public object CreateManager<TRecord, TKeyCollection>(string path, string ownerName = null, OpenMode? openMode = null, int recycleCount = 1000, int temporaryBufferId = 0)
+            where TRecord : Record<TRecord>
+            where TKeyCollection : KeyCollection<TRecord>, new() {
+            return this.CreateManager<TRecord, TKeyCollection>(Path.Absolute(path), ownerName, openMode, recycleCount, temporaryBufferId);
         }
 
         public void SaveChanges(bool detachAllRecordsAfterSave = false, LockMode lockMode = LockMode.WaitLock) {
