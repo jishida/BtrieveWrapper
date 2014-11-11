@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
+using BtrieveWrapper.Utilities;
+
 namespace BtrieveWrapper
 {
     public class CreateKeySpec:KeySpec
@@ -27,9 +29,9 @@ namespace BtrieveWrapper
         public byte[] Binary {
             get {
                 var result = new byte[16];
-                Array.Copy(BitConverter.GetBytes((ushort)(this.Position + 1)), 0, result, 0, 2);
-                Array.Copy(BitConverter.GetBytes(this.Length), 0, result, 2, 2);
-                Array.Copy(BitConverter.GetBytes((ushort)this.Flag), 0, result, 4, 2);
+                ((ushort)(this.Position + 1)).SetBytes(result, 0);
+                this.Length.SetBytes(result, 2);
+                ((ushort)this.Flag).SetBytes(result, 4);
                 result[10] = this.ExtendedKeyType;
                 result[11] = this.NullValue;
                 result[14] = (byte)this.Number;

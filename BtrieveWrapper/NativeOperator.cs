@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 
 using BtrieveWrapper;
+using BtrieveWrapper.Utilities;
 
 namespace BtrieveWrapper
 {
@@ -13,26 +14,17 @@ namespace BtrieveWrapper
 
         INativeLibrary _library;
 
-        public NativeOperator(bool useClientId = false, string dllPath = null, IEnumerable<string> dependencyPaths = null) {
-            _library = NativeLibrary.GetNativeLibrary(dllPath, dependencyPaths);
-            this.OwnerNameEncoding = Encoding.Default;
-            this.PathEncoding = Encoding.Default;
-            this.ClientId = useClientId ? new ClientId() : null;
-        }
+        public NativeOperator(string dllPath = null, IEnumerable<string> dependencyPaths = null) 
+            : this(NativeLibrary.GetNativeLibrary(dllPath, dependencyPaths)) { }
 
-        public NativeOperator(INativeLibrary nativeLibrary, bool useClientId = false) {
+        public NativeOperator(INativeLibrary nativeLibrary) {
             _library = nativeLibrary;
-            this.OwnerNameEncoding = Encoding.Default;
+            this.OwnerNameEncoding = Encoding.ASCII;
             this.PathEncoding = Encoding.Default;
-            this.ClientId = useClientId ? new ClientId() : null;
         }
 
-        public NativeOperator(string applicationId, ushort threadId, string dllPath = null, IEnumerable<string> dependencyPaths = null) {
-            _library = NativeLibrary.GetNativeLibrary(dllPath, dependencyPaths);
-            this.OwnerNameEncoding = Encoding.Default;
-            this.PathEncoding = Encoding.Default;
-            this.ClientId = new ClientId(applicationId, threadId);
-        }
+        public NativeOperator(string applicationId, ushort threadId, string dllPath = null, IEnumerable<string> dependencyPaths = null)
+            : this(applicationId, threadId, NativeLibrary.GetNativeLibrary(applicationId, dependencyPaths)) { }
 
         public NativeOperator(string applicationId, ushort threadId, INativeLibrary nativeLibrary) {
             _library = nativeLibrary;
@@ -445,7 +437,7 @@ namespace BtrieveWrapper
         public uint GetPosition(PositionBlock positionBlock) {
             var dataBuffer = new byte[4];
             this.GetPosition(positionBlock, dataBuffer);
-            return BitConverter.ToUInt32(dataBuffer, 0);
+            return dataBuffer.GetUInt32();
         }
 
         public void GetPosition(PositionBlock positionBlock, byte[] dataBuffer) {

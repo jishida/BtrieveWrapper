@@ -18,7 +18,7 @@ namespace BtrieveWrapper.Orm
         NativeOperator _nativeOperator;
 
         public RecordOperator(Path path = null, string ownerName = null, OpenMode? openMode = null, string dllPath = null, IEnumerable<string> dependencyPaths = null, int reusableCapacity = 1000, byte[] temporaryBuffer = null)
-            : this(new NativeOperator(false, dllPath ?? Resource.GetRecordInfo(typeof(TRecord)).DllPath, dependencyPaths ?? Resource.GetRecordInfo(typeof(TRecord)).DependencyPaths), path, ownerName, openMode, reusableCapacity, temporaryBuffer) { }
+            : this(new NativeOperator(dllPath ?? Resource.GetRecordInfo(typeof(TRecord)).DllPath, dependencyPaths ?? Resource.GetRecordInfo(typeof(TRecord)).DependencyPaths), path, ownerName, openMode, reusableCapacity, temporaryBuffer) { }
 
         public RecordOperator(string path, string ownerName = null, OpenMode? openMode = null, string dllPath = null, IEnumerable<string> dependencyPaths = null, int reusableCapacity = 1000, byte[] temporaryBuffer = null)
             : this(Path.Absolute(path), ownerName, openMode, dllPath, dependencyPaths, reusableCapacity, temporaryBuffer) { }
@@ -27,10 +27,7 @@ namespace BtrieveWrapper.Orm
             : this(applicationId, threadId, Path.Absolute(path), ownerName, openMode, dllPath, dependencyPaths, reusableCapacity, temporaryBuffer) { }
 
         public RecordOperator(string applicationId, ushort threadId, Path path = null, string ownerName = null, OpenMode? openMode = null, string dllPath = null, IEnumerable<string> dependencyPaths = null, int reusableCapacity = 1000, byte[] temporaryBuffer = null)
-            : this(new NativeOperator(true, dllPath ?? Resource.GetRecordInfo(typeof(TRecord)).DllPath, dependencyPaths ?? Resource.GetRecordInfo(typeof(TRecord)).DependencyPaths), path, ownerName, openMode, reusableCapacity, temporaryBuffer) {
-            _nativeOperator.ClientId.ApplicationId = applicationId;
-            _nativeOperator.ClientId.ThreadId = threadId;
-        }
+            : this(new NativeOperator(applicationId, threadId, dllPath ?? Resource.GetRecordInfo(typeof(TRecord)).DllPath, dependencyPaths ?? Resource.GetRecordInfo(typeof(TRecord)).DependencyPaths), path, ownerName, openMode, reusableCapacity, temporaryBuffer) { }
 
         public RecordOperator(NativeOperator nativeOperator, Path path, string ownerName, OpenMode? openMode, int reusableCapacity, byte[] temporaryBuffer = null) {
             var recordType = typeof(TRecord);

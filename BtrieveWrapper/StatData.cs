@@ -3,29 +3,31 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
+using BtrieveWrapper.Utilities;
+
 namespace BtrieveWrapper
 {
     public class StatData
     {
         internal StatData(byte[] dataBuffer) {
             this.FileSpec = new StatFileSpec(
-                BitConverter.ToUInt16(dataBuffer, 0),
-                BitConverter.ToUInt16(dataBuffer, 2),
+                dataBuffer.GetUInt16(0),
+                dataBuffer.GetUInt16(2),
                 dataBuffer[4],
                 dataBuffer[5],
-                BitConverter.ToUInt32(dataBuffer, 6),
-                (FileFlag)BitConverter.ToUInt16(dataBuffer, 10),
+                dataBuffer.GetUInt32(6),
+                (FileFlag)dataBuffer.GetUInt16(10),
                 dataBuffer[12],
-                BitConverter.ToUInt16(dataBuffer, 14));
+                dataBuffer.GetUInt16(14));
             var keySpecList = new List<StatKeySpec>();
             var count = 0;
             for (var i = 0; i < this.FileSpec.KeyCount; i++) {
                 for (; ; ) {
                     var keySpec = new StatKeySpec(
-                        (ushort)(BitConverter.ToUInt16(dataBuffer, 16 + count * 16 + 0) - 1),
-                        BitConverter.ToUInt16(dataBuffer, 16 + count * 16 + 2),
-                        (KeyFlag)BitConverter.ToUInt16(dataBuffer, 16 + count * 16 + 4),
-                        BitConverter.ToUInt32(dataBuffer, 16 + count * 16 + 6),
+                        (ushort)(dataBuffer.GetUInt16(16 + count * 16 + 0) - 1),
+                        dataBuffer.GetUInt16(16 + count * 16 + 2),
+                        (KeyFlag)dataBuffer.GetUInt16(16 + count * 16 + 4),
+                        dataBuffer.GetUInt32(16 + count * 16 + 6),
                         dataBuffer[16 + count * 16 + 10],
                         dataBuffer[16 + count * 16 + 11],
                         (sbyte)dataBuffer[16 + count * 16 + 14],

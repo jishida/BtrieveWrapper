@@ -121,6 +121,10 @@
     <Compile Include="NativeMethods.cs" />
     <Compile Include="CreateFileSpec.cs" />
     <Compile Include="CreateKeySpec.cs" />
+    <Compile Include="Utilities\Bit16.cs" />
+    <Compile Include="Utilities\Bit32.cs" />
+    <Compile Include="Utilities\Bit64.cs" />
+    <Compile Include="Utilities\BitExtensions.cs" />
     <Compile Include="VersionInfo.cs" />
   </ItemGroup>
   <ItemGroup>

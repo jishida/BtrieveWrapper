@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
+using BtrieveWrapper.Utilities;
+
 namespace BtrieveWrapper
 {
     public class CreateFileSpec : FileSpec
@@ -34,12 +36,12 @@ namespace BtrieveWrapper
         public byte[] Binary {
             get {
                 var result = new byte[16];
-                Array.Copy(BitConverter.GetBytes(this.RecordLength), 0, result, 0, 2);
-                Array.Copy(BitConverter.GetBytes(this.PageSize), 0, result, 2, 2);
-                Array.Copy(BitConverter.GetBytes(this.KeyCount), 0, result, 4, 2);
-                Array.Copy(BitConverter.GetBytes((ushort)this.Flag), 0, result, 10, 2);
+                this.RecordLength.SetBytes(result, 0);
+                this.PageSize.SetBytes(result, 2);
+                ((ushort)this.KeyCount).SetBytes(result, 4);
+                ((ushort)this.Flag).SetBytes(result, 10);
                 result[13] = this.DuplicatedPointerCount;
-                Array.Copy(BitConverter.GetBytes(Allocation), 0, result, 14, 2);
+                this.Allocation.SetBytes(result, 14);
                 return result;
             }
         }
