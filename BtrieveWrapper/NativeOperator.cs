@@ -24,7 +24,7 @@ namespace BtrieveWrapper
         }
 
         public NativeOperator(string applicationId, ushort threadId, string dllPath = null, IEnumerable<string> dependencyPaths = null)
-            : this(applicationId, threadId, NativeLibrary.GetNativeLibrary(applicationId, dependencyPaths)) { }
+            : this(applicationId, threadId, NativeLibrary.GetNativeLibrary(dllPath, dependencyPaths)) { }
 
         public NativeOperator(string applicationId, ushort threadId, INativeLibrary nativeLibrary) {
             _library = nativeLibrary;

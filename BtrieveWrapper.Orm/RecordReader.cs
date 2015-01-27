@@ -354,7 +354,8 @@ namespace BtrieveWrapper.Orm
 
             var limit = parameter.Limit;
             keyValue = parameter.StartingRecord == null
-                ? null : parameter.StartingRecord.GetKeyValue(this.PrimaryKey);
+                ? null 
+                : parameter.StartingRecord.GetKeyValue(this.PrimaryKey);
             using (var connection = new Connection(this)) {
                 if (keyValue == null) {
                     TRecord record;
